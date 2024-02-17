@@ -1,0 +1,49 @@
+# Server-side website programming | Backend scripting
+# Dev ENV
+The main tools that Django itself provides are :
+    * a set of Python scripts for creating and working with Django projects
+    * a simple development web server that you can use to test local
+
+# FILES 
+    * __init__.py is an empty file that instructs Python to treat this directory as a Python package.
+    * settings.py contains all the website settings, including registering any applications we create, 
+    the location of our static files, database configuration details, etc.
+    * urls.py defines the site URL-to-view mappings. While this could contain all the URL mapping code, 
+    it is more common to delegate some of the mappings to particular applications, as you'll see later.
+    * wsgi.py is used to help your Django application communicate with the web server. You can treat this as boilerplate.
+    * asgi.py is a standard for Python asynchronous web apps and servers to communicate with each other. 
+    Asynchronous Server Gateway Interface (ASGI) is the asynchronous successor to Web Server Gateway Interface (WSGI). 
+    ASGI provides a standard for both asynchronous and synchronous Python apps, whereas WSGI provided a standard for 
+    synchronous apps only. ASGI is backward-compatible with WSGI and supports multiple servers and application frameworks.
+
+    * The manage.py script is used to create applications, work with databases, and start the development web server.
+
+# python3 manage.py startapp catalog
+The tool creates a new folder and populates it with files for the different parts of the application
+catalog/
+    admin.py
+    apps.py
+    models.py
+    tests.py
+    views.py
+    __init__.py # an empty file created here so that Django/Python will recognize the folder as a Python Package.
+    migrations/ # used to store "migrations" — files that allow you to automatically update your database as you modify your models.
+
+
+
+#AUTH
+in settings.py :
+INSTALLED_APPS = [
+    "django.contrib.auth", # Core authentication framework and its default models.
+    "django.contrib.contenttypes", # Django content type system (allows permissions to be associated with models).
+]
+
+MIDDLEWARE = [
+    "django.contrib.sessions.middleware.SessionMiddleware", # Manages sessions across requests
+    "django.contrib.auth.middleware.AuthenticationMiddleware", # Associates users with requests using sessions.
+]
+
+====================
+https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/skeleton_website
+https://copyprogramming.com/howto/how-to-use-netcat-to-check-whether-postgresql-docker-container-is-up
+

@@ -1,6 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser , BaseUserManager
 import uuid
+from django.contrib.auth import authenticate, login
+from django.http import JsonResponse, HttpResponseRedirect
+from django.urls import reverse
+import requests
+import os
 
 class UserManager(BaseUserManager):
     def create_user(self, email, display_name, username, password=None):
@@ -37,10 +42,11 @@ class User(AbstractBaseUser):
     wins = models.IntegerField(default=0)
     losses = models.IntegerField(default=0)
     plays = models.IntegerField(default=0)
-    is_admin = models.BooleanField(default = False)
+    status = models.CharField(max_length=100, default="offline")
     is_active = models.BooleanField(default = True)
     is_staff = models.BooleanField(default = False)
     is_superuser = models.BooleanField(default = False)
+    is_42_user = models.BooleanField(default=False)
 
     REQUIRED_FIELDS = ["display_name"]
     USERNAME_FIELD = 'username'
