@@ -1,34 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser , BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser
 import uuid
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 import requests
 import os
-
-class UserManager(BaseUserManager):
-    def create_user(self, email, display_name, username, password=None):
-        user = self.model(
-            email = self.normalize_email(email),
-            display_name = display_name,
-            username = username,
-        )
-        user.set_password(password)
-        user.save(using = self._db)
-        return user
-
-    def create_superuser(self, email, display_name, username, password=None):
-        user = self.create_user(
-            email=email,
-            password=password,
-            display_name = display_name,
-            username = username,
-        )
-        user.is_admin = True
-        user.is_staff = True
-        user.save(using=self._db)
-        return user
 
 class User(AbstractBaseUser):
     id = models.CharField(max_length=200, default=uuid.uuid4,unique=True,primary_key=True)
@@ -51,8 +28,6 @@ class User(AbstractBaseUser):
     REQUIRED_FIELDS = ["display_name"]
     USERNAME_FIELD = 'username'
 
-    objects = UserManager()
-
     def __str__(self):
         return self.username
     
@@ -61,3 +36,15 @@ class User(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
+
+class Games(models.Model):
+    id = models.AutoField(primary_key=True)
+    first_player = models.ForeignKey(User, on_delete=models.CASCADE, related_name="game_results_as_first_player")
+    second_player = models.ForeignKey(User, on_delete=models.CASCADE, related_name="game_results_as_second_player")
+    first_player_score = models.IntegerField()
+    second_player_score = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.first_player.username} vs {self.second_player.username} - {self.first_player_score} - {self.second_player_score}"

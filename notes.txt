@@ -43,6 +43,14 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware", # Associates users with requests using sessions.
 ]
 
+docker-compose build
+docker-compose up
+==
+42 application
+UID: u-s4t2ud-2ceb8913100edae2ae13c981a77f7f85af527523e4a15f078054e9223d696488
+SECRET: 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
+URL: https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-2ceb8913100edae2ae13c981a77f7f85af527523e4a15f078054e9223d696488&redirect_uri=https%3A%2F%2Ftranscending.com%2Fauth&response_type=code
+
 ====================
 https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/skeleton_website
 https://copyprogramming.com/howto/how-to-use-netcat-to-check-whether-postgresql-docker-container-is-up
