@@ -55,7 +55,7 @@ def register(request):
 #         user = authenticate(request, username=username, password=password)
 #         if user is not None:
 #             login(request, user)
-#             return redirect('home')  # Redirect to a home page or dashboard
+#             return redirect('index')  # Redirect to a home page or dashboard
 #     else:
 #         form = UserLoginForm()
 #     return render(request, 'login.html', {'form': form})
@@ -67,7 +67,7 @@ def login(request):
             "success": True,
             "message": "User already logged in",
             "redirect": True,
-            "redirect_url": "index",
+            "redirect_url": "profile",
             "context": {},
         })
 

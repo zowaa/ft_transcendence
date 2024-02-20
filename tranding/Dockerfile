@@ -7,22 +7,23 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # Set work directory
-WORKDIR /code
+WORKDIR /usr/src/django
 
 # Install dependencies
-COPY requirements.txt /code/
+COPY requirements.txt /usr/src/django
 
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-RUN apt-get update && apt-get install -y netcat
+#RUN apt-get update && apt-get install -y netcat
+RUN apt-get update && apt-get install -y netcat-openbsd
 
 # Copy the project code to the working directory
-COPY . /code/
+COPY . /usr/src/django
 
 # Run migrations
 RUN python manage.py migrate
 
-COPY ./entrypoint.sh /code/
+COPY entrypoint.sh /usr/src/django/
 
 RUN chmod +x entrypoint.sh
 
