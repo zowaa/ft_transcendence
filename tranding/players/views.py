@@ -5,98 +5,98 @@ from django.http import JsonResponse
 from django.utils import timezone
 from .helpers import token_generation, token_decode
 
-# def register(request):
-#     if request.method == 'POST':
-#         form = UserRegistrationForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('login')
-#     else:
-#         form = UserRegistrationForm()
-#     return render(request, 'register.html', {'form': form})
-
 def register(request):
-    if request.method == "POST":
-        # form = UserCreationForm(request.POST)
+    if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             form.save()
-            return JsonResponse({
-                "success": True,
-                "message": "Account created successfully!",
-                "redirect": True,
-                "redirect_url": "login",
-            })
-        else:
-            return JsonResponse({
-                "success": False,
-                "message": "Invalid form",
-                "errors": form.errors,
-            })
+            return redirect('login')
+    else:
+        form = UserRegistrationForm()
+    return render(request, 'register.html', {'form': form})
 
-    # For GET request or unauthenticated users
-    form = UserCreationForm()
-    context = {"form": form.as_ul()}
-    return JsonResponse({
-        "success": True,
-        "message": "",
-        "redirect": False,
-        "redirect_url": "",
-        "context": context,
-        "logged_in": request.user.is_authenticated,
-    })
+# def register(request):
+#     if request.method == "POST":
+#         # form = UserCreationForm(request.POST)
+#         form = UserRegistrationForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return JsonResponse({
+#                 "success": True,
+#                 "message": "Account created successfully!",
+#                 "redirect": True,
+#                 "redirect_url": "login",
+#             })
+#         else:
+#             return JsonResponse({
+#                 "success": False,
+#                 "message": "Invalid form",
+#                 "errors": form.errors,
+#             })
 
+#     # For GET request or unauthenticated users
+#     form = UserCreationForm()
+#     context = {"form": form.as_ul()}
+#     return JsonResponse({
+#         "success": True,
+#         "message": "",
+#         "redirect": False,
+#         "redirect_url": "",
+#         "context": context,
+#         "logged_in": request.user.is_authenticated,
+#     })
 
-# def login(request):
-#     if request.method == 'POST':
-#         form = UserLoginForm(request.POST)
-#         username = request.POST['username']
-#         password = request.POST['password']
-#         user = authenticate(request, username=username, password=password)
-#         if user is not None:
-#             login(request, user)
-#             return redirect('index')  # Redirect to a home page or dashboard
-#     else:
-#         form = UserLoginForm()
-#     return render(request, 'login.html', {'form': form})
 
 def login(request):
-    message = "User not logged in"
-    if request.user.is_authenticated:
-        return JsonResponse({
-            "success": True,
-            "message": "User already logged in",
-            "redirect": True,
-            "redirect_url": "profile",
-            "context": {},
-        })
-
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
+    if request.method == 'POST':
+        form = UserLoginForm(request.POST)
+        username = request.POST['username']
+        password = request.POST['password']
         user = authenticate(request, username=username, password=password)
-
         if user is not None:
             login(request, user)
-            return JsonResponse({
-                "success": True,
-                "message": "Login successful",
-                "redirect": True,
-                "redirect_url": "index",
-                "context": {},
-                "logged_in": True,
-            })
-        else:
-            message = "Username or password is incorrect"
+            return redirect('index')  # Redirect to a home page or dashboard
+    else:
+        form = UserLoginForm()
+    return render(request, 'login.html', {'form': form})
 
-    return JsonResponse({
-        "success": False,
-        "message": message,
-        "redirect": False,
-        "redirect_url": "",
-        "context": {},
-        "logged_in": request.user.is_authenticated,
-    })
+# def login(request):
+#     message = "User not logged in"
+#     if request.user.is_authenticated:
+#         return JsonResponse({
+#             "success": True,
+#             "message": "User already logged in",
+#             "redirect": True,
+#             "redirect_url": "profile",
+#             "context": {},
+#         })
+
+#     if request.method == "POST":
+#         username = request.POST.get("username")
+#         password = request.POST.get("password")
+#         user = authenticate(request, username=username, password=password)
+
+#         if user is not None:
+#             login(request, user)
+#             return JsonResponse({
+#                 "success": True,
+#                 "message": "Login successful",
+#                 "redirect": True,
+#                 "redirect_url": "index",
+#                 "context": {},
+#                 "logged_in": True,
+#             })
+#         else:
+#             message = "Username or password is incorrect"
+
+#     return JsonResponse({
+#         "success": False,
+#         "message": message,
+#         "redirect": False,
+#         "redirect_url": "",
+#         "context": {},
+#         "logged_in": request.user.is_authenticated,
+#     })
 
 def logout(request):
 	user = User.objects.get(username=getUser(request))

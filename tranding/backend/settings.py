@@ -89,7 +89,7 @@ DATABASES = {
 #        'NAME': 'transcending',
 #        'USER': 'transcender',
 #        'PASSWORD': 'transcending7',
-#        'HOST': '127.0.0.0',
+#        'HOST': 'db',
 #        'PORT': '5432',
 #    }
 # }
