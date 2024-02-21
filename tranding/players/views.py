@@ -4,99 +4,104 @@ from .forms import UserRegistrationForm, UserLoginForm, UserCreationForm
 from django.http import JsonResponse
 from django.utils import timezone
 from .helpers import token_generation, token_decode
-
-def register(request):
-    if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('login')
-    else:
-        form = UserRegistrationForm()
-    return render(request, 'register.html', {'form': form})
+from django.contrib.auth.hashers import make_password
+from .models import User
+from .hashers import PBKDF2WrappedMD5PasswordHasher
 
 # def register(request):
-#     if request.method == "POST":
-#         # form = UserCreationForm(request.POST)
+#     if request.method == 'POST':
 #         form = UserRegistrationForm(request.POST)
 #         if form.is_valid():
 #             form.save()
-#             return JsonResponse({
-#                 "success": True,
-#                 "message": "Account created successfully!",
-#                 "redirect": True,
-#                 "redirect_url": "login",
-#             })
-#         else:
-#             return JsonResponse({
-#                 "success": False,
-#                 "message": "Invalid form",
-#                 "errors": form.errors,
-#             })
+#             return redirect('login')
+#     else:
+#         form = UserRegistrationForm()
+#     return render(request, 'register.html', {'form': form})
 
-#     # For GET request or unauthenticated users
-#     form = UserCreationForm()
-#     context = {"form": form.as_ul()}
-#     return JsonResponse({
-#         "success": True,
-#         "message": "",
-#         "redirect": False,
-#         "redirect_url": "",
-#         "context": context,
-#         "logged_in": request.user.is_authenticated,
-#     })
-
-
-def login(request):
-    if request.method == 'POST':
-        form = UserLoginForm(request.POST)
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
+def register(request):
+    if request.method == "POST":
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.refresh_from_db()
+            user.username = form.cleaned_data.get('username') + '_'
+            user.display_name = form.cleaned_data.get('username')
+            # Create an instance of the custom password hasher
+            custom_hasher = PBKDF2WrappedMD5PasswordHasher()
+            # Generate a random salt (you can use Django's make_password to do this)
+            salt = make_password(None)
+            # Hash the password using the custom hasher
+            hashed_password = custom_hasher.encode(form.cleaned_data.get('password1'), salt)
+            # Store the hashed password and the salt in the database
+            user = User.objects.create(username="example_user", password=hashed_password, salt=salt, iterations=custom_hasher.iterations)
+            # user.set_password(form.cleaned_data.get('password1'))
+            user.make_password(form.cleaned_data.get('password1'))
+            user.save()
+            user = authenticate(username=user.username, password=user.password)
             login(request, user)
-            return redirect('index')  # Redirect to a home page or dashboard
-    else:
-        form = UserLoginForm()
-    return render(request, 'login.html', {'form': form})
+            return JsonResponse({
+                "success": True,
+                #"message": "Account created successfully!",
+                #"redirect": True,
+                #"redirect_url": "login",
+            })
+        else:
+            return JsonResponse({
+                "success": False,
+                #"message": "Invalid form",
+                "errors": form.errors,
+            })
+    return render(request, 'register.html', {'form': form})
 
 # def login(request):
-#     message = "User not logged in"
-#     if request.user.is_authenticated:
-#         return JsonResponse({
-#             "success": True,
-#             "message": "User already logged in",
-#             "redirect": True,
-#             "redirect_url": "profile",
-#             "context": {},
-#         })
-
-#     if request.method == "POST":
-#         username = request.POST.get("username")
-#         password = request.POST.get("password")
+#     if request.method == 'POST':
+#         form = UserLoginForm(request.POST)
+#         username = request.POST['username']
+#         password = request.POST['password']
 #         user = authenticate(request, username=username, password=password)
-
 #         if user is not None:
 #             login(request, user)
-#             return JsonResponse({
-#                 "success": True,
-#                 "message": "Login successful",
-#                 "redirect": True,
-#                 "redirect_url": "index",
-#                 "context": {},
-#                 "logged_in": True,
-#             })
-#         else:
-#             message = "Username or password is incorrect"
+#             return redirect('index')  # Redirect to a home page or dashboard
+#     else:
+#         form = UserLoginForm()
+#     return render(request, 'login.html', {'form': form})
 
-#     return JsonResponse({
-#         "success": False,
-#         "message": message,
-#         "redirect": False,
-#         "redirect_url": "",
-#         "context": {},
-#         "logged_in": request.user.is_authenticated,
-#     })
+def login(request):
+    message = "User not logged in"
+    if request.user.is_authenticated:
+        return JsonResponse({
+            "success": True,
+            "message": "User already logged in",
+            # "redirect": True,
+            # "redirect_url": "profile",
+            "context": {},
+        })
+
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
+            login(request, user)
+            return JsonResponse({
+                "success": True,
+                "message": "Login successful",
+                # "redirect": True,
+                # "redirect_url": "index",
+                "context": {},
+                "logged_in": True,
+            })
+        else:
+            message = "Username or password is incorrect"
+            return JsonResponse({
+                "success": False,
+                "message": message,
+                # "redirect": False,
+                # "redirect_url": "",
+                "context": {},
+                "logged_in": request.user.is_authenticated,
+            })
 
 def logout(request):
 	user = User.objects.get(username=getUser(request))
@@ -105,18 +110,14 @@ def logout(request):
 	return JsonResponse({
 		"success": True,
 		"message": "Logged out successfully",
-		"redirect": True,
-		"redirect_url": "login",
+		# "redirect": True,
+		# "redirect_url": "login",
 		"context": {},
 		"logged_in": request.user.is_authenticated,
 	})
 
 def index(request):
     return render(request, 'index.html')
-
-# def logout(request):
-#     logout(request)
-#     return redirect('index')
 
 def getUser(request):
     # Get the JWT from the request headers
@@ -153,8 +154,8 @@ def authentication(request):
         return JsonResponse({
             "success": True,
             "message": "User already logged in",
-            "redirect": True,
-            "redirect_url": reverse("index"),  # Redirect to index page
+            # "redirect": True,
+            # "redirect_url": reverse("index"),  # Redirect to index page
             "logged_in": request.user.is_authenticated,
         })
 

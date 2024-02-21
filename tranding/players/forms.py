@@ -5,7 +5,7 @@ from .models import User
 class UserRegistrationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ['username', 'display_name', 'password1', 'password2']
+        fields = ['username', 'password1', 'password2']
 
 class UserLoginForm(AuthenticationForm):
     class Meta:

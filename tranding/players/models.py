@@ -9,7 +9,7 @@ import os
 
 class User(AbstractBaseUser):
     id = models.CharField(max_length=200, default=uuid.uuid4,unique=True,primary_key=True)
-    email = models.EmailField(null=False, max_length=100,unique=True)
+    #email = models.EmailField(null=False, max_length=100,unique=True)
     username = models.CharField(null=False, max_length=100, unique=True)
     display_name = models.CharField(null=True, max_length=100, unique=True)
     date_joined = models.DateTimeField(auto_now=True)
@@ -25,7 +25,7 @@ class User(AbstractBaseUser):
     is_superuser = models.BooleanField(default = False)
     is_42_user = models.BooleanField(default=False)
 
-    REQUIRED_FIELDS = ["display_name"]
+    REQUIRED_FIELDS = ["username"]
     USERNAME_FIELD = 'username'
 
     def __str__(self):
