@@ -25,7 +25,7 @@ class User(AbstractBaseUser):
     is_superuser = models.BooleanField(default = False)
     is_42_user = models.BooleanField(default=False)
 
-    REQUIRED_FIELDS = ["username"]
+    # REQUIRED_FIELDS = ["username"]
     USERNAME_FIELD = 'username'
 
     def __str__(self):
