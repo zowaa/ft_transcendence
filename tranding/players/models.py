@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractUser
 import uuid
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse, HttpResponseRedirect
@@ -7,7 +7,7 @@ from django.urls import reverse
 import requests
 import os
 
-class User(AbstractBaseUser):
+class User(AbstractUser):
     id = models.CharField(max_length=200, default=uuid.uuid4,unique=True,primary_key=True)
     #email = models.EmailField(null=False, max_length=100,unique=True)
     username = models.CharField(null=False, max_length=100, unique=True)
@@ -30,12 +30,6 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.username
-    
-    def has_perm(self, perm, obj = None):
-        return self.is_admin
-
-    def has_module_perms(self, app_label):
-        return True
 
 class Games(models.Model):
     id = models.AutoField(primary_key=True)

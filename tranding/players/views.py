@@ -7,51 +7,52 @@ from .helpers import token_generation, token_decode
 from django.contrib.auth.hashers import make_password
 from .models import User
 from .hashers import PBKDF2WrappedMD5PasswordHasher
-
-# def register(request):
-#     if request.method == 'POST':
-#         form = UserRegistrationForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('login')
-#     else:
-#         form = UserRegistrationForm()
-#     return render(request, 'register.html', {'form': form})
+from functools import wraps
 
 def register(request):
-    if request.method == "POST":
+    if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.refresh_from_db()
-            user.username = form.cleaned_data.get('username') + '_'
-            user.display_name = form.cleaned_data.get('username')
-            # Create an instance of the custom password hasher
-            custom_hasher = PBKDF2WrappedMD5PasswordHasher()
-            # Generate a random salt (you can use Django's make_password to do this)
-            salt = make_password(None)
-            # Hash the password using the custom hasher
-            hashed_password = custom_hasher.encode(form.cleaned_data.get('password1'), salt)
-            # Store the hashed password and the salt in the database
-            user = User.objects.create(username="example_user", password=hashed_password, salt=salt, iterations=custom_hasher.iterations)
-            # user.set_password(form.cleaned_data.get('password1'))
-            user.make_password(form.cleaned_data.get('password1'))
-            user.save()
-            user = authenticate(username=user.username, password=user.password)
-            login(request, user)
-            return JsonResponse({
-                "success": True,
-                #"message": "Account created successfully!",
-                #"redirect": True,
-                #"redirect_url": "login",
-            })
-        else:
-            return JsonResponse({
-                "success": False,
-                #"message": "Invalid form",
-                "errors": form.errors,
-            })
+            form.save()
+            return redirect('login')
+    else:
+        form = UserRegistrationForm()
     return render(request, 'register.html', {'form': form})
+
+# def register(request):
+#     if request.method == "POST":
+#         form = UserRegistrationForm(request.POST)
+#         if form.is_valid():
+#             user = form.save(commit=False)
+#             user.refresh_from_db()
+#             user.username = form.cleaned_data.get('username') + '_'
+#             user.display_name = form.cleaned_data.get('username')
+#             # Create an instance of the custom password hasher
+#             custom_hasher = PBKDF2WrappedMD5PasswordHasher()
+#             # Generate a random salt (you can use Django's make_password to do this)
+#             salt = make_password(None)
+#             # Hash the password using the custom hasher
+#             hashed_password = custom_hasher.encode(form.cleaned_data.get('password1'), salt)
+#             # Store the hashed password and the salt in the database
+#             user = User.objects.create(username="example_user", password=hashed_password, salt=salt, iterations=custom_hasher.iterations)
+#             # user.set_password(form.cleaned_data.get('password1'))
+#             user.make_password(form.cleaned_data.get('password1'))
+#             user.save()
+#             user = authenticate(username=user.username, password=user.password)
+#             login(request, user)
+#             return JsonResponse({
+#                 "success": True,
+#                 #"message": "Account created successfully!",
+#                 #"redirect": True,
+#                 #"redirect_url": "login",
+#             })
+#         else:
+#             return JsonResponse({
+#                 "success": False,
+#                 #"message": "Invalid form",
+#                 "errors": form.errors,
+#             })
+#     return render(request, 'register.html', {'form': form})
 
 # def login(request):
 #     if request.method == 'POST':
@@ -146,6 +147,28 @@ def getUser(request):
     else:
         # If JWT is not provided, return None
         return None
+
+def jwt_user(view_func):
+    @wraps(view_func)
+    def wrapped_view(request, *args, **kwargs):
+        # Check if the user is authenticated via JWT
+        user = getUser(request)
+        
+        if user is not None:
+            # User is authenticated, proceed to the view function
+            return view_func(request, *args, **kwargs)
+        else:
+            # User is not authenticated, return a JSON response indicating invalid JWT
+            return JsonResponse({
+                "success": False,
+                # "message": "Invalid JWT",
+                # "redirect": True,
+                # "redirect_url": "login",
+                "context": {},
+            })
+    
+    return wrapped_view
+
 
 def authentication(request):
     # Check if the user is already authenticated
