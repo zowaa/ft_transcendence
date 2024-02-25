@@ -10,13 +10,6 @@
     <form method="POST" action="" class="row row-cols-1">
         {% csrf_token %}
         <div class="col">
-            {{ form.display_name.label_tag }}
-            {{ form.display_name }}
-            {% if form.display_name.errors %}
-                <div class="invalid-feedback">{{ form.display_name.errors }}</div>
-            {% endif %}
-        </div>
-        <div class="col">
             {{ form.username.label_tag }}
             {{ form.username }}
             {% if form.username.errors %}

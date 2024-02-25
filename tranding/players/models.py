@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractBaseUser
 import uuid
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse, HttpResponseRedirect
@@ -7,9 +7,9 @@ from django.urls import reverse
 import requests
 import os
 
-class User(AbstractUser):
+class User(AbstractBaseUser):
     id = models.CharField(max_length=200, default=uuid.uuid4,unique=True,primary_key=True)
-    #email = models.EmailField(null=False, max_length=100,unique=True)
+    email = None
     username = models.CharField(null=False, max_length=100, unique=True)
     display_name = models.CharField(null=True, max_length=100, unique=True)
     date_joined = models.DateTimeField(auto_now=True)
@@ -21,8 +21,6 @@ class User(AbstractUser):
     nb_plays = models.IntegerField(default=0)
     status = models.CharField(max_length=100, default="offline")
     is_active = models.BooleanField(default = True)
-    is_staff = models.BooleanField(default = False)
-    is_superuser = models.BooleanField(default = False)
     is_42_user = models.BooleanField(default=False)
 
     # REQUIRED_FIELDS = ["username"]
