@@ -65,9 +65,13 @@ req:
 pip install djangorestframework
 pip install django-allauth
 
-
+pip install djangorestframework-simplejwt
 
 
 https://krakensystems.co/blog/2020/custom-users-using-django-rest-framework
 
 https://dev.to/earthcomfy/getting-started-custom-user-model-5hc
+
+======
+JWTs hold information in three parts, as you can see in the following code blocks:
+header.payload.signature

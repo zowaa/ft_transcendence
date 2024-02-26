@@ -7,16 +7,8 @@ from .helpers import token_generation, token_decode
 from django.contrib.auth.hashers import make_password
 from .models import User
 from functools import wraps
-
-# def register(request):
-#     if request.method == 'POST':
-#         form = UserRegistrationForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('login')
-#     else:
-#         form = UserRegistrationForm()
-#     return render(request, 'register.html', {'form': form})
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
 
 def register(request):
     if request.method == "POST":
@@ -28,8 +20,8 @@ def register(request):
             user.display_name = form.cleaned_data.get('username')
             user.set_password(form.cleaned_data.get('password1'))
             user.save()
-            # user = authenticate(username=user.username, password=user.password)
-            login(request, user)
+            user = authenticate(username=user.username, password=user.password)
+            # login(request)
             return JsonResponse({
                 "success": True,
                 #"message": "Account created successfully!",
@@ -59,6 +51,23 @@ def register(request):
 #         form = UserLoginForm()
 #     return render(request, 'login.html', {'form': form})
 
+class LoginView(APIView):
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        user = authenticate(
+            username=username, password=password)
+        
+        refresh = RefeshToken.for_user(user)
+
+        return JsonResponse(
+            {
+               'refresh':str(refresh),
+               'access':str(refresh.access_token) 
+            }
+        )
+
 def login(request):
     message = "User not logged in"
     if request.user.is_authenticated:
@@ -76,7 +85,7 @@ def login(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            login(request, user)
+            # login(request, user)
             return JsonResponse({
                 "success": True,
                 "message": "Login successful",
