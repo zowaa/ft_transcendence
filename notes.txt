@@ -74,4 +74,4 @@ https://dev.to/earthcomfy/getting-started-custom-user-model-5hc
 
 ======
 JWTs hold information in three parts, as you can see in the following code blocks:
-header.payload.signature
+header.payload.signature 
