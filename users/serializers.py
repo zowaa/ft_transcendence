@@ -97,7 +97,10 @@ class LoginUserSerializer(serializers.ModelSerializer):
     #     else:
     #         raise serializers.ValidationError("User does not exist.")
     
-    
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = '__all__'
 
 class GamesSerializer(serializers.ModelSerializer):
     class Meta:
