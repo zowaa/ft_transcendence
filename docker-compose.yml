@@ -1,4 +1,5 @@
 version: "3.8"
+
 volumes:
   certs:
     driver: local
@@ -8,27 +9,13 @@ volumes:
     driver: local
   logstashdata01:
     driver: local
-  wordpressdb:
-    name: wordpressdb
+  postgres_data:
+    name: postgres_data
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: '/home/yrimah42/data/wp_db'
-  wordpress_files:
-    name: wordpress_files
-    driver: local
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '/home/yrimah42/data/wp_files'
-  nginx_ssl:
-    name: nginx_ssl
-    driver: local
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '/home/yrimah42/data/nginx_ssl'
+      device: '/home/yrimah42/data/postgres_data'
 
 networks:
   default:
@@ -37,6 +24,7 @@ networks:
 
 services:
   setup:
+    container_name: setup
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     volumes:
       - certs:/usr/share/elasticsearch/config/certs
@@ -51,6 +39,7 @@ services:
       timeout: 5s
       retries: 120
   es01:
+    container_name: es01
     depends_on:
       setup:
         condition: service_healthy
@@ -80,6 +69,7 @@ services:
       retries: 120
 
   kibana:
+    container_name: kibana
     depends_on:
       es01:
         condition: service_healthy
@@ -105,6 +95,7 @@ services:
       retries: 120
   
   logstash01:
+    container_name: logstash
     depends_on:
       es01:
         condition: service_healthy
@@ -119,63 +110,25 @@ services:
       - logstashdata01:/usr/share/logstash/data
       - "./logstash_ingest_data/:/usr/share/logstash/ingest_data/"
       - "./logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro"
-      - "./mysql-connector-j-8.3.0.jar:/usr/share/java/mysql-connector-j-8.3.0.jar"
+      - "./postgresql-42.7.2.jar:/usr/share/java/postgresql-42.7.2.jar"
     environment:
       - xpack.monitoring.enabled=false
     env_file:
       - .env
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "bin/logstash-plugin install logstash-filter-ruby | grep -q 'Installation successful'",
-        ]
+    # healthcheck:
+    #   test:
+    #     [
+    #       "CMD-SHELL",
+    #       "bin/logstash-plugin install logstash-filter-ruby | grep -q 'Installation successful'",
+    #     ]
 
-
-  mariadb:
-    container_name: mariadb
-    build: requirements/mariadb
-    image: mariadb:4
+  postgres:
+    container_name: postgres
+    image: postgres:14-alpine
     ports:
-      - 3306:3306
-    restart: always
-    env_file: .env
+      - 5432:5432
     volumes:
-      - wordpressdb:/var/lib/mysql
-  nginx:
-    container_name: nginx
-    build: requirements/nginx
-    image: nginx:4
-    ports:
-      - 443:443
-    depends_on:
-      - wordpress
-    env_file: .env
-    volumes:
-      - wordpress_files:/var/www/html
-      - nginx_ssl:/etc/nginx/ssl
-    restart: always
-  wordpress:
-    container_name: wordpress
-    build: requirements/wordpress
-    image: wordpress:4
-    ports:
-      - 9000:9000
-    env_file: .env
-    restart: always
-    depends_on:
-      - mariadb
-    volumes:
-      - wordpress_files:/var/www/html
-  redis:
-    container_name: redis
-    build: requirements/bonus/redis
-    image: redis:4
-    ports:
-      - 6379:6379
-    volumes:
-      - wordpress_files:/var/www/html
-    env_file: .env
-    depends_on:
-      - wordpress
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env
     restart: always
