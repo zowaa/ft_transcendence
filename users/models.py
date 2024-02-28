@@ -9,7 +9,7 @@ class CustomUser(AbstractBaseUser):
     display_name = models.CharField(null=True, max_length=100, unique=True)
     date_joined = models.DateTimeField(auto_now=True)
     last_login = models.DateTimeField(auto_now=True)
-    avatar_base64 = models.ImageField(upload_to='images/', default="images/default.png")
+    avatar = models.ImageField(upload_to='images/', default="images/default.png")
     # avatar_base64 = models.TextField(default="", blank=True)
     friends = models.CharField(max_length=1000, default="")
     nb_wins = models.IntegerField(default=0)

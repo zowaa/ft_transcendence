@@ -13,7 +13,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 @api_view(['POST'])
 def register_user(request):
     if request.method == 'POST':
-        serializer = UserSerializer(data=request.data)
+        serializer = RegisterUserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

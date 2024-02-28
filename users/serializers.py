@@ -5,25 +5,27 @@ from rest_framework.validators import UniqueValidator
 class UserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=100, required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
     password = serializers.CharField(min_length=8, max_length=100, write_only=True)
+    avatar = serializers.ImageField(required=False)
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'password', 'display_name', 'date_joined', 'last_login', 'avatar_base64', 'friends', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_active', 'is_42_user']
+        fields = ['id', 'username', 'password', 'display_name', 'date_joined', 'last_login', 'avatar', 'friends', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_active', 'is_42_user']
         extra_kwargs = {'password': {'write_only': True}}
         # read_only_fields = ['id', 'date_joined', 'last_login']
     
 class RegisterUserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=100, required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
-    password = serializers.CharField(min_length=8, max_length=100, write_only=True)
+    password = serializers.CharField(min_length=8, max_length=100, required=True, write_only=True)
+    avatar = serializers.ImageField(required=False)
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'password', 'display_name', 'date_joined', 'last_login', 'avatar_base64', 'friends', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_active', 'is_42_user']
+        fields = ['id', 'username', 'password', 'display_name', 'date_joined', 'last_login', 'avatar', 'friends', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_active', 'is_42_user']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         user = CustomUser(
             username = validated_data['username'],
             display_name = validated_data['username'],
-            avatar_base64=validated_data['avatar_base64']
+            # avatar=validated_data['avatar']
         )
         user.set_password(validated_data['password'])
         user.save()
