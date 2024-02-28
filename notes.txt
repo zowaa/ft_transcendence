@@ -1,0 +1,77 @@
+# Server-side website programming | Backend scripting
+# Dev ENV
+The main tools that Django itself provides are :
+    * a set of Python scripts for creating and working with Django projects
+    * a simple development web server that you can use to test local
+
+# FILES 
+    * __init__.py is an empty file that instructs Python to treat this directory as a Python package.
+    * settings.py contains all the website settings, including registering any applications we create, 
+    the location of our static files, database configuration details, etc.
+    * urls.py defines the site URL-to-view mappings. While this could contain all the URL mapping code, 
+    it is more common to delegate some of the mappings to particular applications, as you'll see later.
+    * wsgi.py is used to help your Django application communicate with the web server. You can treat this as boilerplate.
+    * asgi.py is a standard for Python asynchronous web apps and servers to communicate with each other. 
+    Asynchronous Server Gateway Interface (ASGI) is the asynchronous successor to Web Server Gateway Interface (WSGI). 
+    ASGI provides a standard for both asynchronous and synchronous Python apps, whereas WSGI provided a standard for 
+    synchronous apps only. ASGI is backward-compatible with WSGI and supports multiple servers and application frameworks.
+
+    * The manage.py script is used to create applications, work with databases, and start the development web server.
+
+# python3 manage.py startapp catalog
+The tool creates a new folder and populates it with files for the different parts of the application
+catalog/
+    admin.py
+    apps.py
+    models.py
+    tests.py
+    views.py
+    __init__.py # an empty file created here so that Django/Python will recognize the folder as a Python Package.
+    migrations/ # used to store "migrations" — files that allow you to automatically update your database as you modify your models.
+
+
+
+#AUTH
+in settings.py :
+INSTALLED_APPS = [
+    "django.contrib.auth", # Core authentication framework and its default models.
+    "django.contrib.contenttypes", # Django content type system (allows permissions to be associated with models).
+]
+
+MIDDLEWARE = [
+    "django.contrib.sessions.middleware.SessionMiddleware", # Manages sessions across requests
+    "django.contrib.auth.middleware.AuthenticationMiddleware", # Associates users with requests using sessions.
+]
+
+docker-compose build
+docker-compose up
+==
+42 application
+UID: u-s4t2ud-2ceb8913100edae2ae13c981a77f7f85af527523e4a15f078054e9223d696488
+SECRET: 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
+URL: https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-2ceb8913100edae2ae13c981a77f7f85af527523e4a15f078054e9223d696488&redirect_uri=https%3A%2F%2Ftranscending.com%2Fauth&response_type=code
+
+====================
+https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/skeleton_website
+https://copyprogramming.com/howto/how-to-use-netcat-to-check-whether-postgresql-docker-container-is-up
+
+https://medium.com/@bly.joel/custom-user-model-with-django-rest-framework-e16ebd91ab0d
+
+https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django/skeleton_websi
+
+
+==========
+req:
+pip install djangorestframework
+pip install django-allauth
+
+pip install djangorestframework-simplejwt
+
+
+https://krakensystems.co/blog/2020/custom-users-using-django-rest-framework
+
+https://dev.to/earthcomfy/getting-started-custom-user-model-5hc
+
+======
+JWTs hold information in three parts, as you can see in the following code blocks:
+header.payload.signature 
