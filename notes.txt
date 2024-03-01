@@ -75,3 +75,20 @@ https://dev.to/earthcomfy/getting-started-custom-user-model-5hc
 ======
 JWTs hold information in three parts, as you can see in the following code blocks:
 header.payload.signature 
+
+the login url returns a refresh and an access token.
+- refresh : is used to refresh tokens; in simple terms, it is used to obtain a new access token without logging in. A refresh token has a longer expiration time compared to an access token.
+The user can use the refresh token to request a new access token if the access token expires. Refresh tokens have a longer expiration timeframe.
+
+- access : An access token is used to grant access. The user will use the access token to authenticate and authorize application requests. Access tokens have a short expiration timeframe.
+https://www.linkedin.com/pulse/use-jwt-authentication-user-login-django-rest-framework-jagrat-patel
+
+media_root
+
+
+====
+OAuth
+
+https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-2ceb8913100edae2ae13c981a77f7f85af527523e4a15f078054e9223d696488&redirect_uri=https%3A%2F%2Ftranscending.com%2Fauth&response_type=code
+
+pip install django-oauth-toolkit
