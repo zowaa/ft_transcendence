@@ -6,8 +6,6 @@ COPY . /app
 
 RUN pip install --no-cache-dir -r requirements.txt
 
+RUN apt-get update -y && apt-get install netcat -y
+
 EXPOSE 8000
-
-ENV DJANGO_SETTINGS_MODULE=backend.settings
-
-# CMD ["gunicorn", "backend.wsgi:application", "--bind", "0.0.0.0:8000"]`

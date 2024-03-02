@@ -24,7 +24,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = CustomUser(
             username = validated_data['username'],
-            display_name = validated_data['username'],
+            display_name = validated_data['username']
             # avatar=validated_data['avatar']
         )
         user.set_password(validated_data['password'])
@@ -36,7 +36,7 @@ class LoginUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(min_length=8, max_length=100, write_only=True)
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'password', 'display_name', 'date_joined', 'last_login', 'avatar_base64', 'friends', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_active', 'is_42_user']
+        fields = ['id', 'username', 'password', 'display_name', 'date_joined', 'last_login', 'avatar', 'friends', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_active', 'is_42_user']
         extra_kwargs = {'password': {'write_only': True}}
 
     def validate(self, data):
