@@ -50,6 +50,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    'oauth2_provider.middleware.OAuth2TokenMiddleware', #added
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -120,12 +121,13 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'users.CustomUser'
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        # 'rest_framework.authentication.SessionAuthentication', # To keep the Browsable API
     ],
 }
 
@@ -163,14 +165,14 @@ SIMPLE_JWT = {
 
 OAUTH2_PROVIDER = {
     # this is the list of available scopes
-    'SCOPES': {'read': 'Read scope', 'write': 'Write scope', 'groups': 'Access to your groups'}
+    'SCOPES': {'read': 'Read scope', 'write': 'Write scope'}
 
 }
 
 # 42 OAuth2 settings
 # BASE_FRONTEND_URL = os.environ.get('https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-2ceb8913100edae2ae13c981a77f7f85af527523e4a15f078054e9223d696488&redirect_uri=https%3A%2F%2Ftranscending.com%2Fauth&response_type=code', default='http://localhost:8000')
-# SCHOOL_OAUTH2_CLIENT_ID = os.environ.get('u-s4t2ud-2ceb8913100edae2ae13c981a77f7f85af527523e4a15f078054e9223d696488')
-# SCHOOL_OAUTH2_CLIENT_SECRET = os.environ.get('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')
+SCHOOL_OAUTH2_CLIENT_ID = os.environ.get('u-s4t2ud-2ceb8913100edae2ae13c981a77f7f85af527523e4a15f078054e9223d696488')
+SCHOOL_OAUTH2_CLIENT_SECRET = os.environ.get('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')
 
 ALLOWED_HOSTS = ['https://localhost:8000','*']
 CSRF_TRUSTED_ORIGINS = ['https://localhost:8000']

@@ -9,6 +9,12 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.http import JsonResponse
+from django.urls import reverse
+from django.conf import settings
+import requests
+from rest_framework.views import APIView
+from django.shortcuts import redirect
 
 @api_view(['POST'])
 def register_user(request):
@@ -18,6 +24,155 @@ def register_user(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+# class OAuth42APIView(APIView):
+def OAuth42APIView(request):
+    github_authorization_url = 'https://api.intra.42.fr/oauth/authorize'
+    client_id = 'u-s4t2ud-2ceb8913100edae2ae13c981a77f7f85af527523e4a15f078054e9223d696488'
+    redirect_uri = 'https://127.0.0.1:8000/auth42_callback'
+    # scope = 'login:displayname'  # adjust scope as per your requirements
+    return redirect(f'{github_authorization_url}?client_id={client_id}&redirect_uri={redirect_uri}')
+
+# class OAuth42CallbackAPIView(APIView):
+@api_view(['GET'])
+def getOAuth42CallbackAPIView(request):
+    code = request.GET.get('code')
+    client_id = 'u-s4t2ud-2ceb8913100edae2ae13c981a77f7f85af527523e4a15f078054e9223d696488'
+    client_secret = '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'
+    redirect_uri = 'https://127.0.0.1:8000/auth42_callback'
+    token_url = 'https://api.intra.42.fr/oauth/token'
+    response = requests.post(token_url, data={
+        'client_id': client_id,
+        'client_secret': client_secret,
+        'code': code,
+        'redirect_uri': redirect_uri,
+    })
+    access_token = response.json().get('access_token')
+    if access_token:
+        user_data = self.fetch_42_user(access_token)
+        if user_data:
+            user = self.process_user_data(user_data)
+            # Log the user in or perform any other actions as needed
+            return Response("Registration completed successfully", status=status.HTTP_200_OK)
+    return Response("Failed to fetch user data", status=status.HTTP_400_BAD_REQUEST)
+
+def fetch_42_user(access_token):
+    user_url = 'https://api.intra.42.fr/users'
+    headers = {'Authorization': f'token {access_token}'}
+    response = requests.get(user_url, headers=headers)
+    if response.status_code == 200:
+        return response.json()
+    return None
+
+def process_user_data(user_data):
+    username = user_data['login']
+    display_name = user_data['email']
+    # Check if user with the given email already exists
+    user, created = User.objects.get_or_create(username=username, email=email)
+    if created:
+        # User is newly created, perform additional actions if needed
+        pass
+    # Return the user object for further processing
+    return user
+
+
+@api_view(['GET'])
+def register_user_oauth2(request):
+    # Check if the user is already authenticated
+    if request.user.is_authenticated:
+        # If authenticated, return JSON response indicating user is already logged in
+        data = {    
+            "success": True,
+            "message": "User already logged in",
+            "logged_in": request.user.is_authenticated,
+        }
+        return Response(data)
+
+    # If the request method is GET, continue with authentication process
+    if request.method == "GET":
+        # Get the authorization code from the query parameters
+        code = request.GET.get("code")
+
+        if code:
+            # If authorization code is present, exchange it for an access token
+            data = {
+                "grant_type": "authorization_code",
+                "client_id": os.environ.get(settings.SCHOOL_OAUTH2_CLIENT_ID),
+                "client_secret": os.environ.get(settings.SCHOOL_OAUTH2_CLIENT_SECRET),
+                "code": code,
+                "redirect_uri": request.build_absolute_uri(reverse("register_user_oauth2")),  # Build absolute URI for callback
+            }
+
+            # Make a POST request to exchange code for access token
+            auth_response = requests.post("https://api.intra.42.fr/oauth/token", data=data)
+            auth_response_data = auth_response.json()
+
+            if "access_token" in auth_response_data:
+                # If access token received, fetch user information
+                access_token = auth_response_data["access_token"]
+                user_response = requests.get("https://api.intra.42.fr/v2/me", headers={"Authorization": f"Bearer {access_token}"})
+                user_response_data = user_response.json()
+
+                # Extract username and display name from user response
+                username = user_response_data.get("login")
+                display_name = user_response_data.get("displayname")
+
+                if username:
+                    # Authenticate user with Django's authentication system
+                    user = authenticate(request, username=username)
+
+                    if user is not None:
+                        # If user exists, log in the user
+                        user_login(request, user)
+                        user.status = "online"
+                        user.save()
+                        data = {
+                            "success": True,
+                            "message": "Login completed",
+                            "logged_in": request.user.is_authenticated,
+                        }
+                        return Response(data)
+                    else:
+                        # If user does not exist, create a new user
+                        user = User.objects.create_user(username=username, display_name=display_name, from_42=True)
+                        user_login(request, user)
+                        user.status = "online"
+                        user.save()
+                        data = {
+                            "success": True,
+                            "message": "New user created and logged in",
+                            "logged_in": request.user.is_authenticated,
+                        }
+                        return Response(data)
+                else:
+                    # If username is not found in response, return error
+                    data = {
+                        "success": False,
+                        "message": "Username not found in response",
+                    }
+                    return Response(data)
+            else:
+                # If access token is not received, return error
+                data = {
+                    "success": False,
+                    "message": "Access token not received",
+                }
+                return Response(data)
+        else:
+            # If authorization code is not present, return error
+            data = {
+                "success": False,
+                "message": "Authorization code not found",
+            }
+            return Response(data)
+    else:
+        # If request method is not GET, return error
+        data = {
+            "success": False,
+            "message": "Invalid method",
+        }
+        return Response(data)
 
 @api_view(['POST'])
 def user_login(request):
