@@ -15,6 +15,7 @@ from django.conf import settings
 import requests
 from rest_framework.views import APIView
 from django.shortcuts import redirect
+import logging
 
 @api_view(['POST'])
 def register_user(request):
@@ -30,7 +31,7 @@ def register_user(request):
 def OAuth42APIView(request):
     github_authorization_url = 'https://api.intra.42.fr/oauth/authorize'
     client_id = 'u-s4t2ud-2ceb8913100edae2ae13c981a77f7f85af527523e4a15f078054e9223d696488'
-    redirect_uri = 'https://127.0.0.1:8000/auth42_callback'
+    redirect_uri = 'https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/auth42_callback&response_type=code' #to change after with localhost
     # scope = 'login:displayname'  # adjust scope as per your requirements
     return redirect(f'{github_authorization_url}?client_id={client_id}&redirect_uri={redirect_uri}')
 
@@ -40,25 +41,44 @@ def getOAuth42CallbackAPIView(request):
     code = request.GET.get('code')
     client_id = 'u-s4t2ud-2ceb8913100edae2ae13c981a77f7f85af527523e4a15f078054e9223d696488'
     client_secret = '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'
-    redirect_uri = 'https://127.0.0.1:8000/auth42_callback'
+    redirect_uri = 'https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/auth42_callback&response_type=code'
     token_url = 'https://api.intra.42.fr/oauth/token'
     response = requests.post(token_url, data={
+        "grant_type": "authorization_code",
         'client_id': client_id,
         'client_secret': client_secret,
         'code': code,
         'redirect_uri': redirect_uri,
     })
-    access_token = response.json().get('access_token')
+    # logging.debug(response.json())
+    access_token = response.json()['access_token']
     if access_token:
-        user_data = self.fetch_42_user(access_token)
+        user_data = fetch_42_user(access_token)
+        # print(user_data);
         if user_data:
-            user = self.process_user_data(user_data)
+            response_data = process_user_data(user_data)
             # Log the user in or perform any other actions as needed
-            return Response("Registration completed successfully", status=status.HTTP_200_OK)
+            return Response(response_data)
     return Response("Failed to fetch user data", status=status.HTTP_400_BAD_REQUEST)
 
+    # try:
+    #     access_token = response.json().get('access_token')
+    #     if access_token:
+    #         user_data = fetch_42_user(access_token)
+    #         if user_data:
+    #             response_data = process_user_data(user_data)
+    #             # Log the user in or perform any other actions as needed
+    #             return Response(response_data)
+    # except KeyError:
+    #     # Handle missing 'access_token' key in the JSON response
+    #     return Response("Failed to find access token in response", status=status.HTTP_400_BAD_REQUEST)
+    # except Exception as e:
+    #     # Handle other exceptions
+    #     return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    # return Response("Failed to fetch user data", status=status.HTTP_400_BAD_REQUEST)
+
 def fetch_42_user(access_token):
-    user_url = 'https://api.intra.42.fr/users'
+    user_url = 'https://api.intra.42.fr/v2/me'
     headers = {'Authorization': f'token {access_token}'}
     response = requests.get(user_url, headers=headers)
     if response.status_code == 200:
@@ -67,14 +87,40 @@ def fetch_42_user(access_token):
 
 def process_user_data(user_data):
     username = user_data['login']
-    display_name = user_data['email']
-    # Check if user with the given email already exists
-    user, created = User.objects.get_or_create(username=username, email=email)
-    if created:
-        # User is newly created, perform additional actions if needed
-        pass
-    # Return the user object for further processing
-    return user
+    display_name = user_data['displayname']
+    if username:
+        # Authenticate user with Django's authentication system
+        user = authenticate(request, username=username)
+        if user is not None:
+            # If user exists, log in the user
+            user_login(request, user)
+            user.status = "online"
+            user.save()
+            data = {
+                "success": True,
+                "message": "Login completed",
+                "logged_in": request.user.is_authenticated,
+            }
+            return data
+        else:
+            # If user does not exist, create a new user
+            user = CustomUser.objects.create_user(username=username, display_name=display_name, from_42=True)
+            user_login(request, user)
+            user.status = "online"
+            user.save()
+            data = {
+                "success": True,
+                "message": "New user created and logged in",
+                "logged_in": request.user.is_authenticated,
+            }
+            return data
+    else:
+        # If username is not found in response, return error
+        data = {
+            "success": False,
+            "message": "Username not found in response",
+        }
+        return data
 
 
 @api_view(['GET'])
