@@ -56,13 +56,6 @@ class LoginUserSerializer(serializers.ModelSerializer):
         else:
             raise serializers.ValidationError("User does not exist.")
     
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data.pop('password')
-        return data
-    
-
-
     # def update(self, instance, validated_data):
     #     instance.username = validated_data.get('username', instance.username)
     #     instance.display_name = validated_data.get('display_name', instance.display_name)
@@ -98,8 +91,36 @@ class LoginUserSerializer(serializers.ModelSerializer):
     #             raise serializers.ValidationError("Incorrect password.")
     #     else:
     #         raise serializers.ValidationError("User does not exist.")
+
+class UpdatePassword(serializers.ModelSerializer):
+    password = serializers.CharField(min_length=8, max_length=100, write_only=True)
+    class Meta:
+        model = CustomUser
+        fields = ['password']
+        extra_kwargs = {'password': {'write_only': True}}
     
+        def update(self, instance, validated_data):
+            instance.set_password(validated_data['password'])
+            instance.save()
+            return instance
+
+class UpdateUsername(serializers.ModelSerializer):
+    username = serializers.CharField(max_length=100, required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
+    class Meta:
+        model = CustomUser
+        fields = ['username']
+        extra_kwargs = {'username': {'required': True, 'validators': [UniqueValidator(queryset=CustomUser.objects.all())]}}
+    
+        def update(self, instance, validated_data):
+            instance.username = validated_data['username']
+            instance.save()
+            return instance
+
 class ProfileSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(max_length=100, required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
+    password = serializers.CharField(min_length=8, max_length=100, write_only=True)
+    avatar = serializers.ImageField(required=False)
+    
     class Meta:
         model = CustomUser
         fields = '__all__'
