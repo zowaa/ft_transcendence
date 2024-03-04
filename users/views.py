@@ -88,7 +88,6 @@ def getOAuth42CallbackAPIView(request):
             user_data = fetch_42_user(access_token)
             if user_data:
                 response_data = process_user_data(user_data)
-                print(user_data)
                 # Log the user in or perform any other actions as needed
                 return Response(response_data)
     except KeyError:
@@ -111,41 +110,72 @@ def fetch_42_user(access_token):
 def process_user_data(user_data):
     username = user_data['login']
     display_name = user_data['displayname']
-    if username:
-        # Authenticate user with Django's authentication system
-        user = user_login(request, username=username)
-        print(user)
-        if user is not None:
-            # If user exists, log in the user
-            user_login(request, user)
-            user.status = "online"
-            user.save()
-            data = {
+    user = CustomUser.objects.filter(username=username).first()
+    if user:
+        user.status = "online"
+        refresh = RefreshToken.for_user(user)
+        user.access_token = str(refresh.access_token)
+        user.save()
+        return Response({
                 "success": True,
                 "message": "Login completed",
-                "logged_in": request.user.is_authenticated,
-            }
-            return data
-        else:
-            # If user does not exist, create a new user
-            user = CustomUser.objects.create_user(username=username, display_name=display_name, from_42=True)
-            user_login(request, user)
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                "logged_in": True,
+            }, status=status.HTTP_200_OK)
+    else:
+        serializer = UserSerializer(data={'username': username, 'display_name': display_name})
+        if serializer.is_valid():
+            # If the data is valid, create the user
+            user = serializer.save(is_42_user=True)
+        # user = CustomUser.objects.create_user(username=username, display_name=display_name, is_42_user=True)
+        # user = RegisterUser42Serializer(username, display_name)
             user.status = "online"
+            refresh = RefreshToken.for_user(user)
+            user.access_token = str(refresh.access_token)
             user.save()
-            data = {
+            return Response({
                 "success": True,
                 "message": "New user created and logged in",
-                "logged_in": request.user.is_authenticated,
-            }
-            return data
-    else:
-        # If username is not found in response, return error
-        data = {
-            "success": False,
-            "message": "Username not found in response",
-        }
-        return data
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                "logged_in": True,
+            }, status=status.HTTP_200_OK)
 
+    # if username:
+    #     # Authenticate user with Django's authentication system
+    #     user = user_login(request, username=username)
+    #     print(user)
+    #     if user is not None:
+    #         # If user exists, log in the user
+    #         user_login(request, user)
+    #         user.status = "online"
+    #         user.save()
+    #         data = {
+    #             "success": True,
+    #             "message": "Login completed",
+    #             "logged_in": request.user.is_authenticated,
+    #         }
+    #         return data
+    #     else:
+    #         # If user does not exist, create a new user
+    #         user = CustomUser.objects.create_user(username=username, display_name=display_name, is_42_user=True)
+    #         user_login(request, user)
+    #         user.status = "online"
+    #         user.save()
+    #         data = {
+    #             "success": True,
+    #             "message": "New user created and logged in",
+    #             "logged_in": request.user.is_authenticated,
+    #         }
+    #         return data
+    # else:
+    #     # If username is not found in response, return error
+    #     data = {
+    #         "success": False,
+    #         "message": "Username not found in response",
+    #     }
+    #     return data
 
 @api_view(['GET'])
 def register_user_oauth2(request):
@@ -205,7 +235,7 @@ def register_user_oauth2(request):
                         return Response(data)
                     else:
                         # If user does not exist, create a new user
-                        user = User.objects.create_user(username=username, display_name=display_name, from_42=True)
+                        user = User.objects.create_user(username=username, display_name=display_name, is_42_user=True)
                         user_login(request, user)
                         user.status = "online"
                         user.save()
