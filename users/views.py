@@ -29,20 +29,39 @@ def register_user(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
-# class OAuth42APIView(APIView):
-def OAuth42APIView(request):
-    github_authorization_url = 'https://api.intra.42.fr/oauth/authorize'
-    client_id = 'u-s4t2ud-2ceb8913100edae2ae13c981a77f7f85af527523e4a15f078054e9223d696488'
-    redirect_uri = 'https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/auth42_callback&response_type=code' #to change after with localhost
-    # scope = 'login:displayname'  # adjust scope as per your requirements
-    return redirect(f'{github_authorization_url}?client_id={client_id}&redirect_uri={redirect_uri}')
+# def OAuth42APIView(request):
+#     authorization_url = 'https://api.intra.42.fr/oauth/authorize'
+#     client_id = 'u-s4t2ud-110e6a72c470ea3b61e2a1bc09acbd391dbb5fa23ecb37d0c8b88d513aa3865a'
+#     redirect_uri = 'https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/auth42_callback&response_type=code&scope={scope}' #to change after with localhost
+#     # redirect_uri = 'http://localhost:8000/auth42_callback'
+#     scope = 'login:displayname'  # adjust scope as per your requirements
+#     return redirect(f'{authorization_url}?client_id={client_id}&redirect_uri={redirect_uri}')
 
-# class OAuth42CallbackAPIView(APIView):
+def OAuth42APIView(request):
+    authorization_url = 'https://api.intra.42.fr/oauth/authorize'
+    client_id = 'u-s4t2ud-110e6a72c470ea3b61e2a1bc09acbd391dbb5fa23ecb37d0c8b88d513aa3865a'
+    redirect_uri = 'https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/auth42_callback&response_type=code' # Change this to your actual redirect URI
+    # scope = 'login'  # adjust scope as per your requirements
+    return redirect(f'{authorization_url}?client_id={client_id}&redirect_uri={redirect_uri}')
+ 
 @api_view(['GET'])
 def getOAuth42CallbackAPIView(request):
+    # code = request.GET.get('code')
+    # client_id = 'u-s4t2ud-110e6a72c470ea3b61e2a1bc09acbd391dbb5fa23ecb37d0c8b88d513aa3865a'
+    # client_secret = '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'
+    # redirect_uri = 'https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/auth42_callback'
+    # # redirect_uri = 'http://localhost:8000/auth42_callback'
+    # token_url = 'https://api.intra.42.fr/oauth/token'
+    # response = requests.post(token_url, data={
+    #     "grant_type": "authorization_code",
+    #     'client_id': client_id,
+    #     'client_secret': client_secret,
+    #     'code': code,
+    #     'redirect_uri': redirect_uri,
+    # })
     code = request.GET.get('code')
-    client_id = 'u-s4t2ud-2ceb8913100edae2ae13c981a77f7f85af527523e4a15f078054e9223d696488'
-    client_secret = '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'
+    client_id = 'u-s4t2ud-110e6a72c470ea3b61e2a1bc09acbd391dbb5fa23ecb37d0c8b88d513aa3865a'
+    client_secret = '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'
     redirect_uri = 'https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/auth42_callback'
     token_url = 'https://api.intra.42.fr/oauth/token'
     response = requests.post(token_url, data={
@@ -52,6 +71,7 @@ def getOAuth42CallbackAPIView(request):
         'code': code,
         'redirect_uri': redirect_uri,
     })
+
     # logging.debug(response.json())
     # access_token = response.json()['access_token']
     # if access_token:
@@ -62,13 +82,13 @@ def getOAuth42CallbackAPIView(request):
     #         # Log the user in or perform any other actions as needed
     #         return Response(response_data)
     # return Response("Failed to fetch user data", status=status.HTTP_400_BAD_REQUEST)
-
     try:
         access_token = response.json().get('access_token')
         if access_token:
             user_data = fetch_42_user(access_token)
             if user_data:
                 response_data = process_user_data(user_data)
+                print(user_data)
                 # Log the user in or perform any other actions as needed
                 return Response(response_data)
     except KeyError:
@@ -81,8 +101,9 @@ def getOAuth42CallbackAPIView(request):
 
 def fetch_42_user(access_token):
     user_url = 'https://api.intra.42.fr/v2/me'
-    headers = {'Authorization': f'token {access_token}'}
+    headers = {'Authorization': f'Bearer {access_token}'}
     response = requests.get(user_url, headers=headers)
+    # print(response.json())
     if response.status_code == 200:
         return response.json()
     return None
@@ -92,7 +113,8 @@ def process_user_data(user_data):
     display_name = user_data['displayname']
     if username:
         # Authenticate user with Django's authentication system
-        user = authenticate(request, username=username)
+        user = user_login(request, username=username)
+        print(user)
         if user is not None:
             # If user exists, log in the user
             user_login(request, user)
@@ -237,7 +259,6 @@ def user_login(request):
             }, status=status.HTTP_200_OK)
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -249,7 +270,6 @@ def user_logout(request):
             return Response({'message': 'Successfully logged out.'}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -266,6 +286,10 @@ def update_profile(request):
     if serializer.is_valid():
         serializer.save()
     return Response(serializer.data)
+
+###################################################
+#                     friends                     #        
+###################################################
 
 @permission_classes([IsAuthenticated])
 def send_request(request, username):
