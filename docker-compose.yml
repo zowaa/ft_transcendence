@@ -14,16 +14,13 @@ volumes:
   filebeatdata01:
     driver: local
   postgres_data:
-    name: postgres_data
     driver: local
-    driver_opts:
-      type: 'none'
-      o: 'bind'
-      device: '/home/yrimah42/data/postgres_data'
+  app_data: 
+    driver: local
 
 networks:
   default:
-    name: elastic
+    name: transcendence
     external: false
 
 services:
@@ -42,6 +39,7 @@ services:
       interval: 1s
       timeout: 5s
       retries: 120
+
   es01:
     container_name: es01
     depends_on:
@@ -83,6 +81,7 @@ services:
     volumes:
       - certs:/usr/share/kibana/config/certs
       - kibanadata:/usr/share/kibana/data
+      - "./kibana.yml:/usr/share/kibana/config/kibana.yml:ro"
     ports:
       - ${KIBANA_PORT}:5601
     env_file:
@@ -92,7 +91,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "curl -s -I http://localhost:5601 | grep -q 'HTTP/1.1 302 Found'",
+          "curl -s -I -k https://localhost:5601 | grep -q 'HTTP/1.1 302 Found'",
         ]
       interval: 10s
       timeout: 10s
@@ -118,12 +117,8 @@ services:
       - xpack.monitoring.enabled=false
     env_file:
       - .env
-    # healthcheck:
-    #   test:
-    #     [
-    #       "CMD-SHELL",
-    #       "bin/logstash-plugin install logstash-filter-ruby | grep -q 'Installation successful'",
-    #     ]
+    ports:
+      - "127.0.0.1:1337:1337/udp"
   
   metricbeat01:
     container_name: metricbeat
@@ -142,12 +137,6 @@ services:
       - "/sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro"
       - "/proc:/hostfs/proc:ro"
       - "/:/hostfs:ro"
-    # environment:
-    #   - ELASTIC_USER=elastic
-    #   - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-    #   - ELASTIC_HOSTS=https://es01:9200
-    #   - KIBANA_HOSTS=http://kibana:5601
-    #   - LOGSTASH_HOSTS=http://logstash01:9600
     env_file:
       - .env
     command:
@@ -167,12 +156,6 @@ services:
       - "./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro"
       - "/var/lib/docker/containers:/var/lib/docker/containers:ro"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    # environment:
-    #   - ELASTIC_USER=elastic
-    #   - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-    #   - ELASTIC_HOSTS=https://es01:9200
-    #   - KIBANA_HOSTS=http://kibana:5601
-    #   - LOGSTASH_HOSTS=http://logstash01:9600
     env_file:
       - .env
     command:
@@ -188,17 +171,20 @@ services:
     env_file:
       - .env
     restart: always
+
   app:
     image: app:1.0
     build: .
     container_name: app
     depends_on:
       - postgres
-    entrypoint: "./docker-entrypoint.sh"
+    entrypoint: "/app/docker-entrypoint.sh"
     ports:
       - 8000:8000
-    volumes:
-      - .:/app
     env_file:
       - .env
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://127.0.0.1:1337"
     restart: always

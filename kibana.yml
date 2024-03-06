@@ -1,0 +1,20 @@
+#
+# ** THIS IS AN AUTO-GENERATED FILE **
+#
+
+# Default Kibana configuration for docker target
+server.host: "0.0.0.0"
+server.shutdownTimeout: "5s"
+elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+monitoring.ui.container.elasticsearch.enabled: true
+server:
+  ssl:
+    enabled: true
+    key: /usr/share/kibana/config/certs/es01/es01.key
+    certificate: /usr/share/kibana/config/certs/es01/es01.crt
+    cipherSuites:
+      - TLS_AES_128_GCM_SHA256
+      - TLS_AES_256_GCM_SHA384
+    supportedProtocols:
+      - "TLSv1.2"
+      - "TLSv1.3"
