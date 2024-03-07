@@ -10,8 +10,8 @@ monitoring.ui.container.elasticsearch.enabled: true
 server:
   ssl:
     enabled: true
-    key: /usr/share/kibana/config/certs/es01/es01.key
-    certificate: /usr/share/kibana/config/certs/es01/es01.crt
+    key: /usr/share/kibana/config/certs/kibana/kibana.key
+    certificate: /usr/share/kibana/config/certs/kibana/kibana.crt
     cipherSuites:
       - TLS_AES_128_GCM_SHA256
       - TLS_AES_256_GCM_SHA384

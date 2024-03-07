@@ -21,12 +21,16 @@ metricbeat.modules:
 
 - module: kibana
   metricsets: 
-    - stats
+    - status
   period: 10s
   hosts: ${KIBANA_HOSTS}
+  xpack.enabled: true
+  ssl.certificate_authorities: "certs/ca/ca.crt"
+  ssl.certificate: "certs/kibana/kibana.crt"
+  ssl.key: "certs/kibana/kibana.key"
   username: ${ELASTIC_USER}
   password: ${ELASTIC_PASSWORD}
-  xpack.enabled: true
+  ssl.enabled: true
 
 - module: docker
   metricsets:
