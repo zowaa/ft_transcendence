@@ -174,7 +174,8 @@ services:
     container_name: front
     # depends_on:
       # - postgres
-    command: "node server.js"
+    entrypoint: "./docker-entrypoint.sh"
+    # command: "node server.js"
     ports:
       - 8080:8080
     env_file:
