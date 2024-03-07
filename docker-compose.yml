@@ -167,3 +167,20 @@ services:
       options:
         gelf-address: "udp://127.0.0.1:1337"
     restart: always
+
+  front:
+    image: front:1.0
+    build: ./front/
+    container_name: front
+    # depends_on:
+      # - postgres
+    command: "node server.js"
+    ports:
+      - 8080:8080
+    env_file:
+      - .env
+    # logging:
+    #   driver: gelf
+    #   options:
+    #     gelf-address: "udp://127.0.0.1:1337"
+    restart: always
