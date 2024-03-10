@@ -28,10 +28,11 @@ services:
     volumes:
       - certs:/usr/share/elasticsearch/config/certs
       - "./elk/.script.sh:/usr/share/elasticsearch/.script.sh:ro"
+      # - "./elk/.ilm.sh:/usr/share/elasticsearch/.ilm.sh:ro"
     env_file:
       - .env
     user: "0"
-    command: "./.script.sh"
+    command: "./.script.sh && ./.ilm.sh"
     healthcheck:
       test: ["CMD-SHELL", "[ -f config/certs/es01/es01.crt ]"]
       interval: 1s
@@ -80,6 +81,7 @@ services:
       - certs:/usr/share/kibana/config/certs
       - kibanadata:/usr/share/kibana/data
       - "./elk/kibana.yml:/usr/share/kibana/config/kibana.yml:ro"
+      - "./elk/.ilm.sh:/usr/share/kibana/config/.ilm.sh:ro"
     ports:
       - ${KIBANA_PORT}:5601
     env_file:
@@ -89,7 +91,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "curl -s -I -k https://localhost:5601 | grep -q 'HTTP/1.1 302 Found'",
+          "curl -s -I -k https://localhost:5601 | grep -q 'HTTP/1.1 302 Found' && ./config/.ilm.sh && curl -s -k -X GET -u \"${ELASTIC_USER}:${ELASTIC_PASSWORD}\" \"${ELASTIC_HOSTS}/_ilm/policy/users_data_policy\" -H 'Content-Type: application/json' | grep -q '\"status\":404' && curl -s -k -X GET -u \"${ELASTIC_USER}:${ELASTIC_PASSWORD}\" \"${ELASTIC_HOSTS}/_ilm/policy/containers_logs_policy\" -H 'Content-Type: application/json' | grep -q '\"status\":404'",
         ]
       interval: 10s
       timeout: 10s
