@@ -132,36 +132,49 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=10),
-#     'ROTATE_REFRESH_TOKENS': True,
-#     'BLACKLIST_AFTER_ROTATION': True,
-#     'UPDATE_LAST_LOGIN': False,
-
-#     'ALGORITHM': 'HS256',
-
-#     'VERIFYING_KEY': None,
-#     'AUDIENCE': None,
-#     'ISSUER': None,
-#     'JWK_URL': None,
-#     'LEEWAY': 0,
-
-#     'AUTH_HEADER_TYPES': ('Bearer',),
-#     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
-#     'USER_ID_FIELD': 'id',
-#     'USER_ID_CLAIM': 'user_id',
-#     'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
-
-#     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-#     'TOKEN_TYPE_CLAIM': 'token_type',
-#     'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
-
-#     'JTI_CLAIM': 'jti',
-
-#     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-#     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
-#     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'SIGNING_KEY': "kmoutaou",
+    # custom
+    "AUTH_COOKIE": "access_token",  # cookie name
+    "AUTH_COOKIE_DOMAIN": None,  # specifies domain for which the cookie will be sent
+    # "AUTH_COOKIE_SECURE": False,  # restricts the transmission of the cookie to only occur over secure (HTTPS) connections. 
+    # "AUTH_COOKIE_HTTP_ONLY": True,  # prevents client-side js from accessing the cookie
+    "AUTH_COOKIE_PATH": "/",  # URL path where cookie will be sent
+    # "AUTH_COOKIE_SAMESITE": "Lax",  # specifies whether the cookie should be sent in cross site requests
 }
+
+# SIMPLE_JWT = {
+#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+#     'REFRESH_TOKEN_LIFETIME': timedelta(days=10),
+# #     'ROTATE_REFRESH_TOKENS': True,
+# #     'BLACKLIST_AFTER_ROTATION': True,
+# #     'UPDATE_LAST_LOGIN': False,
+
+# #     'ALGORITHM': 'HS256',
+
+# #     'VERIFYING_KEY': None,
+# #     'AUDIENCE': None,
+# #     'ISSUER': None,
+# #     'JWK_URL': None,
+# #     'LEEWAY': 0,
+
+# #     'AUTH_HEADER_TYPES': ('Bearer',),
+# #     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+# #     'USER_ID_FIELD': 'id',
+# #     'USER_ID_CLAIM': 'user_id',
+# #     'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+
+# #     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+# #     'TOKEN_TYPE_CLAIM': 'token_type',
+# #     'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
+
+# #     'JTI_CLAIM': 'jti',
+
+# #     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+# #     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+# #     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+# }
 
 OAUTH2_PROVIDER = {
     # this is the list of available scopes
@@ -170,9 +183,9 @@ OAUTH2_PROVIDER = {
 }
 
 # 42 OAuth2 settings
-# BASE_FRONTEND_URL = os.environ.get('https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-2ceb8913100edae2ae13c981a77f7f85af527523e4a15f078054e9223d696488&redirect_uri=https%3A%2F%2Ftranscending.com%2Fauth&response_type=code', default='http://localhost:8000')
-SCHOOL_OAUTH2_CLIENT_ID = os.environ.get('u-s4t2ud-2ceb8913100edae2ae13c981a77f7f85af527523e4a15f078054e9223d696488')
-SCHOOL_OAUTH2_CLIENT_SECRET = os.environ.get('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')
+OAUTH42_CLIENT_ID = 'u-s4t2ud-110e6a72c470ea3b61e2a1bc09acbd391dbb5fa23ecb37d0c8b88d513aa3865a'
+OAUTH42_CLIENT_SECRET = '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'
+OAUTH42_REDIRECT_URI = 'https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/auth42_callback&response_type=code'
 
 ALLOWED_HOSTS = ['https://localhost:8000','*']
 CSRF_TRUSTED_ORIGINS = ['https://localhost:8000']

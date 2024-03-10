@@ -1,10 +1,9 @@
-from django.shortcuts import render
 from .models import CustomUser
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from .serializers import UserSerializer, RegisterUserSerializer, LoginUserSerializer
+from .serializers import UserSerializer, RegisterUserSerializer, LoginUserSerializer, ProfileSerializer
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.core.exceptions import ObjectDoesNotExist
@@ -15,307 +14,176 @@ from django.conf import settings
 import requests
 from rest_framework.views import APIView
 from django.shortcuts import redirect
-import logging
 import pyotp
 from rest_framework import generics
 
-@api_view(['POST'])
-def register_user(request):
-    if request.method == 'POST':
+def GenerateToken(user):
+    refresh = RefreshToken.for_user(user)
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
+
+class RegisterUserView(APIView):
+    def post(self, request):
         serializer = RegisterUserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET'])
-# def OAuth42APIView(request):
-#     authorization_url = 'https://api.intra.42.fr/oauth/authorize'
-#     client_id = 'u-s4t2ud-110e6a72c470ea3b61e2a1bc09acbd391dbb5fa23ecb37d0c8b88d513aa3865a'
-#     redirect_uri = 'https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/auth42_callback&response_type=code&scope={scope}' #to change after with localhost
-#     # redirect_uri = 'http://localhost:8000/auth42_callback'
-#     scope = 'login:displayname'  # adjust scope as per your requirements
-#     return redirect(f'{authorization_url}?client_id={client_id}&redirect_uri={redirect_uri}')
+class OAuth42RedirectView(APIView):
+    def get(self, request, *args, **kwargs):
+        authorization_url = 'https://api.intra.42.fr/oauth/authorize'
+        client_id = settings.OAUTH42_CLIENT_ID
+        redirect_uri = settings.OAUTH42_REDIRECT_URI  # Ensure this is set in your settings
+        scope = 'public'  # Adjust scope as per your requirements
+        auth_url = f'{authorization_url}?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code&scope={scope}'
+        return redirect(auth_url)
 
-def OAuth42APIView(request):
-    authorization_url = 'https://api.intra.42.fr/oauth/authorize'
-    client_id = 'u-s4t2ud-110e6a72c470ea3b61e2a1bc09acbd391dbb5fa23ecb37d0c8b88d513aa3865a'
-    redirect_uri = 'https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/auth42_callback&response_type=code' # Change this to your actual redirect URI
-    # scope = 'login'  # adjust scope as per your requirements
-    return redirect(f'{authorization_url}?client_id={client_id}&redirect_uri={redirect_uri}')
- 
-@api_view(['GET'])
-def getOAuth42CallbackAPIView(request):
-    # code = request.GET.get('code')
-    # client_id = 'u-s4t2ud-110e6a72c470ea3b61e2a1bc09acbd391dbb5fa23ecb37d0c8b88d513aa3865a'
-    # client_secret = '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'
-    # redirect_uri = 'https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/auth42_callback'
-    # # redirect_uri = 'http://localhost:8000/auth42_callback'
-    # token_url = 'https://api.intra.42.fr/oauth/token'
-    # response = requests.post(token_url, data={
-    #     "grant_type": "authorization_code",
-    #     'client_id': client_id,
-    #     'client_secret': client_secret,
-    #     'code': code,
-    #     'redirect_uri': redirect_uri,
-    # })
-    code = request.GET.get('code')
-    client_id = 'u-s4t2ud-110e6a72c470ea3b61e2a1bc09acbd391dbb5fa23ecb37d0c8b88d513aa3865a'
-    client_secret = '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'
-    redirect_uri = 'https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/auth42_callback'
-    token_url = 'https://api.intra.42.fr/oauth/token'
-    response = requests.post(token_url, data={
-        "grant_type": "authorization_code",
-        'client_id': client_id,
-        'client_secret': client_secret,
-        'code': code,
-        'redirect_uri': redirect_uri,
-    })
+class OAuth42CallbackView(APIView):
+    def get(self, request, *args, **kwargs):
+        code = request.query_params.get('code')
+        token_url = 'https://api.intra.42.fr/oauth/token'
+        payload = {
+            "grant_type": "authorization_code",
+            'client_id': settings.OAUTH42_CLIENT_ID,
+            'client_secret': settings.OAUTH42_CLIENT_SECRET,
+            'code': code,
+            'redirect_uri': 'https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/auth42_callback',
+        }
 
-    # logging.debug(response.json())
-    # access_token = response.json()['access_token']
-    # if access_token:
-    #     user_data = fetch_42_user(access_token)
-    #     # print(user_data);
-    #     if user_data:
-    #         response_data = process_user_data(user_data)
-    #         # Log the user in or perform any other actions as needed
-    #         return Response(response_data)
-    # return Response("Failed to fetch user data", status=status.HTTP_400_BAD_REQUEST)
-    try:
-        access_token = response.json().get('access_token')
-        if access_token:
-            user_data = fetch_42_user(access_token)
-            if user_data:
-                response_data = process_user_data(user_data)
-                # Log the user in or perform any other actions as needed
-                return Response(response_data)
-    except KeyError:
-        # Handle missing 'access_token' key in the JSON response
-        return Response("Failed to find access token in response", status=status.HTTP_400_BAD_REQUEST)
-    except Exception as e:
-        # Handle other exceptions
-        return Response(f"An error occurred: {str(e)}", status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    return Response("Failed to fetch user data", status=status.HTTP_400_BAD_REQUEST)
+        try:
+            response = requests.post(token_url, data=payload)
+            response.raise_for_status()  # This will raise an exception for HTTP errors
+            access_token = response.json().get('access_token')
+            if not access_token:
+                raise ValueError("Missing access token in response")
+            
+            user_data = self.fetch_42_user(access_token)
+            if not user_data:
+                raise ValueError("Failed to fetch user data")
 
-def fetch_42_user(access_token):
-    user_url = 'https://api.intra.42.fr/v2/me'
-    headers = {'Authorization': f'Bearer {access_token}'}
-    response = requests.get(user_url, headers=headers)
-    # print(response.json())
-    if response.status_code == 200:
-        return response.json()
-    return None
+            response_data = self.process_user_data(user_data)
+            return Response(response_data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-def process_user_data(user_data):
-    username = user_data['login']
-    display_name = user_data['displayname']
-    user = CustomUser.objects.filter(username=username).first()
-    if user:
-        user.status = "online"
-        refresh = RefreshToken.for_user(user)
-        user.access_token = str(refresh.access_token)
-        user.save()
-        return Response({
-                "success": True,
-                "message": "Login completed",
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-                "logged_in": True,
-            }, status=status.HTTP_200_OK)
-    else:
-        serializer = UserSerializer(data={'username': username, 'display_name': display_name})
-        if serializer.is_valid():
-            # If the data is valid, create the user
-            user = serializer.save(is_42_user=True)
-        # user = CustomUser.objects.create_user(username=username, display_name=display_name, is_42_user=True)
-        # user = RegisterUser42Serializer(username, display_name)
+    def fetch_42_user(self, access_token):
+        user_url = 'https://api.intra.42.fr/v2/me'
+        headers = {'Authorization': f'Bearer {access_token}'}
+        response = requests.get(user_url, headers=headers)
+        if response.status_code == 200:
+            return response.json()
+        return None
+
+    def process_user_data(self, user_data):
+        username = user_data['login']
+        display_name = user_data['displayname']
+        user = CustomUser.objects.filter(username=username, is_42_user=True).first()
+        if user:
             user.status = "online"
-            refresh = RefreshToken.for_user(user)
-            user.access_token = str(refresh.access_token)
             user.save()
-            return Response({
+            # Generate JWT tokens for the user
+            refresh = RefreshToken.for_user(user)
+            access_token = str(refresh.access_token)
+            response_data = {
                 "success": True,
-                "message": "New user created and logged in",
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-                "logged_in": True,
-            }, status=status.HTTP_200_OK)
-
-    # if username:
-    #     # Authenticate user with Django's authentication system
-    #     user = user_login(request, username=username)
-    #     print(user)
-    #     if user is not None:
-    #         # If user exists, log in the user
-    #         user_login(request, user)
-    #         user.status = "online"
-    #         user.save()
-    #         data = {
-    #             "success": True,
-    #             "message": "Login completed",
-    #             "logged_in": request.user.is_authenticated,
-    #         }
-    #         return data
-    #     else:
-    #         # If user does not exist, create a new user
-    #         user = CustomUser.objects.create_user(username=username, display_name=display_name, is_42_user=True)
-    #         user_login(request, user)
-    #         user.status = "online"
-    #         user.save()
-    #         data = {
-    #             "success": True,
-    #             "message": "New user created and logged in",
-    #             "logged_in": request.user.is_authenticated,
-    #         }
-    #         return data
-    # else:
-    #     # If username is not found in response, return error
-    #     data = {
-    #         "success": False,
-    #         "message": "Username not found in response",
-    #     }
-    #     return data
-
-@api_view(['GET'])
-def register_user_oauth2(request):
-    # Check if the user is already authenticated
-    if request.user.is_authenticated:
-        # If authenticated, return JSON response indicating user is already logged in
-        data = {    
-            "success": True,
-            "message": "User already logged in",
-            "logged_in": request.user.is_authenticated,
-        }
-        return Response(data)
-
-    # If the request method is GET, continue with authentication process
-    if request.method == "GET":
-        # Get the authorization code from the query parameters
-        code = request.GET.get("code")
-
-        if code:
-            # If authorization code is present, exchange it for an access token
-            data = {
-                "grant_type": "authorization_code",
-                "client_id": os.environ.get(settings.SCHOOL_OAUTH2_CLIENT_ID),
-                "client_secret": os.environ.get(settings.SCHOOL_OAUTH2_CLIENT_SECRET),
-                "code": code,
-                "redirect_uri": request.build_absolute_uri(reverse("register_user_oauth2")),  # Build absolute URI for callback
             }
-
-            # Make a POST request to exchange code for access token
-            auth_response = requests.post("https://api.intra.42.fr/oauth/token", data=data)
-            auth_response_data = auth_response.json()
-
-            if "access_token" in auth_response_data:
-                # If access token received, fetch user information
-                access_token = auth_response_data["access_token"]
-                user_response = requests.get("https://api.intra.42.fr/v2/me", headers={"Authorization": f"Bearer {access_token}"})
-                user_response_data = user_response.json()
-
-                # Extract username and display name from user response
-                username = user_response_data.get("login")
-                display_name = user_response_data.get("displayname")
-
-                if username:
-                    # Authenticate user with Django's authentication system
-                    user = authenticate(request, username=username)
-
-                    if user is not None:
-                        # If user exists, log in the user
-                        user_login(request, user)
-                        user.status = "online"
-                        user.save()
-                        data = {
-                            "success": True,
-                            "message": "Login completed",
-                            "logged_in": request.user.is_authenticated,
-                        }
-                        return Response(data)
-                    else:
-                        # If user does not exist, create a new user
-                        user = User.objects.create_user(username=username, display_name=display_name, is_42_user=True)
-                        user_login(request, user)
-                        user.status = "online"
-                        user.save()
-                        data = {
-                            "success": True,
-                            "message": "New user created and logged in",
-                            "logged_in": request.user.is_authenticated,
-                        }
-                        return Response(data)
-                else:
-                    # If username is not found in response, return error
-                    data = {
-                        "success": False,
-                        "message": "Username not found in response",
-                    }
-                    return Response(data)
-            else:
-                # If access token is not received, return error
-                data = {
-                    "success": False,
-                    "message": "Access token not received",
-                }
-                return Response(data)
+            response = Response(response_data, status=status.HTTP_200_OK)
+            # Set the JWT as a cookie in the response
+            response.set_cookie(
+                'jwt',
+                access_token,
+                httponly=True,
+                secure=False,  # Should be True in production
+                samesite='Lax',  # Helps with CSRF protection
+            )
+            return response
         else:
-            # If authorization code is not present, return error
-            data = {
-                "success": False,
-                "message": "Authorization code not found",
-            }
-            return Response(data)
-    else:
-        # If request method is not GET, return error
-        data = {
-            "success": False,
-            "message": "Invalid method",
-        }
-        return Response(data)
+            serializer = UserSerializer(data={'username': username, 'display_name': display_name, 'is_42_user' : True})
+            if serializer.is_valid():
+                # If the data is valid, create the user
+                user = serializer.save()
+                user.status = "online"
+                user.save()
+                # Generate JWT tokens for the user
+                refresh = RefreshToken.for_user(user)
+                access_token = str(refresh.access_token)
+                response_data = {
+                    "success": True,
+                }
+                response = Response(response_data, status=status.HTTP_200_OK)
+                # Set the JWT as a cookie in the response
+                response.set_cookie(
+                    'jwt',
+                    access_token,
+                    httponly=True,
+                    secure=False,  # Should be True in production
+                    samesite='Lax',  # Helps with CSRF protection
+                )
+                return response
 
-@api_view(['POST'])
-def user_login(request):
-    if request.method == 'POST':
+class UserLoginAPIView(APIView):
+    def post(self, request):
         serializer = LoginUserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data
             refresh = RefreshToken.for_user(user)
-            user.access_token = str(refresh.access_token)
-            return Response({
+            access_token = str(refresh.access_token)
+            
+            # Prepare the response data
+            response_data = {
                 'message': 'Login successful.',
                 'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            }, status=status.HTTP_200_OK)
-        return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                'access': access_token,  # It's already a string, no need to convert again
+            }
+            
+            # Create a Response object
+            response = Response(response_data, status=status.HTTP_200_OK)
+            
+            # Set the JWT as a cookie in the response
+            response.set_cookie(
+                'jwt',
+                access_token,
+                httponly=True,
+                secure=False,  # Should be True in production
+                samesite='Lax',  # Helps with CSRF protection
+            )
+            
+            return response
+        
+        # If the serializer is not valid
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def user_logout(request):
-    if request.method == 'POST':
-        try:
-            # Delete the user's token to logout
-            request.user.auth_token.delete()
-            return Response({'message': 'Successfully logged out.'}, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+class LogoutUserView(APIView):
+    permission_classes = (IsAuthenticated,)
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def get_profile(request):
-    user = request.user
-    serializer = ProfileSerializer(user, many=False)
-    return Response(serializer.data)
+    def post(self, request):
+        request.user.auth_token.delete()
+        return Response({'message': 'Successfully logged out.'}, status=status.HTTP_200_OK)
 
-@api_view(['PUT'])
-@permission_classes([IsAuthenticated])
-def update_profile(request):
-    user = request.user
-    serializer = ProfileSerializer(user, data=request.data, partial=True)
-    if serializer.is_valid():
-        serializer.save()
-    return Response(serializer.data)
+class GetProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        user = request.user
+        jwt = request.COOKIES['jwt']
+        payload = jwt.decode(jwt, 'kmoutaou', None, verify=True)
+        print(payload)
+        serializer = ProfileSerializer(user, many=False)
+        return Response(serializer.data)
+
+class UpdateProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, *args, **kwargs):
+        user = request.user
+        serializer = ProfileSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 ###################################################
 #                     friends                     #        
