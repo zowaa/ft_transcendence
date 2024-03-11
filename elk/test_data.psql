@@ -1,0 +1,32 @@
+INSERT INTO users_customuser (
+    password,
+    id,
+    username,
+    display_name,
+    date_joined,
+    last_login,
+    avatar,
+    friends,
+    nb_wins,
+    nb_losses,
+    nb_plays,
+    status,
+    is_active,
+    is_42_user
+)
+VALUES
+    ('password1', 1, 'user1', 'User One', '2023-07-01', '2023-07-01', 'avatar1.jpg', 'friend1', 5, 2, 10, 'active', true, true),
+    ('password2', 2, 'user2', 'User Two', '2023-07-02', '2023-07-02', 'avatar2.jpg', 'friend2', 7, 3, 15, 'inactive', true, false),
+    ('password3', 3, 'user3', 'User Three', '2023-07-03', '2023-07-03', 'avatar3.jpg', 'friend3', 10, 5, 20, 'active', false, true),
+    ('password4', 4, 'user4', 'User Four', '2023-07-04', '2023-07-04', 'avatar4.jpg', 'friend4', 3, 1, 5, 'inactive', true, false),
+    ('password5', 5, 'user5', 'User Five', '2023-07-05', '2023-07-05', 'avatar5.jpg', 'friend5', 12, 6, 25, 'active', false, true),
+    ('password6', 6, 'user6', 'User Six', '2023-07-06', '2023-07-06', 'avatar6.jpg', 'friend6', 8, 4, 18, 'inactive', false, false),
+    ('password7', 7, 'user7', 'User Seven', '2023-07-07', '2023-07-07', 'avatar7.jpg', 'friend7', 15, 8, 30, 'active', true, true),
+    ('password8', 8, 'user8', 'User Eight', '2023-07-08', '2023-07-08', 'avatar8.jpg', 'friend8', 9, 3, 17, 'inactive', false, false),
+    ('password9', 9, 'user9', 'User Nine', '2023-07-09', '2023-07-09', 'avatar9.jpg', 'friend9', 6, 2, 12, 'active', true, true),
+    ('password10', 10, 'user10', 'User Ten', '2023-07-10', '2023-07-10', 'avatar10.jpg', 'friend10', 11, 5, 22, 'inactive', false, true),
+    ('password11', 11, 'user11', 'User Eleven', '2023-07-11', '2023-07-11', 'avatar11.jpg', 'friend11', 4, 1, 7, 'active', false, false),
+    ('password12', 12, 'user12', 'User Twelve', '2023-07-12', '2023-07-12', 'avatar12.jpg', 'friend12', 7, 3, 15, 'inactive', true, true),
+    ('password13', 13, 'user13', 'User Thirteen', '2023-07-13', '2023-07-13', 'avatar13.jpg', 'friend13', 14, 7, 28, 'active', true, false),
+    ('password14', 14, 'user14', 'User Fourteen', '2023-07-14', '2023-07-14', 'avatar14.jpg', 'friend14', 10, 4, 20, 'inactive', false, true),
+    ('password15', 15, 'user15', 'User Fifteen', '2023-07-15', '2023-07-15', 'avatar15.jpg', 'friend15', 8, 4, 18, 'active', false, false);

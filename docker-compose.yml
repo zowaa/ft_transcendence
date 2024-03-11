@@ -81,6 +81,8 @@ services:
       - kibanadata:/usr/share/kibana/data
       - "./elk/kibana.yml:/usr/share/kibana/config/kibana.yml:ro"
       - "./elk/.ilm.sh:/usr/share/kibana/config/.ilm.sh:ro"
+      - "./elk/containers_logs_final_dashboard.ndjson:/usr/share/kibana/config/containers_logs_final_dashboard.ndjson:ro"
+      - "./elk/users_stats_final_dashboard.ndjson:/usr/share/kibana/config/users_stats_final_dashboard.ndjson:ro"
     ports:
       - ${KIBANA_PORT}:5601
     env_file:

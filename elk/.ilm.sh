@@ -43,7 +43,39 @@ then
           "rollover_alias": "containers_logs"
         }
       }
+    },
+    "mappings": {
+    "_doc": {
+      "properties": {
+        "container": {
+          "properties": {
+            "name": {
+              "type": "keyword"
+            },
+            "id": {
+              "type": "keyword"
+            }
+          }
+        },
+        "image": {
+          "properties": {
+            "name": {
+              "type": "keyword"
+            },
+            "id": {
+              "type": "keyword"
+            }
+          }
+        },
+        "status": {
+          "type": "keyword"
+        },
+        "message": {
+          "type": "text"
+        }
+      }
     }
+  }
   }'
 
   curl -k -X PUT -u "${ELASTIC_USER}:${ELASTIC_PASSWORD}" "${ELASTICSEARCH_HOSTS}/_template/users_data_template" -H 'Content-Type: application/json' -d '{
@@ -56,7 +88,66 @@ then
         }
       }
     }
+    "mappings": {
+    "_doc": {
+      "properties": {
+        "id": {
+          "type": "keyword"
+        },
+        "email": {
+          "type": "keyword"
+        },
+        "username": {
+          "type": "keyword"
+        },
+        "display_name": {
+          "type": "keyword"
+        },
+        "date_joined": {
+          "type": "date"
+        },
+        "last_login": {
+          "type": "date"
+        },
+        "avatar": {
+          "type": "keyword"
+        },
+        "friends": {
+          "type": "keyword"
+        },
+        "nb_wins": {
+          "type": "integer"
+        },
+        "nb_losses": {
+          "type": "integer"
+        },
+        "nb_plays": {
+          "type": "integer"
+        },
+        "status": {
+          "type": "keyword"
+        },
+        "is_active": {
+          "type": "boolean"
+        },
+        "is_42_user": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
   }'
+
+  # while ! nc -z https://localhost 5601; do
+  #   echo "Waiting for kibana to be ready..."
+  #   sleep 1
+  # done
+
+  curl -k -X POST -u "${ELASTIC_USER}:${ELASTIC_PASSWORD}" "https://localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/usr/share/kibana/config/users_stats_final_dashboard.ndjson
+  curl -k -X POST -u "${ELASTIC_USER}:${ELASTIC_PASSWORD}" "https://localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/usr/share/kibana/config/containers_logs_final_dashboard.ndjson
+  # curl -k -X POST -u "${ELASTIC_USER}:${ELASTIC_PASSWORD}" "https://localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/usr/share/kibana/config/export.ndjson
+  # curl -k -X POST -u "${ELASTIC_USER}:${ELASTIC_PASSWORD}" "https://localhost:5601/api/kibana/dashboards/import" -H 'Content-Type: application/json' -d @/usr/share/kibana/config/containers_logs_final_dashboard.ndjson
+  # curl -k -X POST -u "${ELASTIC_USER}:${ELASTIC_PASSWORD}" "https://localhost:5601/api/kibana/dashboards/import" -H 'Content-Type: application/json' -d @/usr/share/kibana/config/users_stats_final_dashboard.ndjson
 fi
 
 # {"acknowledged":true}
