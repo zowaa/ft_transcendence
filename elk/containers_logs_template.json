@@ -1,0 +1,36 @@
+{
+  "index_patterns": ["containers_logs*"],
+  "priority": 1,
+  "template": {
+    "settings": {
+      "index": {
+        "lifecycle": {
+          "name": "containers_logs_policy",
+          "rollover_alias": "containers_logs"
+        }
+      }
+    },
+    "mappings": {
+      "properties": {
+        "container_name": {
+          "type": "keyword"
+        },
+        "container_id": {
+          "type": "keyword"
+        },
+        "image_name": {
+          "type": "keyword"
+        },
+        "image_id": {
+          "type": "keyword"
+        },
+        "status": {
+          "type": "keyword"
+        },
+        "message": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+}

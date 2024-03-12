@@ -1,3 +1,5 @@
+psql -U transcendencer -d transcendence
+
 INSERT INTO users_customuser (
     password,
     id,
