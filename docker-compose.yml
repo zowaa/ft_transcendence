@@ -31,7 +31,7 @@ services:
     env_file:
       - .env
     user: "0"
-    command: "./.script.sh && ./.ilm.sh"
+    command: "./.script.sh"
     healthcheck:
       test: ["CMD-SHELL", "[ -f config/certs/es01/es01.crt ]"]
       interval: 1s
@@ -80,7 +80,7 @@ services:
       - certs:/usr/share/kibana/config/certs
       - kibanadata:/usr/share/kibana/data
       - "./elk/kibana.yml:/usr/share/kibana/config/kibana.yml:ro"
-      - "./elk/.ilm.sh:/usr/share/kibana/config/.ilm.sh:ro"
+      - "./elk/.config.sh:/usr/share/kibana/config/.config.sh:ro"
       - "./elk/containers_logs_dashboard.ndjson:/usr/share/kibana/config/containers_logs_dashboard.ndjson:ro"
       - "./elk/users_stats_dashboard.ndjson:/usr/share/kibana/config/users_stats_dashboard.ndjson:ro"
     ports:
@@ -92,7 +92,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "curl -s -I -k https://localhost:5601 | grep -q 'HTTP/1.1 302 Found' && ./config/.ilm.sh && \
+          "curl -s -I -k https://localhost:5601 | grep -q 'HTTP/1.1 302 Found' && ./config/.config.sh && \
           (curl -s -k -o /dev/null -w '%{http_code}' -X GET -u ${ELASTIC_USER}:${ELASTIC_PASSWORD} ${ELASTICSEARCH_HOSTS}/_ilm/policy/${ILM_POLICY_NAME1} -H 'Content-Type: application/json' | grep -q '200') && \
           (curl -s -k -o /dev/null -w '%{http_code}' -X GET -u ${ELASTIC_USER}:${ELASTIC_PASSWORD} ${ELASTICSEARCH_HOSTS}/_ilm/policy/${ILM_POLICY_NAME2} -H 'Content-Type: application/json' | grep -q '200')",
         ]
