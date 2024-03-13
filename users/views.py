@@ -9,27 +9,60 @@ from django.contrib.auth import authenticate
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.http import JsonResponse
-from django.urls import reverse
 from django.conf import settings
 import requests
 from rest_framework.views import APIView
 from django.shortcuts import redirect
 import pyotp
 from rest_framework import generics
+from rest_framework.views import APIView
+from rest_framework.permissions import BasePermission
+import jwt
+from rest_framework import authentication
+from rest_framework import exceptions
+from .jwt import token_generation
 
-def GenerateToken(user):
-    refresh = RefreshToken.for_user(user)
-    return {
-        'refresh': str(refresh),
-        'access': str(refresh.access_token),
-    }
+class JWTAuthentication(authentication.BaseAuthentication):
+    def authenticate(self, request):
+        # Get the JWT token from the Authorization header
+        token = request.META.get('HTTP_AUTHORIZATION')
+        if not token:
+            return None  # No authentication attempted
+
+        # decode and validate the token
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise exceptions.AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise exceptions.AuthenticationFailed('Invalid token')
+
+        # get user from the decoded token payload
+        user = self.get_user(payload)
+
+        if user is None:
+            raise exceptions.AuthenticationFailed('User not found')
+
+        return (user, token)
+
+    def get_user(self, payload):
+        try:
+            user_id = payload['user_id']
+            user = CustomUser.objects.get(id=user_id)
+            return user
+        except CustomUser.DoesNotExist:
+            return None
 
 class RegisterUserView(APIView):
     def post(self, request):
         serializer = RegisterUserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            response_data = {
+                "success": True,
+                "message": "User registered successfully",
+            }
+            return Response(response_data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class OAuth42RedirectView(APIView):
@@ -64,8 +97,8 @@ class OAuth42CallbackView(APIView):
             if not user_data:
                 raise ValueError("Failed to fetch user data")
 
-            response_data = self.process_user_data(user_data)
-            return Response(response_data, status=status.HTTP_200_OK)
+            response = self.process_user_data(user_data)
+            return response
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -80,13 +113,16 @@ class OAuth42CallbackView(APIView):
     def process_user_data(self, user_data):
         username = user_data['login']
         display_name = user_data['displayname']
+        # print(user_data['image_url'])
+        # avatar = user_data['image_url']
         user = CustomUser.objects.filter(username=username, is_42_user=True).first()
         if user:
             user.status = "online"
             user.save()
             # Generate JWT tokens for the user
-            refresh = RefreshToken.for_user(user)
-            access_token = str(refresh.access_token)
+            # refresh = RefreshToken.for_user(user)
+            access_token = token_generation(user)
+            # access_token = str(refresh.access_token)
             response_data = {
                 "success": True,
             }
@@ -108,8 +144,9 @@ class OAuth42CallbackView(APIView):
                 user.status = "online"
                 user.save()
                 # Generate JWT tokens for the user
-                refresh = RefreshToken.for_user(user)
-                access_token = str(refresh.access_token)
+                # refresh = RefreshToken.for_user(user)
+                # access_token = str(refresh.access_token)
+                access_token = token_generation(user)
                 response_data = {
                     "success": True,
                 }
@@ -129,14 +166,14 @@ class UserLoginAPIView(APIView):
         serializer = LoginUserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data
-            refresh = RefreshToken.for_user(user)
-            access_token = str(refresh.access_token)
-            
+            # refresh = RefreshToken.for_user(user)
+            # access_token = str(refresh.access_token)
+            access_token = token_generation(user)            
             # Prepare the response data
             response_data = {
                 'message': 'Login successful.',
-                'refresh': str(refresh),
-                'access': access_token,  # It's already a string, no need to convert again
+                # 'refresh': str(refresh),
+                'access': access_token,
             }
             
             # Create a Response object
