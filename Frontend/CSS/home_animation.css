@@ -1,0 +1,46 @@
+#pong {
+	position: relative;
+	background-color: red;
+	border: 5px dashed white;
+	width: 100%; /* Adjust based on parent container or viewport */
+	max-width: 600px; /* Maximum width */
+	height: 400px;
+	margin: 0 auto;
+	overflow: hidden; /* Hide overflow as a precaution */
+}
+
+.center-line {
+	position: absolute;
+	width: 2px;
+	height: 100%;
+	background-image: linear-gradient(white 50%, transparent 50%);
+	background-size: 100% 20px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.paddle {
+	position: absolute;
+	width: 10px;
+	height: 70px;
+	background-color: white;
+	/* Make sure to adjust the top and either right or left properties via JS to keep within #pong */
+}
+
+.ball {
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background-color: white;
+	/* Dynamically adjust the top and left properties via JS to keep within #pong */
+}
+
+.score {
+	position: absolute;
+	color: white;
+	font-family: 'Lato', sans-serif;
+	font-size: 2rem;
+	/* Adjust positioning to be within #pong */
+}
+
