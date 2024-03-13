@@ -87,7 +87,7 @@ function attachSignupFormListener() {
 
             let formData = new FormData(signupForm);
 
-            let response = await fetch('/signup', {
+            let response = await fetch('https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/register', {
                 method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
