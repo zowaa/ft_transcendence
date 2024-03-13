@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+#title {
+	position: absolute;
+	top: 20%;
+	height: 80%;
+
+	border: 4px solid #878900;
+	/* border-color: #878900; */
+
+	left: 0;
+	right: 0;
+	color: #FFF;
+	text-align: center;
+	/* font-family: "lato", sans-serif; */
+	font-weight: 300;
+	font-size: 50px;
+	letter-spacing: 10px;
+	margin-top: -60px;
+	padding-left: 10px;
+  }
+  #title span {
+	background: -webkit-linear-gradient(white, #38495a);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+  }
+
+#start-now {
+    font-family: 'Press Start 2P', cursive; /* 80's style pixel font */
+    border: 4px solid;
+
+
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to right, #00ffff, #ff00ff); /* Strong neon gradient */
+	/* border-image-source: linear-gradient(to right, #000000, #000000); 
+    */
+	background-color: transparent;
+    color: #FFFFFF;
+    padding: 1em 1em;
+    font-size: 10%; /* Smaller font size for pixel font */
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.5s ease, color 0.5s ease;
+    text-align: center;
+    user-select: none;
+    outline: none;
+}
+
+
+#start-now::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    bottom: -8px;
+    left: -8px;
+    z-index: -1;
+    background: linear-gradient(to right, #00ffff, #ff00ff);
+    filter: blur(8px);
+    opacity: 0.7;
+}
+
+#start-now:hover {
+    color: #000000;
+    background-color: rgba(255, 255, 255, 0.1); /* Subtle background on hover */
+}
