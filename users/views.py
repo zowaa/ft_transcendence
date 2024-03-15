@@ -20,38 +20,10 @@ from rest_framework.permissions import BasePermission
 import jwt
 from rest_framework import authentication
 from rest_framework import exceptions
-from .jwt import token_generation
-
-class JWTAuthentication(authentication.BaseAuthentication):
-    def authenticate(self, request):
-        # Get the JWT token from the Authorization header
-        token = request.META.get('HTTP_AUTHORIZATION')
-        if not token:
-            return None  # No authentication attempted
-
-        # decode and validate the token
-        try:
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
-        except jwt.ExpiredSignatureError:
-            raise exceptions.AuthenticationFailed('Token has expired')
-        except jwt.InvalidTokenError:
-            raise exceptions.AuthenticationFailed('Invalid token')
-
-        # get user from the decoded token payload
-        user = self.get_user(payload)
-
-        if user is None:
-            raise exceptions.AuthenticationFailed('User not found')
-
-        return (user, token)
-
-    def get_user(self, payload):
-        try:
-            user_id = payload['user_id']
-            user = CustomUser.objects.get(id=user_id)
-            return user
-        except CustomUser.DoesNotExist:
-            return None
+from .jwt import token_generation, token_decode
+from .authentication import JWTAuthentication
+from .decorators import token_required
+from django.utils.decorators import method_decorator
 
 class RegisterUserView(APIView):
     def post(self, request):
@@ -152,12 +124,20 @@ class OAuth42CallbackView(APIView):
                 }
                 response = Response(response_data, status=status.HTTP_200_OK)
                 # Set the JWT as a cookie in the response
+                # response.set_cookie(
+                #     'jwt',
+                #     access_token,
+                #     httponly=True,
+                #     secure=False,  # Should be True in production
+                #     samesite='Lax',  # Helps with CSRF protection
+                # )
                 response.set_cookie(
                     'jwt',
                     access_token,
                     httponly=True,
-                    secure=False,  # Should be True in production
-                    samesite='Lax',  # Helps with CSRF protection
+                    secure=True,  # Should be True in production
+                    samesite='None',  # Needed for cross-origin, ensure Secure is also set
+                    domain='app.github.dev'  # Adjust the domain accordingly to allow sharing across subdomains
                 )
                 return response
 
@@ -166,9 +146,9 @@ class UserLoginAPIView(APIView):
         serializer = LoginUserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data
-            refresh = RefreshToken.for_user(user)
-            access_token = str(refresh.access_token)
-            # access_token = token_generation(user)            
+            # refresh = RefreshToken.for_user(user)
+            # access_token = str(refresh.access_token)
+            access_token = token_generation(user)            
             # Prepare the response data
             response_data = {
                 'message': 'Login successful.',
@@ -188,7 +168,7 @@ class UserLoginAPIView(APIView):
                 # samesite='Lax',  # Helps with CSRF protection
                 secure=True,  # Ensure this is True in production for `samesite='None'` to work
                 samesite='None',
-                domain='.app.github.dev',
+                # domain='.app.github.dev',
             )
             
             return response
@@ -196,8 +176,9 @@ class UserLoginAPIView(APIView):
         # If the serializer is not valid
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@method_decorator(token_required, name='dispatch')
 class LogoutUserView(APIView):
-    permission_classes = (IsAuthenticated,)
+    # permission_classes = (IsAuthenticated,)
 
     def post(self, request):
         request.user.auth_token.delete()
@@ -207,11 +188,13 @@ class LogoutUserView(APIView):
 #                     profile                     #        
 ###################################################
 
+@method_decorator(token_required, name='dispatch')
 class GetProfileView(APIView):
-    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
     def get(self, request, format=None):
-        user = request.user
+        # user = JWTAuthentication.authenticate(self, request)
+        # user = request.user
         # jwt = request.COOKIES['jwt']
         # payload = jwt.decode(jwt, 'kmoutaou', None, verify=True)
         # print(payload)

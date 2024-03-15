@@ -22,14 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-5d0!#bp$+*_i)6y7x12-+i)r^(s79o=-68dh^)0k69ro+wkp+n"
+# SECRET_KEY = "django-insecure-5d0!#bp$+*_i)6y7x12-+i)r^(s79o=-68dh^)0k69ro+wkp+n"
+
+SECRET_KEY = "kmoutaou42"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-# ALLOWED_HOSTS = ['https://localhost:8000','*']
-# CSRF_TRUSTED_ORIGINS = ['https://localhost:8000', '*']
-
 
 # Application definition
 
@@ -63,7 +61,8 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_HEADERS = ['*']
-CORS_ALLOWED_ORIGINS = ['https://upgraded-dollop-q65pjww6654c67pp-8080.app.github.dev:8080', 'http://localhost:8080']
+# CORS_ALLOWED_ORIGINS = ['https://upgraded-dollop-q65pjww6654c67pp-8080.app.github.dev', 'https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev','http://localhost:8080']
+CORS_ALLOWED_ORIGINS = ['https://upgraded-dollop-q65pjww6654c67pp-8080.app.github.dev']
 CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = "backend.urls"
@@ -85,17 +84,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "backend.wsgi.application"
-
-
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
 
 DATABASES = {
    'default': {
@@ -133,7 +121,8 @@ REST_FRAMEWORK = {
     #     'rest_framework.permissions.IsAuthenticated',
     # ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'users.authentication.JWTAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
         # 'rest_framework.authentication.SessionAuthentication', # To keep the Browsable API
     ],
@@ -144,7 +133,7 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'SIGNING_KEY': "kmoutaou",
     # custom
-    "AUTH_COOKIE": "access_token",  # cookie name
+    "AUTH_COOKIE": "jwt",  # cookie name
     "AUTH_COOKIE_DOMAIN": None,  # specifies domain for which the cookie will be sent
     # "AUTH_COOKIE_SECURE": False,  # restricts the transmission of the cookie to only occur over secure (HTTPS) connections. 
     # "AUTH_COOKIE_HTTP_ONLY": True,  # prevents client-side js from accessing the cookie
