@@ -18,6 +18,11 @@ const urlRoutes = {
 		template: "/Frontend/Pages/contact_us.html",
 		description: "This is Contact_us page",
 	},
+
+    "/profile": {
+		template: "/Frontend/Pages/profile.html",
+		description: "This is the profile page",
+	},
 };
 
 
@@ -43,9 +48,6 @@ const urlLocationHandler = async () => {
 		location = "/";
 	}
 
-	
-
-
 	const route = urlRoutes[location] || urlRoutes[404];
 	// const html = await fetch(route.template).then((response) => response.text());
 	
@@ -59,7 +61,6 @@ const urlLocationHandler = async () => {
 		console.error("Error: " + response.status);
 	}
 
-	
 	document.getElementById("body_to_load").innerHTML = html;
 	// if (location === '/' || location === '/Frontend/Pages/home.html') {
     //     runPongAnimation(); // Call a function to start the Pong animation.
@@ -71,6 +72,7 @@ const urlLocationHandler = async () => {
 	
 	attachSignupFormListener();
 	attachLoginFormListener();
+    fetchUserProfile();
 
 	const init_lang = getSavedLanguagePreference();
 	console.log(init_lang);
@@ -156,13 +158,40 @@ function attachLoginFormListener() {
                 },
                 body: json,
             });
+            // if(response.ok) {
+            //     let result = await response.json();
+            //     alert(result.message); // Assuming the API responds with a message on successful login
+            // } else {
+            //     alert("Login failed. Please check your username and password.");
+            // }
             if(response.ok) {
-                let result = await response.json();
-                alert(result.message); // Assuming the API responds with a message on successful login
+                const profileData = await response.json();
+                console.log(profileData);
+                window.location.href = '/profile'; // Redirect to profile page
             } else {
-                alert("Login failed. Please check your username and password.");
+                alert('Login failed: ' + result.message);
             }
         };
+    }
+}
+
+async function fetchUserProfile() {
+    const response = await fetch('https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/profile/', {
+        method: 'GET', // Credentials (cookies) are included automatically
+        credentials: 'include', // This line is usually not necessary for same-origin requests
+    });
+
+    if (response.ok) {
+        const profileData = await response.json();
+        console.log(profileData);
+        
+        // Update the page with the user's profile data
+        document.getElementById('username').textContent = profileData.username || 'Unavailable';
+        document.getElementById('display_name').textContent = profileData.display_name || 'Unavailable';
+        // Update more fields as needed based on the profileData object structure
+    } else {
+        // Handle errors, e.g., by redirecting to the login page or showing an error message
+        alert('Failed to load profile. Please try again.');
     }
 }
 

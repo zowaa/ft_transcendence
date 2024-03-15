@@ -64,6 +64,7 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_HEADERS = ['*']
 CORS_ALLOWED_ORIGINS = ['https://upgraded-dollop-q65pjww6654c67pp-8080.app.github.dev:8080', 'http://localhost:8080']
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = "backend.urls"
 
@@ -183,11 +184,6 @@ SIMPLE_JWT = {
 # #     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 # }
 
-OAUTH2_PROVIDER = {
-    # this is the list of available scopes
-    'SCOPES': {'read': 'Read scope', 'write': 'Write scope'}
-
-}
 
 # 42 OAuth2 settings
 OAUTH42_CLIENT_ID = 'u-s4t2ud-110e6a72c470ea3b61e2a1bc09acbd391dbb5fa23ecb37d0c8b88d513aa3865a'

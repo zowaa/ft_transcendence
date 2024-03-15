@@ -120,9 +120,9 @@ class OAuth42CallbackView(APIView):
             user.status = "online"
             user.save()
             # Generate JWT tokens for the user
-            # refresh = RefreshToken.for_user(user)
-            access_token = token_generation(user)
-            # access_token = str(refresh.access_token)
+            refresh = RefreshToken.for_user(user)
+            # access_token = token_generation(user)
+            access_token = str(refresh.access_token)
             response_data = {
                 "success": True,
             }
@@ -144,9 +144,9 @@ class OAuth42CallbackView(APIView):
                 user.status = "online"
                 user.save()
                 # Generate JWT tokens for the user
-                # refresh = RefreshToken.for_user(user)
-                # access_token = str(refresh.access_token)
-                access_token = token_generation(user)
+                refresh = RefreshToken.for_user(user)
+                access_token = str(refresh.access_token)
+                # access_token = token_generation(user)
                 response_data = {
                     "success": True,
                 }
@@ -166,9 +166,9 @@ class UserLoginAPIView(APIView):
         serializer = LoginUserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data
-            # refresh = RefreshToken.for_user(user)
-            # access_token = str(refresh.access_token)
-            access_token = token_generation(user)            
+            refresh = RefreshToken.for_user(user)
+            access_token = str(refresh.access_token)
+            # access_token = token_generation(user)            
             # Prepare the response data
             response_data = {
                 'message': 'Login successful.',
@@ -184,8 +184,11 @@ class UserLoginAPIView(APIView):
                 'jwt',
                 access_token,
                 httponly=True,
-                secure=False,  # Should be True in production
-                samesite='Lax',  # Helps with CSRF protection
+                # secure=False,  # Should be True in production
+                # samesite='Lax',  # Helps with CSRF protection
+                secure=True,  # Ensure this is True in production for `samesite='None'` to work
+                samesite='None',
+                domain='.app.github.dev',
             )
             
             return response
@@ -200,14 +203,18 @@ class LogoutUserView(APIView):
         request.user.auth_token.delete()
         return Response({'message': 'Successfully logged out.'}, status=status.HTTP_200_OK)
 
+###################################################
+#                     profile                     #        
+###################################################
+
 class GetProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
         user = request.user
-        jwt = request.COOKIES['jwt']
-        payload = jwt.decode(jwt, 'kmoutaou', None, verify=True)
-        print(payload)
+        # jwt = request.COOKIES['jwt']
+        # payload = jwt.decode(jwt, 'kmoutaou', None, verify=True)
+        # print(payload)
         serializer = ProfileSerializer(user, many=False)
         return Response(serializer.data)
 
@@ -269,6 +276,24 @@ def get_friends(request):
 ###################################################
 #                        2fa                      #        
 ###################################################
+
+class enable2fa(generics.GenericAPIView):
+    serializer_class = UserSerializer
+    queryset = CustomUser.objects.all()
+
+    def post(self, request):
+        data = request.data
+        user_id = data.get('user_id', None)
+
+        user = CustomUser.objects.filter(id=user_id).first()
+        if user == None:
+            return Response({"status": "fail", "message": f"No user with Id: {user_id} found"}, status=status.HTTP_404_NOT_FOUND)
+
+        user.otp_enabled = True
+        user.save()
+        serializer = self.serializer_class(user)
+
+        return Response({'otp_enabled': True, 'user': serializer.data})
 
 class disable2fa(generics.GenericAPIView):
     serializer_class = UserSerializer
