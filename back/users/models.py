@@ -10,20 +10,34 @@ class CustomUser(AbstractBaseUser):
     date_joined = models.DateTimeField(auto_now=True)
     last_login = models.DateTimeField(auto_now=True)
     avatar = models.ImageField(upload_to='images/', default="images/default.png")
-    # avatar_base64 = models.TextField(default="", blank=True)
-    friends = models.CharField(max_length=1000, default="")
+    friends = models.ManyToManyField("CustomUser", blank=True)
     nb_wins = models.IntegerField(default=0)
     nb_losses = models.IntegerField(default=0)
     nb_plays = models.IntegerField(default=0)
     status = models.CharField(max_length=100, default="offline")
     is_active = models.BooleanField(default = True)
     is_42_user = models.BooleanField(default=False)
-
+    otp_enabled = models.BooleanField(default=False)
+    otp_verified = models.BooleanField(default=False)
+    otp_base32 = models.CharField(max_length=255, null=True)
+    otp_auth_url = models.CharField(max_length=255, null=True)
+    
     # REQUIRED_FIELDS = ["username"]
     USERNAME_FIELD = 'username'
 
     def __str__(self):
         return self.username
+
+class Request(models.Model):
+    id = models.AutoField(primary_key=True)
+    sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="sent_requests")
+    receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="received_requests")
+    status = models.CharField(max_length=100, default="pending")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.sender.username} -> {self.receiver.username} - {self.status}"
 
 class Games(models.Model):
     id = models.AutoField(primary_key=True)

@@ -4,13 +4,23 @@ from rest_framework.validators import UniqueValidator
 
 class UserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=100, required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
-    password = serializers.CharField(min_length=8, max_length=100, write_only=True)
+    password = serializers.CharField(min_length=8, max_length=100, required=False, write_only=True)
     avatar = serializers.ImageField(required=False)
+    is_42_user = serializers.BooleanField(required=False)
+    print("UserSerializer")
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'password', 'display_name', 'date_joined', 'last_login', 'avatar', 'friends', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_active', 'is_42_user']
+        fields = ['id', 'username', 'password', 'display_name', 'date_joined', 'last_login', 'avatar', 'friends', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_active', 'is_42_user', 'otp_enabled', 'otp_verified', 'otp_base32', 'otp_auth_url']
         extra_kwargs = {'password': {'write_only': True}}
-        # read_only_fields = ['id', 'date_joined', 'last_login']
+    
+    # def create(self, validated_data):
+    #     user = CustomUser(
+    #         username = validated_data['username'],
+    #         # display_name = validated_data['username'],
+    #         # is_42_user = validated_data['is_42_user'],
+    #     )
+    #     user.save()
+    #     return user
     
 class RegisterUserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=100, required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
@@ -18,25 +28,44 @@ class RegisterUserSerializer(serializers.ModelSerializer):
     avatar = serializers.ImageField(required=False)
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'password', 'display_name', 'date_joined', 'last_login', 'avatar', 'friends', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_active', 'is_42_user']
+        fields = ['id', 'username', 'password', 'display_name', 'date_joined', 'last_login', 'avatar', 'friends', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_active', 'is_42_user', 'otp_enabled', 'otp_verified', 'otp_base32', 'otp_auth_url']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         user = CustomUser(
             username = validated_data['username'],
-            display_name = validated_data['username']
+            display_name = validated_data['username'],
             # avatar=validated_data['avatar']
         )
         user.set_password(validated_data['password'])
         user.save()
         return user
 
+# class RegisterUser42Serializer(username, display_name):
+#     username = serializers.CharField(max_length=100, required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
+#     disoplay_name = serializers.CharField(max_length=100, required=False)
+#     avatar = serializers.ImageField(required=False)
+#     class Meta:
+#         model = CustomUser
+#         fields = ['id', 'username', 'password', 'display_name', 'date_joined', 'last_login', 'avatar', 'friends', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_active', 'is_42_user', 'otp_enabled', 'otp_verified', 'otp_base32', 'otp_auth_url']
+#         extra_kwargs = {'password': {'write_only': True}}
+
+#     def create(self, validated_data):
+#         user = CustomUser(
+#             username = validated_data['username'],
+#             display_name = validated_data['display_name'],
+#             is_42_user = True,
+#             # avatar=validated_data['avatar']
+#         )
+#         user.save()
+#         return user
+
 class LoginUserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=100, required=True)
     password = serializers.CharField(min_length=8, max_length=100, write_only=True)
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'password', 'display_name', 'date_joined', 'last_login', 'avatar', 'friends', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_active', 'is_42_user']
+        fields = ['id', 'username', 'password', 'display_name', 'date_joined', 'last_login', 'avatar', 'friends', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_active', 'is_42_user', 'otp_enabled', 'otp_verified', 'otp_base32', 'otp_auth_url']
         extra_kwargs = {'password': {'write_only': True}}
 
     def validate(self, data):
@@ -56,13 +85,6 @@ class LoginUserSerializer(serializers.ModelSerializer):
         else:
             raise serializers.ValidationError("User does not exist.")
     
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data.pop('password')
-        return data
-    
-
-
     # def update(self, instance, validated_data):
     #     instance.username = validated_data.get('username', instance.username)
     #     instance.display_name = validated_data.get('display_name', instance.display_name)
@@ -98,8 +120,36 @@ class LoginUserSerializer(serializers.ModelSerializer):
     #             raise serializers.ValidationError("Incorrect password.")
     #     else:
     #         raise serializers.ValidationError("User does not exist.")
+
+class UpdatePassword(serializers.ModelSerializer):
+    password = serializers.CharField(min_length=8, max_length=100, write_only=True)
+    class Meta:
+        model = CustomUser
+        fields = ['password']
+        extra_kwargs = {'password': {'write_only': True}}
     
+        def update(self, instance, validated_data):
+            instance.set_password(validated_data['password'])
+            instance.save()
+            return instance
+
+class UpdateUsername(serializers.ModelSerializer):
+    username = serializers.CharField(max_length=100, required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
+    class Meta:
+        model = CustomUser
+        fields = ['username']
+        extra_kwargs = {'username': {'required': True, 'validators': [UniqueValidator(queryset=CustomUser.objects.all())]}}
+    
+        def update(self, instance, validated_data):
+            instance.username = validated_data['username']
+            instance.save()
+            return instance
+
 class ProfileSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(max_length=100, required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
+    password = serializers.CharField(min_length=8, max_length=100, write_only=True)
+    avatar = serializers.ImageField(required=False)
+    
     class Meta:
         model = CustomUser
         fields = '__all__'

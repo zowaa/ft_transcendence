@@ -1,5 +1,5 @@
 {
-  "name": "my_trandenden",
+  "name": "front",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
@@ -11,6 +11,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.3"
   }
 }
