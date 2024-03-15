@@ -3,6 +3,7 @@ export default {
 		"404": "404 Not Found | Pong",
         "/": "Home | Pong",
 		
+		
         "/about": "About Us | Pong",
         "/contact_us": "Contact Us | Pong",
     },

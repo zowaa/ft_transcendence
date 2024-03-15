@@ -61,47 +61,21 @@ const urlLocationHandler = async () => {
 
 	
 	document.getElementById("body_to_load").innerHTML = html;
-	// if (location === '/' || location === '/Frontend/Pages/home.html') {
-    //     runPongAnimation(); // Call a function to start the Pong animation.
-    // }
+	if (location === '/' || location === '/Frontend/Pages/home.html') {
+        runPongAnimation();
+		// window.addEventListener('resize', runPongAnimation);
+    }
 
 	document
 	.querySelector('meta[name="description"]')
 	.setAttribute("content", route.description);
 	
-	attachSignupFormListener();
-
 	const init_lang = getSavedLanguagePreference();
 	console.log(init_lang);
 	const language = await import(`./Lang_files/lang.${init_lang}.js`);
 	saveLanguagePreference(init_lang);
 	applyLanguageToContent(language.default);
 };
-
-// kaoutar
-function attachSignupFormListener() {
-    const signupForm = document.getElementById('signupForm');
-    if (signupForm) {
-        signupForm.onsubmit = async (event) => {
-            event.preventDefault(); 
-
-            let formData = new FormData(signupForm);
-
-            let response = await fetch('/signup', {
-                method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-                body: formData,
-            });
-            let result = await response.json();
-
-            alert(result.message); 
-			console.log(formData.get('username'));
-        };
-    }
-}
-
 
 function getSavedLanguagePreference() {
     return localStorage.getItem("userLanguage") || "en";
