@@ -70,6 +70,7 @@ const urlLocationHandler = async () => {
 	.setAttribute("content", route.description);
 	
 	attachSignupFormListener();
+	attachLoginFormListener();
 
 	const init_lang = getSavedLanguagePreference();
 	console.log(init_lang);
@@ -79,29 +80,91 @@ const urlLocationHandler = async () => {
 };
 
 // kaoutar
+// function attachSignupFormListener() {
+//     const signupForm = document.getElementById('signupForm');
+//     if (signupForm) {
+//         signupForm.onsubmit = async (event) => {
+//             event.preventDefault(); 
+
+//             let formData = new FormData(signupForm);
+
+//             let response = await fetch('https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/register/', {
+//                 method: 'POST',
+// 				headers: {
+// 					'Content-Type': 'application/json',
+// 				},
+//                 body: formData,
+//             });
+//             let result = await response.json();
+
+//             alert(result.message); 
+// 			console.log(formData.get('username'));
+//         };
+//     }
+// }
+
 function attachSignupFormListener() {
     const signupForm = document.getElementById('signupForm');
     if (signupForm) {
         signupForm.onsubmit = async (event) => {
-            event.preventDefault(); 
+            event.preventDefault();
 
-            let formData = new FormData(signupForm);
+            // Create an object from the form entries
+            let formDataObj = {};
+            new FormData(signupForm).forEach((value, key) => formDataObj[key] = value);
 
-            let response = await fetch('https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/register', {
+            // Convert the object to a JSON string
+            let jsonBody = JSON.stringify(formDataObj);
+
+            let response = await fetch('https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/register/', {
                 method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-                body: formData,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: jsonBody,
             });
-            let result = await response.json();
 
-            alert(result.message); 
-			console.log(formData.get('username'));
+            if (response.ok) { // Check if the response status is 2xx
+                let result = await response.json();
+                alert(result.message);
+            } else {
+                let errorResult = await response.json();
+                alert(errorResult.detail || "An error occurred.");
+            }
         };
     }
 }
 
+function attachLoginFormListener() {
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.onsubmit = async (event) => {
+            event.preventDefault(); 
+
+            let formData = new FormData(loginForm);
+            // Converting FormData to JSON since we need to send JSON
+            let object = {};
+            formData.forEach((value, key) => {
+                object[key] = value;
+            });
+            let json = JSON.stringify(object);
+
+            let response = await fetch('https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/login/', { // Change this URL to your login endpoint
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // Correctly setting Content-Type for JSON
+                },
+                body: json,
+            });
+            if(response.ok) {
+                let result = await response.json();
+                alert(result.message); // Assuming the API responds with a message on successful login
+            } else {
+                alert("Login failed. Please check your username and password.");
+            }
+        };
+    }
+}
 
 function getSavedLanguagePreference() {
     return localStorage.getItem("userLanguage") || "en";

@@ -27,8 +27,8 @@ SECRET_KEY = "django-insecure-5d0!#bp$+*_i)6y7x12-+i)r^(s79o=-68dh^)0k69ro+wkp+n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['https://localhost:8000','*']
-CSRF_TRUSTED_ORIGINS = ['https://localhost:8000', '*']
+# ALLOWED_HOSTS = ['https://localhost:8000','*']
+# CSRF_TRUSTED_ORIGINS = ['https://localhost:8000', '*']
 
 
 # Application definition
@@ -63,7 +63,7 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_HEADERS = ['*']
-CORS_ALLOWED_ORIGINS = ['http://*' , 'https://*']
+CORS_ALLOWED_ORIGINS = ['https://upgraded-dollop-q65pjww6654c67pp-8080.app.github.dev:8080', 'http://localhost:8080']
 
 ROOT_URLCONF = "backend.urls"
 
@@ -194,8 +194,8 @@ OAUTH42_CLIENT_ID = 'u-s4t2ud-110e6a72c470ea3b61e2a1bc09acbd391dbb5fa23ecb37d0c8
 OAUTH42_CLIENT_SECRET = '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'
 OAUTH42_REDIRECT_URI = 'https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/auth42_callback&response_type=code'
 
-ALLOWED_HOSTS = ['https://localhost:8000','*']
-CSRF_TRUSTED_ORIGINS = ['https://localhost:8000']
+# ALLOWED_HOSTS = ['https://localhost:8000','*']
+# CSRF_TRUSTED_ORIGINS = ['https://localhost:8000']
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
