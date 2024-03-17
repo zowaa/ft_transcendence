@@ -81,30 +81,6 @@ const urlLocationHandler = async () => {
 	applyLanguageToContent(language.default);
 };
 
-// kaoutar
-// function attachSignupFormListener() {
-//     const signupForm = document.getElementById('signupForm');
-//     if (signupForm) {
-//         signupForm.onsubmit = async (event) => {
-//             event.preventDefault(); 
-
-//             let formData = new FormData(signupForm);
-
-//             let response = await fetch('https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/register/', {
-//                 method: 'POST',
-// 				headers: {
-// 					'Content-Type': 'application/json',
-// 				},
-//                 body: formData,
-//             });
-//             let result = await response.json();
-
-//             alert(result.message); 
-// 			console.log(formData.get('username'));
-//         };
-//     }
-// }
-
 function attachSignupFormListener() {
     const signupForm = document.getElementById('signupForm');
     if (signupForm) {
@@ -157,20 +133,21 @@ function attachLoginFormListener() {
                     'Content-Type': 'application/json', // Correctly setting Content-Type for JSON
                 },
                 body: json,
+                credentials: 'same-origin',
             });
-            // if(response.ok) {
-            //     let result = await response.json();
-            //     alert(result.message); // Assuming the API responds with a message on successful login
-            // } else {
-            //     alert("Login failed. Please check your username and password.");
-            // }
             if(response.ok) {
-                const profileData = await response.json();
-                console.log(profileData);
-                window.location.href = '/profile'; // Redirect to profile page
+                let result = await response.json();
+                alert(result.message); // Assuming the API responds with a message on successful login
             } else {
-                alert('Login failed: ' + result.message);
+                alert("Login failed. Please check your username and password.");
             }
+            // if(response.ok) {
+            //     const profileData = await response.json();
+            //     console.log(profileData);
+            //     window.location.href = '/profile'; // Redirect to profile page
+            // } else {
+            //     alert('Login failed: ' + result.message);
+            // }
         };
     }
 }
@@ -182,6 +159,7 @@ async function fetchUserProfile() {
     });
 
     if (response.ok) {
+        console.log("hello world!");
         const profileData = await response.json();
         console.log(profileData);
         

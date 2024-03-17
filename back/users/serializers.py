@@ -7,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(min_length=8, max_length=100, required=False, write_only=True)
     avatar = serializers.ImageField(required=False)
     is_42_user = serializers.BooleanField(required=False)
-    print("UserSerializer")
+    # print("UserSerializer")
     class Meta:
         model = CustomUser
         fields = ['id', 'username', 'password', 'display_name', 'date_joined', 'last_login', 'avatar', 'friends', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_active', 'is_42_user', 'otp_enabled', 'otp_verified', 'otp_base32', 'otp_auth_url']

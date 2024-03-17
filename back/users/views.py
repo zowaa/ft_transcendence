@@ -21,6 +21,8 @@ import jwt
 from rest_framework import authentication
 from rest_framework import exceptions
 from .jwt import token_generation
+from .decorators import token_required
+from django.utils.decorators import method_decorator
 
 class JWTAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
@@ -83,7 +85,7 @@ class OAuth42CallbackView(APIView):
             'client_id': settings.OAUTH42_CLIENT_ID,
             'client_secret': settings.OAUTH42_CLIENT_SECRET,
             'code': code,
-            'redirect_uri': 'https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/auth42_callback',
+            'redirect_uri': 'http://localhost:8000/auth42_callback',
         }
 
         try:
@@ -166,9 +168,9 @@ class UserLoginAPIView(APIView):
         serializer = LoginUserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data
-            refresh = RefreshToken.for_user(user)
-            access_token = str(refresh.access_token)
-            # access_token = token_generation(user)            
+            # refresh = RefreshToken.for_user(user)
+            # access_token = str(refresh.access_token)
+            access_token = token_generation(user)            
             # Prepare the response data
             response_data = {
                 'message': 'Login successful.',
@@ -188,7 +190,7 @@ class UserLoginAPIView(APIView):
                 # samesite='Lax',  # Helps with CSRF protection
                 secure=True,  # Ensure this is True in production for `samesite='None'` to work
                 samesite='None',
-                domain='localhost:8080',
+                # domain='.app.github.dev',
             )
             
             return response
@@ -197,8 +199,7 @@ class UserLoginAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LogoutUserView(APIView):
-    permission_classes = (IsAuthenticated,)
-
+    @token_required
     def post(self, request):
         request.user.auth_token.delete()
         return Response({'message': 'Successfully logged out.'}, status=status.HTTP_200_OK)
@@ -207,20 +208,16 @@ class LogoutUserView(APIView):
 #                     profile                     #        
 ###################################################
 
+# @method_decorator(token_required, name='dispatch')
 class GetProfileView(APIView):
-    permission_classes = [IsAuthenticated]
-
+    print("did you even reach me?\n")
+    @token_required
     def get(self, request, format=None):
-        user = request.user
-        # jwt = request.COOKIES['jwt']
-        # payload = jwt.decode(jwt, 'kmoutaou', None, verify=True)
-        # print(payload)
         serializer = ProfileSerializer(user, many=False)
         return Response(serializer.data)
 
 class UpdateProfileView(APIView):
-    permission_classes = [IsAuthenticated]
-
+    @token_required
     def put(self, request, *args, **kwargs):
         user = request.user
         serializer = ProfileSerializer(user, data=request.data, partial=True)
@@ -233,7 +230,7 @@ class UpdateProfileView(APIView):
 #                     friends                     #        
 ###################################################
 
-@permission_classes([IsAuthenticated])
+@token_required
 def send_request(request, username):
     try:
         receiver = CustomUser.objects.get(username=username)
@@ -243,7 +240,7 @@ def send_request(request, username):
     except ObjectDoesNotExist:
         return JsonResponse({"error": "User not found"}, status=404)
 
-@permission_classes([IsAuthenticated])
+@token_required
 def accept_request(request, requestID):
     try:
         request = Request.objects.get(id=requestID)
@@ -256,7 +253,7 @@ def accept_request(request, requestID):
     except ObjectDoesNotExist:
         return JsonResponse({"error": "Request not found"}, status=404)
 
-@permission_classes([IsAuthenticated])
+@token_required
 def reject_request(request, requestID):
     try:
         request = Request.objects.get(id=requestID)
@@ -265,7 +262,7 @@ def reject_request(request, requestID):
     except ObjectDoesNotExist:
         return JsonResponse({"error": "Request not found"}, status=404)
 
-@permission_classes([IsAuthenticated])
+@token_required
 @api_view(['GET'])
 def get_friends(request):
     user = request.user
@@ -278,9 +275,9 @@ def get_friends(request):
 ###################################################
 
 class enable2fa(generics.GenericAPIView):
+    @token_required
     serializer_class = UserSerializer
     queryset = CustomUser.objects.all()
-
     def post(self, request):
         data = request.data
         user_id = data.get('user_id', None)
@@ -296,9 +293,9 @@ class enable2fa(generics.GenericAPIView):
         return Response({'otp_enabled': True, 'user': serializer.data})
 
 class disable2fa(generics.GenericAPIView):
+    @token_required
     serializer_class = UserSerializer
     queryset = CustomUser.objects.all()
-
     def post(self, request):
         data = request.data
         user_id = data.get('user_id', None)
@@ -317,9 +314,9 @@ class disable2fa(generics.GenericAPIView):
         return Response({'otp_disabled': True, 'user': serializer.data})
 
 class generateOtp(generics.GenericAPIView):
+    @token_required
     serializer_class = UserSerializer
     queryset = CustomUser.objects.all()
-
     def post(self, request):
         data = request.data
         user_id = data.get('user_id', None)
@@ -340,9 +337,9 @@ class generateOtp(generics.GenericAPIView):
         return Response({'base32': otp_base32, "otpauth_url": otp_auth_url})
 
 class verifyOtp(generics.GenericAPIView):
+    @token_required
     serializer_class = UserSerializer
     queryset = CustomUser.objects.all()
-
     def post(self, request):
         message = "Token is invalid or user doesn't exist"
         data = request.data
@@ -363,9 +360,9 @@ class verifyOtp(generics.GenericAPIView):
         return Response({'otp_verified': True, "user": serializer.data})
 
 class validateOtp(generics.GenericAPIView):
+    @token_required
     serializer_class = UserSerializer
     queryset = CustomUser.objects.all()
-
     def post(self, request):
         message = "Token is invalid or user doesn't exist"
         data = request.data

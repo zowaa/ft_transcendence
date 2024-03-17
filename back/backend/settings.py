@@ -22,14 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-5d0!#bp$+*_i)6y7x12-+i)r^(s79o=-68dh^)0k69ro+wkp+n"
+SECRET_KEY = "kmoutaou78"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-# ALLOWED_HOSTS = ['https://localhost:8000','*']
-# CSRF_TRUSTED_ORIGINS = ['https://localhost:8000', '*']
-
 
 # Application definition
 
@@ -42,8 +38,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'rest_framework',
     'users',
-    'rest_framework_simplejwt',
-    'oauth2_provider',
+    # 'rest_framework_simplejwt',
+    # 'oauth2_provider',
     'corsheaders'
     # 'rest_framework_simplejwt.token_blacklist',
 ]
@@ -53,7 +49,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    'oauth2_provider.middleware.OAuth2TokenMiddleware', #added
+    # 'oauth2_provider.middleware.OAuth2TokenMiddleware', #added
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -63,8 +59,13 @@ MIDDLEWARE = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_HEADERS = ['*']
-CORS_ALLOWED_ORIGINS = ['https://upgraded-dollop-q65pjww6654c67pp-8080.app.github.dev:8080', 'http://localhost:8080']
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:8080',
+]
 CORS_ALLOW_CREDENTIALS = True
+
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
 
 ROOT_URLCONF = "backend.urls"
 
@@ -128,67 +129,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
-REST_FRAMEWORK = {
-    # 'DEFAULT_PERMISSION_CLASSES': [
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-        # 'rest_framework.authentication.SessionAuthentication', # To keep the Browsable API
-    ],
-}
-
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'SIGNING_KEY': "kmoutaou",
-    # custom
-    "AUTH_COOKIE": "access_token",  # cookie name
-    "AUTH_COOKIE_DOMAIN": None,  # specifies domain for which the cookie will be sent
-    # "AUTH_COOKIE_SECURE": False,  # restricts the transmission of the cookie to only occur over secure (HTTPS) connections. 
-    # "AUTH_COOKIE_HTTP_ONLY": True,  # prevents client-side js from accessing the cookie
-    "AUTH_COOKIE_PATH": "/",  # URL path where cookie will be sent
-    # "AUTH_COOKIE_SAMESITE": "Lax",  # specifies whether the cookie should be sent in cross site requests
-}
-
-# SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
-#     'REFRESH_TOKEN_LIFETIME': timedelta(days=10),
-# #     'ROTATE_REFRESH_TOKENS': True,
-# #     'BLACKLIST_AFTER_ROTATION': True,
-# #     'UPDATE_LAST_LOGIN': False,
-
-# #     'ALGORITHM': 'HS256',
-
-# #     'VERIFYING_KEY': None,
-# #     'AUDIENCE': None,
-# #     'ISSUER': None,
-# #     'JWK_URL': None,
-# #     'LEEWAY': 0,
-
-# #     'AUTH_HEADER_TYPES': ('Bearer',),
-# #     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
-# #     'USER_ID_FIELD': 'id',
-# #     'USER_ID_CLAIM': 'user_id',
-# #     'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
-
-# #     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-# #     'TOKEN_TYPE_CLAIM': 'token_type',
-# #     'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
-
-# #     'JTI_CLAIM': 'jti',
-
-# #     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-# #     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
-# #     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
-# }
-
-
 # 42 OAuth2 settings
-OAUTH42_CLIENT_ID = 'u-s4t2ud-110e6a72c470ea3b61e2a1bc09acbd391dbb5fa23ecb37d0c8b88d513aa3865a'
-OAUTH42_CLIENT_SECRET = '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'
-OAUTH42_REDIRECT_URI = 'https://upgraded-dollop-q65pjww6654c67pp-8000.app.github.dev/auth42_callback&response_type=code'
+OAUTH42_CLIENT_ID = 'u-s4t2ud-699532163e315a3cae8981883db6d9a71000c12ed5c8c68b78287456e8150fea'
+OAUTH42_CLIENT_SECRET = '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'
+OAUTH42_REDIRECT_URI = 'http://localhost:8000/auth42_callback&response_type=code'
 
 # ALLOWED_HOSTS = ['https://localhost:8000','*']
 # CSRF_TRUSTED_ORIGINS = ['https://localhost:8000']
@@ -209,6 +153,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "static/"
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'images')
+MEDIA_URL = '/images/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

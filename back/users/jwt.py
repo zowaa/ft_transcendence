@@ -16,8 +16,8 @@ def token_generation(userd):
 
     encoded_payload = base64.urlsafe_b64encode(json.dumps(payload).encode('utf-8'))
 
-    # secret_key = os.environ.get("JWT_SECRET")
-    secret_key = 'kmoutaou'
+    secret_key = os.environ.get("JWT_SECRET")
+    # secret_key = 'kmoutaou'
     signature = hmac.new(secret_key.encode('utf-8'), encoded_payload, hashlib.sha256).digest()
     encoded_signature = base64.urlsafe_b64encode(signature)
 
@@ -25,14 +25,14 @@ def token_generation(userd):
 
     return jwt_token
 
-# def token_decode(jwt_token):
-#     encoded_payload, encoded_signature = jwt_token.split('.')
-#     payload = json.loads(base64.urlsafe_b64decode(encoded_payload.encode('utf-8')).decode('utf-8'))
-#     secret_key = os.environ.get("JWT_SECRET")
-#     expected_signature = base64.urlsafe_b64encode(hmac.new(secret_key.encode('utf-8'), encoded_payload.encode('utf-8'), hashlib.sha256).digest())
-#     if encoded_signature == expected_signature.decode('utf-8'):
-#         return payload
-#     else:
-#         return {
-#             'error': 'Invalid token signature'
-#         }
+def token_decode(jwt_token):
+    encoded_payload, encoded_signature = jwt_token.split('.')
+    payload = json.loads(base64.urlsafe_b64decode(encoded_payload.encode('utf-8')).decode('utf-8'))
+    secret_key = os.environ.get("JWT_SECRET")
+    expected_signature = base64.urlsafe_b64encode(hmac.new(secret_key.encode('utf-8'), encoded_payload.encode('utf-8'), hashlib.sha256).digest())
+    if encoded_signature == expected_signature.decode('utf-8'):
+        return payload
+    else:
+        return {
+            'error': 'Invalid token signature'
+        }
