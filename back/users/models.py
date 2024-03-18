@@ -5,8 +5,8 @@ import uuid
 class CustomUser(AbstractBaseUser):
     id = models.CharField(max_length=200, default=uuid.uuid4,unique=True,primary_key=True)
     email = None
-    username = models.CharField(null=False, max_length=100, unique=True)
-    display_name = models.CharField(null=True, max_length=100, unique=True)
+    username = models.CharField(null=False, max_length=150, unique=True)
+    display_name = models.CharField(null=True, max_length=150, unique=True)
     date_joined = models.DateTimeField(auto_now=True)
     last_login = models.DateTimeField(auto_now=True)
     avatar = models.ImageField(upload_to='images/', default="images/default.png")
@@ -28,16 +28,25 @@ class CustomUser(AbstractBaseUser):
     def __str__(self):
         return self.username
 
-class Request(models.Model):
-    id = models.AutoField(primary_key=True)
-    sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="sent_requests")
-    receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="received_requests")
-    status = models.CharField(max_length=100, default="pending")
+class Friends(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('accepted', 'Accepted'),
+        ('rejected', 'Rejected'),
+    )
+    
+    sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='sent_friend_requests')
+    receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='received_friend_requests')
+    status = models.CharField(max_length=8, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        unique_together = ('sender', 'receiver')
+        ordering = ['-created_at']
+
     def __str__(self):
-        return f"{self.sender.username} -> {self.receiver.username} - {self.status}"
+        return f"{self.sender.user.username} to {self.receiver.user.username} - {self.get_status_display()}"
 
 class Games(models.Model):
     id = models.AutoField(primary_key=True)

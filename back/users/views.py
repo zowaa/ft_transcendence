@@ -1,9 +1,9 @@
-from .models import CustomUser
+from .models import CustomUser, Friends
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from .serializers import UserSerializer, RegisterUserSerializer, LoginUserSerializer, ProfileSerializer
+from .serializers import UserSerializer, RegisterUserSerializer, LoginUserSerializer, ProfileSerializer, UpdateProfileSerializer, UpdatePasswordSerializer
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.core.exceptions import ObjectDoesNotExist
@@ -23,6 +23,7 @@ from rest_framework import exceptions
 from .jwt import token_generation
 from .decorators import token_required
 from django.utils.decorators import method_decorator
+from django.db.models import Q
 
 class JWTAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
@@ -199,7 +200,7 @@ class UserLoginAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class LogoutUserView(APIView):
-    @token_required
+    @method_decorator(token_required)
     def post(self, request):
         request.user.auth_token.delete()
         return Response({'message': 'Successfully logged out.'}, status=status.HTTP_200_OK)
@@ -208,175 +209,212 @@ class LogoutUserView(APIView):
 #                     profile                     #        
 ###################################################
 
-# @method_decorator(token_required, name='dispatch')
-class GetProfileView(APIView):
-    print("did you even reach me?\n")
-    @token_required
-    def get(self, request, format=None):
-        serializer = ProfileSerializer(user, many=False)
-        return Response(serializer.data)
+class Profile(APIView):
+    @method_decorator(token_required)
+    def get(self, request):
+        try:
+            username = request.query_params.get('username')
+            if username:
+                user = CustomUser.objects.filter(username=username).first()
+                if not user:
+                    return Response({"status": 404, "message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+                serializer = ProfileSerializer(user)
+                return Response({"status": 200, "user": serializer.data}, status=status.HTTP_200_OK)
+                
+            user = CustomUser.objects.get(id=request.decoded_token['id']) #user_id
+            serializer = ProfileSerializer(user)
+            return Response({"status": 200, "player": serializer.data}, status=status.HTTP_200_OK)
+        except CustomUser.DoesNotExist:
+            return Response({"status": 404, "message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"status": 500, "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class UpdateProfileView(APIView):
-    @token_required
+    @method_decorator(token_required)
+    def put(self, request):
+        try:
+            user_id = request.decoded_token['id'] #user_id
+            user_data = request.data
+            user = CustomUser.objects.get(id=user_id)
+            serializer = UpdateProfileSerializer(user, data=user_data, partial=True)  # partial=True allows for partial updates
+            
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"status": 200, "message": "User updated successfully", "user": serializer.data}, status=status.HTTP_200_OK)
+            else:
+                return Response({"status": 400, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        except CustomUser.DoesNotExist:
+            return Response({"status": 404, "message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"status": 500, "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class PlayerAvatarUpload(APIView):
+    @method_decorator(token_required)
+    def post(self, request):
+        try:
+            user_id = request.decoded_token['id']
+            user = CustomUser.objects.get(id=user_id)
+            
+            file = request.FILES['avatar']
+            user.avatar.save(file.name, file, save=True)
+            
+            return Response({
+                "status": 200,
+                "message": "Avatar updated successfully",
+                "avatar_url": request.build_absolute_uri(user.avatar.url)
+            }, status=status.HTTP_200_OK)
+        except CustomUser.DoesNotExist:
+            return Response({
+                "status": 404,
+                "message": "User not found",
+            }, status=status.HTTP_404_NOT_FOUND)
+        except KeyError:
+            return Response({
+                "status": 400,
+                "message": "No avatar file provided",
+            }, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({
+                "status": 500,
+                "message": str(e),
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class ChangePasswordView(APIView):
+    @method_decorator(token_required)
     def put(self, request, *args, **kwargs):
-        user = request.user
-        serializer = ProfileSerializer(user, data=request.data, partial=True)
+        serializer = UpdatePasswordSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            user = request.user
+            if not user.check_password(serializer.validated_data['old_password']):
+                return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Set new password
+            user.set_password(serializer.validated_data['new_password'])
+            user.save()
+            return Response({"status": "success", "message": "Password updated successfully"}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 ###################################################
 #                     friends                     #        
 ###################################################
 
-@token_required
-def send_request(request, username):
-    try:
-        receiver = CustomUser.objects.get(username=username)
-        request = Request(sender=request.user, receiver=receiver)
-        request.save()
-        return JsonResponse({"message": "Request sent successfully"})
-    except ObjectDoesNotExist:
-        return JsonResponse({"error": "User not found"}, status=404)
+class Friends(APIView):
+    @method_decorator(token_required)
+    def get(self, request):
+        user_id = request.decoded_token['id']
+        get_type = request.query_params.get('target', 'friends')  # Default to listing friends
 
-@token_required
-def accept_request(request, requestID):
-    try:
-        request = Request.objects.get(id=requestID)
-        # request.status = "accepted"
-        # request.save()
-        request.sender.friends.add(request.receiver)
-        request.receiver.friends.add(request.sender)
-        request.delete()
-        return JsonResponse({"message": "Request accepted successfully"})
-    except ObjectDoesNotExist:
-        return JsonResponse({"error": "Request not found"}, status=404)
+        query = Q(sender_id=user_id) | Q(receiver_id=user_id)
+        if get_type == 'invites':
+            query &= Q(receiver_id=user_id, status='pending')
+        elif get_type == 'requests':
+            query &= Q(sender_id=user_id, status='pending')
+        elif get_type == 'friends':
+            query &= Q(status='accepted')
+        else:
+            return Response({"status": 400, "message": "Invalid request type."}, status=status.HTTP_400_BAD_REQUEST)
 
-@token_required
-def reject_request(request, requestID):
-    try:
-        request = Request.objects.get(id=requestID)
-        request.delete()
-        return JsonResponse({"message": "Request rejected successfully"})
-    except ObjectDoesNotExist:
-        return JsonResponse({"error": "Request not found"}, status=404)
+        friends = Friends.objects.filter(query)
+        friends_data = []
+        for f in friends:
+            friend = friends.sender if friends.sender.id != user_id else friends.receiver
+            friend_data = ProfileSerializer(friend).data
+            friends_data.append(friend_data)
 
-@token_required
-@api_view(['GET'])
-def get_friends(request):
-    user = request.user
-    friends = user.friends.all()
-    serializer = ProfileSerializer(friends, many=True)
-    return Response(serializer.data)
+        return Response({"status": 200, "friendships": friends_data}, status=status.HTTP_200_OK)
+
+    @method_decorator(token_required)
+    def post(self, request):
+        user_id = request.decoded_token['id']
+        receiver_id = request.data.get('receiver_id')
+
+        if not receiver_id:
+            return Response({"status": 400, "message": "Receiver ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+        if user_id == receiver_id:
+            return Response({"status": 400, "message": "You cannot send a friend request to yourself."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            sender = CustomUser.objects.get(id=user_id)
+            receiver = CustomUser.objects.get(id=receiver_id)
+
+            # Check if there's already a friend request in any direction
+            existing_friend = Friends.objects.filter(
+                (Q(sender=sender, receiver=receiver) | Q(sender=receiver, receiver=sender))
+            ).first()
+
+            if existing_friend:
+                if existing_friend.status == 'pending':
+                    return Response({"status": 400, "message": "Friend request already sent or received."}, status=status.HTTP_400_BAD_REQUEST)
+                elif existing_friend.status == 'accepted':
+                    return Response({"status": 400, "message": "You are already friends."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # No existing friend request or friendship, so create a new request
+            Friends.objects.create(sender=sender, receiver=receiver, status='pending')
+            return Response({"status": 200, "message": "Friend request sent successfully."}, status=status.HTTP_200_OK)
+
+        except CustomUser.DoesNotExist:
+            return Response({"status": 404, "message": "Player not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"status": 500, "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @method_decorator(token_required)
+    def put(self, request):
+        # New endpoint for accepting or rejecting friend requests
+        user_id = request.decoded_token['id']
+        receiver_id = request.data.get('receiver_id')
+        action = request.data.get('action')  # "accept" or "reject"
+
+        if action not in ['accept', 'reject']:
+            return Response({"status": 400, "message": "Invalid action."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # request where the current user is the receiver (to ensure they have the right to accept/reject)
+            request = Friends.objects.get(receiver_id=user_id, sender_id=receiver_id, status='pending')
+
+            if action == 'accept':
+                request.status = 'accepted'
+                request.save()
+                message = "Friend request accepted."
+            else:  # Reject
+                request.status = 'rejected'
+                request.save()
+                message = "Friend request rejected."
+            return Response({"status": 200, "message": message}, status=status.HTTP_200_OK)
+        except request.DoesNotExist:
+            return Response({"status": 404, "message": "Friend request not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"status": 500, "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @method_decorator(token_required)
+    def delete(self, request):
+        user_id = request.decoded_token['id']
+        receiver_id = request.data.get('receiver_id')
+
+        if not receiver_id:
+            return Response({"status": 400, "message": "Receiver ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            # Attempt to find a relation where the current user is either the sender or receiver
+            friend = Friends.objects.filter(
+                (Q(sender_id=user_id) & Q(receiver_id=receiver_id)) | 
+                (Q(sender_id=receiver_id) & Q(receiver_id=user_id))
+            ).first()
+
+            if friend:
+                friend.delete()
+                return Response({
+                    "status": 200,
+                    "message": "Friendship or friend request successfully deleted."
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response({
+                    "status": 404,
+                    "message": "Friendship or friend request not found."
+                }, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            return Response({"status": 500, "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 ###################################################
 #                        2fa                      #        
 ###################################################
-
-class enable2fa(generics.GenericAPIView):
-    @token_required
-    serializer_class = UserSerializer
-    queryset = CustomUser.objects.all()
-    def post(self, request):
-        data = request.data
-        user_id = data.get('user_id', None)
-
-        user = CustomUser.objects.filter(id=user_id).first()
-        if user == None:
-            return Response({"status": "fail", "message": f"No user with Id: {user_id} found"}, status=status.HTTP_404_NOT_FOUND)
-
-        user.otp_enabled = True
-        user.save()
-        serializer = self.serializer_class(user)
-
-        return Response({'otp_enabled': True, 'user': serializer.data})
-
-class disable2fa(generics.GenericAPIView):
-    @token_required
-    serializer_class = UserSerializer
-    queryset = CustomUser.objects.all()
-    def post(self, request):
-        data = request.data
-        user_id = data.get('user_id', None)
-
-        user = CustomUser.objects.filter(id=user_id).first()
-        if user == None:
-            return Response({"status": "fail", "message": f"No user with Id: {user_id} found"}, status=status.HTTP_404_NOT_FOUND)
-
-        user.otp_enabled = False
-        user.otp_verified = False
-        user.otp_base32 = None
-        user.otp_auth_url = None
-        user.save()
-        serializer = self.serializer_class(user)
-
-        return Response({'otp_disabled': True, 'user': serializer.data})
-
-class generateOtp(generics.GenericAPIView):
-    @token_required
-    serializer_class = UserSerializer
-    queryset = CustomUser.objects.all()
-    def post(self, request):
-        data = request.data
-        user_id = data.get('user_id', None)
-        email = data.get('email', None)
-
-        user = CustomUser.objects.filter(id=user_id).first()
-        if user == None:
-            return Response({"status": "fail", "message": f"No user with Id: {user_id} found"}, status=status.HTTP_404_NOT_FOUND)
-
-        otp_base32 = pyotp.random_base32()
-        otp_auth_url = pyotp.totp.TOTP(otp_base32).provisioning_uri(
-            name=email.lower(), issuer_name="codevoweb.com")
-
-        user.otp_auth_url = otp_auth_url
-        user.otp_base32 = otp_base32
-        user.save()
-
-        return Response({'base32': otp_base32, "otpauth_url": otp_auth_url})
-
-class verifyOtp(generics.GenericAPIView):
-    @token_required
-    serializer_class = UserSerializer
-    queryset = CustomUser.objects.all()
-    def post(self, request):
-        message = "Token is invalid or user doesn't exist"
-        data = request.data
-        user_id = data.get('user_id', None)
-        otp_token = data.get('token', None)
-        user = CustomUser.objects.filter(id=user_id).first()
-        if user == None:
-            return Response({"status": "fail", "message": f"No user with Id: {user_id} found"}, status=status.HTTP_404_NOT_FOUND)
-
-        totp = pyotp.TOTP(user.otp_base32)
-        if not totp.verify(otp_token):
-            return Response({"status": "fail", "message": message}, status=status.HTTP_400_BAD_REQUEST)
-        user.otp_enabled = True
-        user.otp_verified = True
-        user.save()
-        serializer = self.serializer_class(user)
-
-        return Response({'otp_verified': True, "user": serializer.data})
-
-class validateOtp(generics.GenericAPIView):
-    @token_required
-    serializer_class = UserSerializer
-    queryset = CustomUser.objects.all()
-    def post(self, request):
-        message = "Token is invalid or user doesn't exist"
-        data = request.data
-        user_id = data.get('user_id', None)
-        otp_token = data.get('token', None)
-        user = CustomUser.objects.filter(id=user_id).first()
-        if user == None:
-            return Response({"status": "fail", "message": f"No user with Id: {user_id} found"}, status=status.HTTP_404_NOT_FOUND)
-
-        if not user.otp_verified:
-            return Response({"status": "fail", "message": "OTP must be verified first"}, status=status.HTTP_404_NOT_FOUND)
-
-        totp = pyotp.TOTP(user.otp_base32)
-        if not totp.verify(otp_token, valid_window=1):
-            return Response({"status": "fail", "message": message}, status=status.HTTP_400_BAD_REQUEST)
-
-        return Response({'otp_valid': True})
