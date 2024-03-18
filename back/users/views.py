@@ -24,6 +24,9 @@ from .jwt import token_generation
 from .decorators import token_required
 from django.utils.decorators import method_decorator
 from django.db.models import Q
+from .otp import generate_qrcode, verify_code
+import qrcode
+from django.http import HttpResponse
 
 class JWTAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
@@ -123,21 +126,15 @@ class OAuth42CallbackView(APIView):
             user.status = "online"
             user.save()
             # Generate JWT tokens for the user
-            refresh = RefreshToken.for_user(user)
-            # access_token = token_generation(user)
-            access_token = str(refresh.access_token)
+            # refresh = RefreshToken.for_user(user)
+            access_token = token_generation(user)
+            # access_token = str(refresh.access_token)
             response_data = {
                 "success": True,
             }
             response = Response(response_data, status=status.HTTP_200_OK)
             # Set the JWT as a cookie in the response
-            response.set_cookie(
-                'jwt',
-                access_token,
-                httponly=True,
-                secure=False,  # Should be True in production
-                samesite='Lax',  # Helps with CSRF protection
-            )
+            response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
             return response
         else:
             serializer = UserSerializer(data={'username': username, 'display_name': display_name, 'is_42_user' : True})
@@ -147,21 +144,15 @@ class OAuth42CallbackView(APIView):
                 user.status = "online"
                 user.save()
                 # Generate JWT tokens for the user
-                refresh = RefreshToken.for_user(user)
-                access_token = str(refresh.access_token)
-                # access_token = token_generation(user)
+                # refresh = RefreshToken.for_user(user)
+                # access_token = str(refresh.access_token)
+                access_token = token_generation(user)
                 response_data = {
                     "success": True,
                 }
                 response = Response(response_data, status=status.HTTP_200_OK)
                 # Set the JWT as a cookie in the response
-                response.set_cookie(
-                    'jwt',
-                    access_token,
-                    httponly=True,
-                    secure=False,  # Should be True in production
-                    samesite='Lax',  # Helps with CSRF protection
-                )
+                response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
                 return response
 
 class UserLoginAPIView(APIView):
@@ -183,16 +174,7 @@ class UserLoginAPIView(APIView):
             response = Response(response_data, status=status.HTTP_200_OK)
             
             # Set the JWT as a cookie in the response
-            response.set_cookie(
-                'jwt',
-                access_token,
-                httponly=True,
-                # secure=False,  # Should be True in production
-                # samesite='Lax',  # Helps with CSRF protection
-                secure=True,  # Ensure this is True in production for `samesite='None'` to work
-                samesite='None',
-                # domain='.app.github.dev',
-            )
+            response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
             
             return response
         
@@ -418,3 +400,42 @@ class Friends(APIView):
 ###################################################
 #                        2fa                      #        
 ###################################################
+
+class QRCodeTwoFactorView(APIView):
+    @method_decorator(token_required)
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        qr_code_uri = generate_qrcode(user.id, issuer_name="transcending")
+
+        img = qrcode.make(qr_code_uri)
+        response = HttpResponse(content_type="image/png")
+        img.save(response, "PNG")
+        return response
+
+class TwoFactorVerifyView(APIView):
+    def post(self, request, *args, **kwargs):
+        code = request.data.get("code")
+        jwt_token = request.COOKIES.get("jwt_token")
+
+        try:
+            decoded_token = jwt.decode(jwt_token, settings.SECRET_KEY, algorithms=["HS256"])
+            user_id = decoded_token['id']
+            user = CustomUser.objects.get(id=user_id)
+
+            if verify_code(user_id, code):
+                if not user.two_factor:
+                    user.two_factor = True
+                    user.save()
+                    return Response({"statusCode": 200, "message": "2FA setup successfully."})
+                
+                # regenerate JWT token if needed
+                access_token = token_generation(user)
+                response = Response({"statusCode": 200, "message": "2FA verified successfully."})
+                response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
+                return response
+            else:
+                return Response({"statusCode": 401, "message": "Incorrect 2FA code."})
+        except jwt.ExpiredSignatureError:
+            return Response({"statusCode": 401, "error": "Expired token"})
+        except (jwt.InvalidTokenError, CustomUser.DoesNotExist):
+            return Response({"statusCode": 401, "error": "Invalid token or player not found"})
