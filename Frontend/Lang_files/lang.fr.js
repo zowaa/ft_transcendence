@@ -3,10 +3,11 @@ export default {
 		"404": "404 Non trouvé | Pong",
 		"/": "Accueil | Pong",
 
-		
+
 		"/about": "Sur nous | Pong",
 		"/contact_us": "Contact nous | Pong",
 	},
+	start_now: "Commencer",
 
 
 

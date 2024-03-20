@@ -38,7 +38,9 @@ const urlRoute = (event) => {
 
 
 const urlLocationHandler = async () => {
+
 	const location = window.location.pathname;
+    // localStorage.setItem("userLanguage", "en");
 	if (location.length == 0) {
 		location = "/";
 	}
@@ -61,10 +63,7 @@ const urlLocationHandler = async () => {
 
 	
 	document.getElementById("body_to_load").innerHTML = html;
-	if (location === '/' || location === '/Frontend/Pages/home.html') {
-        runPongAnimation();
-		// window.addEventListener('resize', runPongAnimation);
-    }
+	
 
 	document
 	.querySelector('meta[name="description"]')
@@ -72,13 +71,25 @@ const urlLocationHandler = async () => {
 	
 	const init_lang = getSavedLanguagePreference();
 	console.log(init_lang);
+	//print lang stored in local storage
+console.log("mokk");
+	// console.log("Language stored in local storage: " + init_lang);
 	const language = await import(`./Lang_files/lang.${init_lang}.js`);
 	saveLanguagePreference(init_lang);
 	applyLanguageToContent(language.default);
+	if (location === '/' || location === '/Frontend/Pages/home.html') {
+        runPongAnimation();
+    }
 };
 
 function getSavedLanguagePreference() {
-    return localStorage.getItem("userLanguage") || "en";
+    // return localStorage.getItem("userLanguage") || "fr";
+	if (localStorage.getItem("userLanguage") === null) {
+		console.log("3afak hna");
+		console.log(localStorage.getItem("userLanguage"));
+		return "en";
+	}
+	return localStorage.getItem("userLanguage") ;
 }
 
 
@@ -114,7 +125,53 @@ function applyLanguageToContent(lang) {
 	}
 }
 
+
+
+
+function setStars() {
+	const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+	const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+
+	function multipleBoxShadow(n) {
+	  let shadows = [];
+	  for (let i = 0; i < n; i++) {
+		const x = Math.floor(Math.random() * vw) + 'px';
+		const y = Math.floor(Math.random() * (vh + 2000)) - 1000 + 'px'; // Generate y values from -1000px to vh+1000px
+		shadows.push(`${x} ${y} #FFF`);
+	  }
+	  return shadows.join(', ');
+	}
+
+	// Determine the number of stars based on the viewport width
+	let starsSmall, starsMedium, starsLarge;
+	if (vw <= 600) {
+	  // Small devices
+	  starsSmall = 300; // Adjust as needed
+	  starsMedium = 100; // Adjust as needed
+	  starsLarge = 50; // Adjust as needed
+	} else if (vw <= 1200) {
+	  // Medium devices
+	  starsSmall = 500; // Adjust as needed
+	  starsMedium = 150; // Adjust as needed
+	  starsLarge = 75; // Adjust as needed
+	} else {
+	  // Large devices
+	  starsSmall = 1000; // Adjust as needed
+	  starsMedium = 500; // Adjust as needed
+	  starsLarge = 300; // Adjust as needed
+	}
+
+	document.getElementById('stars').style.boxShadow = multipleBoxShadow(starsSmall);
+	document.getElementById('stars2').style.boxShadow = multipleBoxShadow(starsMedium);
+	document.getElementById('stars3').style.boxShadow = multipleBoxShadow(starsLarge);
+  }
 window.onpopstate = urlLocationHandler;
-window.onload = urlLocationHandler;
+// window.onload = urlLocationHandler;
+
+window.onload = () => {
+    setStars();
+    urlLocationHandler(); // Make sure to call the original onload function
+};
+window.onresize = setStars;
 
 
