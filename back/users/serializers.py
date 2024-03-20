@@ -20,7 +20,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
     avatar = serializers.ImageField(required=False)
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'password', 'display_name', 'date_joined', 'last_login', 'avatar', 'friends', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_active', 'is_42_user', 'otp_enabled', 'otp_verified', 'otp_base32', 'otp_auth_url']
+        fields = ['id', 'username', 'password', 'display_name', 'avatar']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -38,7 +38,7 @@ class LoginUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(min_length=8, max_length=100, write_only=True)
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'password', 'display_name', 'date_joined', 'last_login', 'avatar', 'friends', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_active', 'is_42_user', 'otp_enabled', 'otp_verified', 'otp_base32', 'otp_auth_url']
+        fields = ['username', 'password']
         extra_kwargs = {'password': {'write_only': True}}
 
     def validate(self, data):
@@ -52,6 +52,8 @@ class LoginUserSerializer(serializers.ModelSerializer):
 
         if user:
             if user.check_password(password):
+                user.status = "online";
+                user.save()
                 return user
             else:
                 raise serializers.ValidationError("Incorrect password.")

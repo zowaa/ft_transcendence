@@ -15,7 +15,7 @@ def token_required(view_func):
         try:
             # Attempt to decode the token. 
             # Replace 'your_secret_key' with the key used to encode your JWTs
-            payload = jwt.token_decode(token)
+            payload = token_decode(token)
             
             # Optionally, add the payload or user to the request if needed
             request.user_payload = payload

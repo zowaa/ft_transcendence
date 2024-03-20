@@ -3,6 +3,11 @@ from django.contrib.auth.models import AbstractBaseUser
 import uuid
 
 class CustomUser(AbstractBaseUser):
+    STATUS_CHOICES = (
+        ('offline', 'Offline'),
+        ('onlin', 'Online'),
+        ('playing', 'Playing'),
+    )
     id = models.CharField(max_length=200, default=uuid.uuid4,unique=True,primary_key=True)
     email = None
     username = models.CharField(null=False, max_length=150, unique=True)
@@ -10,18 +15,14 @@ class CustomUser(AbstractBaseUser):
     date_joined = models.DateTimeField(auto_now=True)
     last_login = models.DateTimeField(auto_now=True)
     avatar = models.ImageField(upload_to='images/', default="images/default.png")
-    friends = models.ManyToManyField("CustomUser", blank=True)
     nb_wins = models.IntegerField(default=0)
     nb_losses = models.IntegerField(default=0)
     nb_plays = models.IntegerField(default=0)
-    status = models.CharField(max_length=100, default="offline")
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default="offline")
     is_active = models.BooleanField(default = True)
     is_42_user = models.BooleanField(default=False)
-    otp_enabled = models.BooleanField(default=False)
-    otp_verified = models.BooleanField(default=False)
-    otp_base32 = models.CharField(max_length=255, null=True)
-    otp_auth_url = models.CharField(max_length=255, null=True)
-    
+    double_auth = models.BooleanField(default=False)
+
     # REQUIRED_FIELDS = ["username"]
     USERNAME_FIELD = 'username'
 
@@ -37,7 +38,7 @@ class Friends(models.Model):
     
     sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='sent_friend_requests')
     receiver = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='received_friend_requests')
-    status = models.CharField(max_length=8, choices=STATUS_CHOICES, default='pending')
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='pending')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

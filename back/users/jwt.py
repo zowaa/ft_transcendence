@@ -36,3 +36,6 @@ def token_decode(jwt_token):
         return {
             'error': 'Invalid token signature'
         }
+
+def get_user_id(jwt_token)
+    

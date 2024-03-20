@@ -119,8 +119,8 @@ class OAuth42CallbackView(APIView):
     def process_user_data(self, user_data):
         username = user_data['login']
         display_name = user_data['displayname']
-        # print(user_data['image_url'])
-        # avatar = user_data['image_url']
+        image_url = user_data.get('image_url')  
+        print(user_data['image_url'])
         user = CustomUser.objects.filter(username=username, is_42_user=True).first()
         if user:
             user.status = "online"
@@ -160,19 +160,17 @@ class UserLoginAPIView(APIView):
         serializer = LoginUserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.validated_data
-            # refresh = RefreshToken.for_user(user)
-            # access_token = str(refresh.access_token)
             access_token = token_generation(user)            
             # Prepare the response data
             response_data = {
                 'message': 'Login successful.',
-                # 'refresh': str(refresh),
                 'access': access_token,
+                'infos': serializer.data,
             }
             
             # Create a Response object
             response = Response(response_data, status=status.HTTP_200_OK)
-            
+
             # Set the JWT as a cookie in the response
             response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
             
@@ -184,8 +182,11 @@ class UserLoginAPIView(APIView):
 class LogoutUserView(APIView):
     @method_decorator(token_required)
     def post(self, request):
-        request.user.auth_token.delete()
-        return Response({'message': 'Successfully logged out.'}, status=status.HTTP_200_OK)
+        # request.user.status = "offline";
+        # request.user.save()
+        response = Response({'message': 'Successfully logged out.'}, status=status.HTTP_200_OK)
+        response.delete_cookie('jwt')
+        return response
 
 ###################################################
 #                     profile                     #        
@@ -415,7 +416,7 @@ class QRCodeTwoFactorView(APIView):
 class TwoFactorVerifyView(APIView):
     def post(self, request, *args, **kwargs):
         code = request.data.get("code")
-        jwt_token = request.COOKIES.get("jwt_token")
+        jwt = request.COOKIES.get("jwt")
 
         try:
             decoded_token = jwt.decode(jwt_token, settings.SECRET_KEY, algorithms=["HS256"])
@@ -423,8 +424,8 @@ class TwoFactorVerifyView(APIView):
             user = CustomUser.objects.get(id=user_id)
 
             if verify_code(user_id, code):
-                if not user.two_factor:
-                    user.two_factor = True
+                if not user.double_auth:
+                    user.double_auth = True
                     user.save()
                     return Response({"statusCode": 200, "message": "2FA setup successfully."})
                 
