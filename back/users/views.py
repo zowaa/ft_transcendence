@@ -20,44 +20,13 @@ from rest_framework.permissions import BasePermission
 import jwt
 from rest_framework import authentication
 from rest_framework import exceptions
-from .jwt import token_generation
+from .jwt import token_generation, get_user_id
 from .decorators import token_required
 from django.utils.decorators import method_decorator
 from django.db.models import Q
 from .otp import generate_qrcode, verify_code
 import qrcode
 from django.http import HttpResponse
-
-class JWTAuthentication(authentication.BaseAuthentication):
-    def authenticate(self, request):
-        # Get the JWT token from the Authorization header
-        token = request.META.get('HTTP_AUTHORIZATION')
-        if not token:
-            return None  # No authentication attempted
-
-        # decode and validate the token
-        try:
-            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
-        except jwt.ExpiredSignatureError:
-            raise exceptions.AuthenticationFailed('Token has expired')
-        except jwt.InvalidTokenError:
-            raise exceptions.AuthenticationFailed('Invalid token')
-
-        # get user from the decoded token payload
-        user = self.get_user(payload)
-
-        if user is None:
-            raise exceptions.AuthenticationFailed('User not found')
-
-        return (user, token)
-
-    def get_user(self, payload):
-        try:
-            user_id = payload['user_id']
-            user = CustomUser.objects.get(id=user_id)
-            return user
-        except CustomUser.DoesNotExist:
-            return None
 
 class RegisterUserView(APIView):
     def post(self, request):
@@ -119,41 +88,46 @@ class OAuth42CallbackView(APIView):
     def process_user_data(self, user_data):
         username = user_data['login']
         display_name = user_data['displayname']
-        image_url = user_data.get('image_url')  
-        print(user_data['image_url'])
+        avatar_url = user_data.get('image_url')
+
         user = CustomUser.objects.filter(username=username, is_42_user=True).first()
         if user:
-            user.status = "online"
-            user.save()
-            # Generate JWT tokens for the user
-            # refresh = RefreshToken.for_user(user)
-            access_token = token_generation(user)
-            # access_token = str(refresh.access_token)
-            response_data = {
-                "success": True,
-            }
-            response = Response(response_data, status=status.HTTP_200_OK)
-            # Set the JWT as a cookie in the response
-            response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
-            return response
+            if (user.double_auth == True):
+                return Response({"statusCode": 401, "message": "Double authentification required."})
+            else :
+                user.status = "online"
+                if avatar_url:
+                    self.update_user_avatar(user, avatar_url)
+                user.save()
+                # Generate JWT tokens for the user
+                access_token = token_generation(user)
+                response = Response({"success": True,}, status=status.HTTP_200_OK)
+                # Set the JWT as a cookie in the response
+                response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
+                return response
         else:
             serializer = UserSerializer(data={'username': username, 'display_name': display_name, 'is_42_user' : True})
             if serializer.is_valid():
                 # If the data is valid, create the user
                 user = serializer.save()
                 user.status = "online"
+                if avatar_url:
+                    self.update_user_avatar(user, avatar_url)
                 user.save()
                 # Generate JWT tokens for the user
-                # refresh = RefreshToken.for_user(user)
-                # access_token = str(refresh.access_token)
                 access_token = token_generation(user)
-                response_data = {
-                    "success": True,
-                }
-                response = Response(response_data, status=status.HTTP_200_OK)
+                response = Response({"success": True,}, status=status.HTTP_200_OK)
                 # Set the JWT as a cookie in the response
                 response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
                 return response
+    
+    def update_user_avatar(self, user, avatar_url):
+        # Download the avatar image from the URL
+        response = requests.get(avatar_url)
+        if response.status_code == 200:
+            # If the download was successful, save the image to the user's avatar field
+            file_name = avatar_url.split("/")[-1]  # Extract the file name from the URL
+            user.avatar.save(file_name, ContentFile(response.content), save=True)
 
 class UserLoginAPIView(APIView):
     def post(self, request):
@@ -203,8 +177,8 @@ class Profile(APIView):
                     return Response({"status": 404, "message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
                 serializer = ProfileSerializer(user)
                 return Response({"status": 200, "user": serializer.data}, status=status.HTTP_200_OK)
-                
-            user = CustomUser.objects.get(id=request.decoded_token['id']) #user_id
+            
+            user = CustomUser.objects.filter(id=request.user_payload['user']['id']).first()
             serializer = ProfileSerializer(user)
             return Response({"status": 200, "player": serializer.data}, status=status.HTTP_200_OK)
         except CustomUser.DoesNotExist:
@@ -215,9 +189,8 @@ class Profile(APIView):
     @method_decorator(token_required)
     def put(self, request):
         try:
-            user_id = request.decoded_token['id'] #user_id
             user_data = request.data
-            user = CustomUser.objects.get(id=user_id)
+            user = CustomUser.objects.filter(id=request.user_payload['user']['id']).first()
             serializer = UpdateProfileSerializer(user, data=user_data, partial=True)  # partial=True allows for partial updates
             
             if serializer.is_valid():
@@ -234,7 +207,7 @@ class PlayerAvatarUpload(APIView):
     @method_decorator(token_required)
     def post(self, request):
         try:
-            user_id = request.decoded_token['id']
+            user_id = request.user_payload['user']['id']
             user = CustomUser.objects.get(id=user_id)
             
             file = request.FILES['avatar']
@@ -243,7 +216,8 @@ class PlayerAvatarUpload(APIView):
             return Response({
                 "status": 200,
                 "message": "Avatar updated successfully",
-                "avatar_url": request.build_absolute_uri(user.avatar.url)
+                # "avatar_url": request.build_absolute_uri(user.avatar.url)
+                "avatar_url": request.build_absolute_uri(settings.MEDIA_URL + str(user.avatar))
             }, status=status.HTTP_200_OK)
         except CustomUser.DoesNotExist:
             return Response({
@@ -284,7 +258,7 @@ class ChangePasswordView(APIView):
 class Friends(APIView):
     @method_decorator(token_required)
     def get(self, request):
-        user_id = request.decoded_token['id']
+        user_id = request.user_payload['user']['id']
         get_type = request.query_params.get('target', 'friends')  # Default to listing friends
 
         query = Q(sender_id=user_id) | Q(receiver_id=user_id)
@@ -308,7 +282,7 @@ class Friends(APIView):
 
     @method_decorator(token_required)
     def post(self, request):
-        user_id = request.decoded_token['id']
+        user_id = request.user_payload['user']['id']
         receiver_id = request.data.get('receiver_id')
 
         if not receiver_id:
@@ -343,7 +317,7 @@ class Friends(APIView):
     @method_decorator(token_required)
     def put(self, request):
         # New endpoint for accepting or rejecting friend requests
-        user_id = request.decoded_token['id']
+        user_id = request.user_payload['user']['id']
         receiver_id = request.data.get('receiver_id')
         action = request.data.get('action')  # "accept" or "reject"
 
@@ -370,7 +344,7 @@ class Friends(APIView):
 
     @method_decorator(token_required)
     def delete(self, request):
-        user_id = request.decoded_token['id']
+        user_id = request.user_payload['user']['id']
         receiver_id = request.data.get('receiver_id')
 
         if not receiver_id:
@@ -419,8 +393,7 @@ class TwoFactorVerifyView(APIView):
         jwt = request.COOKIES.get("jwt")
 
         try:
-            decoded_token = jwt.decode(jwt_token, settings.SECRET_KEY, algorithms=["HS256"])
-            user_id = decoded_token['id']
+            user_id = request.user_payload['user']['id']
             user = CustomUser.objects.get(id=user_id)
 
             if verify_code(user_id, code):
@@ -431,6 +404,8 @@ class TwoFactorVerifyView(APIView):
                 
                 # regenerate JWT token if needed
                 access_token = token_generation(user)
+                user.status = "online"
+                user.save()
                 response = Response({"statusCode": 200, "message": "2FA verified successfully."})
                 response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
                 return response

@@ -13,16 +13,19 @@ def token_required(view_func):
             return JsonResponse({'detail': 'Authentication credentials were not provided.'}, status=401)
         
         try:
-            # Attempt to decode the token. 
-            # Replace 'your_secret_key' with the key used to encode your JWTs
             payload = token_decode(token)
             
-            # Optionally, add the payload or user to the request if needed
+            # Add the payload or user to the request if needed
             request.user_payload = payload
+
+            if (payload['user']['double_auth'] == True):
+                return JsonResponse({'detail': 'Double authentification required.'}, status=401)
         except jwt.ExpiredSignatureError:
-            return JsonResponse({'detail': 'Expired token.'}, status=401)
+            return Response({'detail': 'Expired token.'}, status=401)
         except jwt.InvalidTokenError:
-            return JsonResponse({'detail': 'Invalid token.'}, status=401)
+            return Response({'detail': 'Invalid token.'}, status=401)
+        except Exception as e: #500
+            return Response({'detail': 'An error occured.'}, status=500)
         
         # Proceed with the view function if the token is valid
         return view_func(request, *args, **kwargs)

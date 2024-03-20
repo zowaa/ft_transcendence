@@ -72,7 +72,7 @@ const urlLocationHandler = async () => {
 	
 	attachSignupFormListener();
 	attachLoginFormListener();
-    // fetchUserProfile();
+    fetchUserProfile();
 
 	const init_lang = getSavedLanguagePreference();
 	console.log(init_lang);
@@ -135,19 +135,19 @@ function attachLoginFormListener() {
                 body: json,
                 credentials: 'same-origin',
             });
-            if(response.ok) {
-                let result = await response.json();
-                alert(result.message); // Assuming the API responds with a message on successful login
-            } else {
-                alert("Login failed. Please check your username and password.");
-            }
             // if(response.ok) {
-            //     const profileData = await response.json();
-            //     console.log(profileData);
-            //     window.location.href = '/profile'; // Redirect to profile page
+            //     let result = await response.json();
+            //     alert(result.message); // Assuming the API responds with a message on successful login
             // } else {
-            //     alert('Login failed: ' + result.message);
+            //     alert("Login failed. Please check your username and password.");
             // }
+            if(response.ok) {
+                const profileData = await response.json();
+                console.log(profileData);
+                window.location.href = '/profile'; // Redirect to profile page
+            } else {
+                alert('Login failed: ' + result.message);
+            }
         };
     }
 }

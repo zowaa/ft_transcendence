@@ -11,7 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
     # print("UserSerializer")
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'password', 'display_name', 'date_joined', 'last_login', 'avatar', 'friends', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_active', 'is_42_user', 'otp_enabled', 'otp_verified', 'otp_base32', 'otp_auth_url']
+        fields = ['id', 'username', 'password', 'display_name', 'date_joined', 'last_login', 'avatar', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_42_user']
         extra_kwargs = {'password': {'write_only': True}}
     
 class RegisterUserSerializer(serializers.ModelSerializer):
@@ -71,26 +71,29 @@ class UpdatePasswordSerializer(serializers.ModelSerializer):
 class UpdateProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=150, allow_blank=True, required=False)
     display_name = serializers.CharField(max_length=150, allow_blank=True, required=False)
-    otp_enabled = serializers.BooleanField(required=False)
+    double_auth = serializers.BooleanField(required=False)
+
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'display_name', 'double_auth']
 
     def update(self, instance, validated_data):
         # Conditional updates for each field
+        if 'display_name' in validated_data:
+            instance.display_name = validated_data['display_name']
         if 'username' in validated_data:
             instance.username = validated_data['username']
-        if 'display_name' in validated_data:
-            instance.first_name = validated_data['display_name']
-        if 'otp_enabled' in validated_data:
-            instance.otp_enabled = validated_data['otp_enabled']
+        if 'double_auth' in validated_data:
+            instance.double_auth = validated_data['double_auth']
         instance.save()
         return instance
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'display_name', 'date_joined', 'last_login', 'avatar', 'friends', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_42_user', 'otp_enabled']
+        fields = ['id', 'username', 'display_name', 'date_joined', 'last_login', 'avatar', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_42_user', 'double_auth']
 
 class GamesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Games
         fields = ['id', 'first_player', 'second_player', 'first_player_score', 'second_player_score', 'created_at', 'updated_at']
-        # read_only_fields = ['id', 'created_at', 'updated_at']

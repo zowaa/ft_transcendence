@@ -10,6 +10,7 @@ def token_generation(userd):
         'user': {
             'id': userd.id,
             'username': userd.username,
+            'double_auth': userd.double_auth,
         },
         'exp': datetime.timestamp(datetime.utcnow() + timedelta(days=1)),
     }
@@ -17,7 +18,6 @@ def token_generation(userd):
     encoded_payload = base64.urlsafe_b64encode(json.dumps(payload).encode('utf-8'))
 
     secret_key = os.environ.get("JWT_SECRET")
-    # secret_key = 'kmoutaou'
     signature = hmac.new(secret_key.encode('utf-8'), encoded_payload, hashlib.sha256).digest()
     encoded_signature = base64.urlsafe_b64encode(signature)
 
@@ -37,5 +37,7 @@ def token_decode(jwt_token):
             'error': 'Invalid token signature'
         }
 
-def get_user_id(jwt_token)
+def get_user_id(jwt_token):
+    payload = token_decode(jwt_token)
+    return payload['user']['id']
     
