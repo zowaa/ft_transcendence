@@ -1,218 +1,57 @@
-
-
-
-#body_to_load {
-	min-height: 90vh;
-	/* background-color: aqua; */
-}	#pong {
+#pong {
 	min-height: 70vh;
-	/* background-color: black; */
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	flex-direction: column; /* Stack the canvas and the score div */
-	/* background-color: red; */
+	flex-direction: column;
 }
+
 #start {
 	min-height: 20vh;
-	/* background-color: black; */
-
 	display: flex;
 	justify-content: center;
-	align-items: center; /* center the button vertically and horizontally */
-
+	align-items: center;
 }
+
 #pongCanvas {
 	max-width: 100%;
 	height: auto;
-	/* border: 3px solid #fff; */
 }
 
 .button-80s {
-    /* Existing .button-80s styles */
     border: none;
     padding: 1vw 2vw; 
     font-size: 4vw;
-    /* border: 1vw solid #ffffff; */
     background: transparent;
-    color: #ff46f6; /* neon color */
-    font-family: 'Press Start 2P', cursive;
+    color: #ff46f6;
+    font-family: 'Press Start 2P';
     cursor: pointer;
     outline: none;
     user-select: none;
-    transition: text-shadow 0.3s ease-in-out, transform 0.25s, box-shadow 0.25s; /* Add transform and box-shadow transitions */
+    transition: text-shadow 0.3s ease-in-out, transform 0.25s, box-shadow 0.25s;
     text-shadow:
-        0 0 5px #ff46f6, /* Outer left */
-        0 0 10px #ff46f6, /* Outer right */
-        0 0 20px #ff46f6, /* Outer glow */
-        0 0 40px #ff46f6; /* Outer far glow */
+        0 0 5px #ff46f6, /* left */
+        0 0 10px #ff46f6, /* right */
+        0 0 20px #ff46f6, /* glow */
+        0 0 40px #ff46f6; /* far glow */
 	text-decoration: none;
 }
 
-.button-80s:hover, .button-80s:focus {
-    /* Enhanced neon glow */
+.button-80s:hover {
     text-shadow:
-        0 0 10px #ff46f6, /* Outer left */
-        0 0 15px #ff46f6, /* Outer right */
-        0 0 30px #ff46f6, /* Outer glow */
-        0 0 60px #ff46f6; /* Outer far glow */
-    /* Adding the raise effect */
-    box-shadow: 0 0.5em 0.5em -0.4em #ff46f6; /* Adjust the color to match your design if necessary */
+        0 0 10px #ff46f6,
+        0 0 15px #ff46f6,
+        0 0 30px #ff46f6,
+        0 0 60px #ff46f6;
+
+    /* The raise effect */
+    box-shadow: 0 0.5em 0.5em -0.4em #ff46f6;
     transform: translateY(-0.25em);
 }
 
-@media (max-width: 425px) { /* Corrected media query */
+@media (max-width: 425px) {
     .button-80s {
-        padding: 2vw 4vw; /* Increase padding for smaller screens */
-        font-size: 7vw; /* Increase font size for smaller screens */
-        border: none;
+        padding: 2vw 4vw;
+        font-size: 7vw;
     }
 }
-
-
-
-#stars-container {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	width: 100%;
-	height: 100%;
-	z-index: -1;
-	overflow: hidden;
-}
-#stars, #stars:after, #stars2, #stars2:after, #stars3, #stars3:after {
-	width: 1px;
-	height: 1px;
-	background: transparent;
-  
-} 
-  #stars, #stars:after {
-	/* box-shadow:; */
-	animation: animStar 18s linear infinite;
-}
-  
-  #stars2, #stars2:after {
-	width: 2px;
-	height: 2px;
-	/* box-shadow: ; */
-	animation: animStar 22s linear infinite;
-}
-  
-  #stars3, #stars3:after {
-	width: 3px;
-	height: 3px;
-	/* box-shadow: ; */
-	animation: animStar 25s linear infinite;
-}
-  
-  @keyframes animStar {
-	from {
-	  transform: translateY(0px);
-	}
-	to {
-	  transform: translateY(-1000px); /* You might want to adjust this based on responsiveness */
-	}
-}
-
-  
-
-  
-
-
-body, html {
-	margin: 0;
-	padding: 0;
-	height: 100%;
-	overflow-x: hidden;
-}
-
-body {
-	background: radial-gradient(ellipse at bottom, #000000e8 0%, #000000 100%);
-}
-
-
-
-
-
-
-
-
-
-.navbar-logo img {
-    height: 5vw; /* Adjusts size based on viewport width */
-    width: auto; /* Maintains aspect ratio */
-}
-
-/* Example Media Query for larger screens */
-@media (min-width: 992px) {
-    .navbar-logo img {
-        height: 7vw; /* Slightly larger for wider screens */
-    }
-}
-
-/* Example Media Query for smaller screens */
-@media (max-width: 576px) {
-    .navbar-logo img {
-        height: 17vw; /* Smaller for narrow screens */
-    }
-}
-/* Adjusting button sizes with media queries */
-@media (min-width: 992px) {
-    .btn.dropdown-toggle {
-        font-size: 1.2rem; /* Larger text on larger screens */
-        padding: 0.5rem 1rem; /* Larger padding */
-    }
-}
-
-@media (max-width: 576px) {
-    .btn.dropdown-toggle {
-        font-size: 0.8rem; /* Smaller text on smaller screens */
-        padding: 0.25rem 0.5rem; /* Smaller padding */
-    }
-}
-/* Adjusting container padding */
-@media (max-width: 576px) {
-    .container-fluid {
-        padding-right: 15px;
-        padding-left: 15px;
-    }
-}
-
-@media (min-width: 2000px) {
-    .navbar-logo img {
-        height: 10vw; /* Or any size that fits well */
-        width: auto;
-    }
-}
-@media (min-width: 2000px) {
-    .btn.dropdown-toggle {
-        font-size: 2rem; /* Larger icon and text size */
-        padding: 1rem 1.5rem; /* Adjust padding to make the button larger */
-    }
-
-    .btn.dropdown-toggle i {
-        /* Assuming you're using FontAwesome, adjust as necessary */
-        font-size: 1.5rem; /* Larger icon size */
-    }
-}
-
-@media (min-width: 2000px) {
-    .dropdown-item {
-        font-size: 1.5rem; /* Larger text */
-        padding: 0.75rem 1rem; /* Larger padding for larger clickable area */
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
