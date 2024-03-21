@@ -8,3 +8,4 @@ django-oauth-toolkit
 django-oauth-toolkit
 pyotp
 qrcode
+django-sslserver
