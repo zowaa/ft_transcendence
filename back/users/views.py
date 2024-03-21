@@ -96,8 +96,6 @@ class OAuth42CallbackView(APIView):
                 return Response({"statusCode": 401, "message": "Double authentification required."})
             else :
                 user.status = "online"
-                if avatar_url:
-                    self.update_user_avatar(user, avatar_url)
                 user.save()
                 # Generate JWT tokens for the user
                 access_token = token_generation(user)
@@ -106,13 +104,11 @@ class OAuth42CallbackView(APIView):
                 response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
                 return response
         else:
-            serializer = UserSerializer(data={'username': username, 'display_name': display_name, 'is_42_user' : True})
+            serializer = UserSerializer(data={'username': username, 'display_name': display_name, 'is_42_user' : True, 'avatar' : avatar_url})
             if serializer.is_valid():
                 # If the data is valid, create the user
                 user = serializer.save()
                 user.status = "online"
-                if avatar_url:
-                    self.update_user_avatar(user, avatar_url)
                 user.save()
                 # Generate JWT tokens for the user
                 access_token = token_generation(user)
@@ -120,14 +116,6 @@ class OAuth42CallbackView(APIView):
                 # Set the JWT as a cookie in the response
                 response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
                 return response
-    
-    def update_user_avatar(self, user, avatar_url):
-        # Download the avatar image from the URL
-        response = requests.get(avatar_url)
-        if response.status_code == 200:
-            # If the download was successful, save the image to the user's avatar field
-            file_name = avatar_url.split("/")[-1]  # Extract the file name from the URL
-            user.avatar.save(file_name, ContentFile(response.content), save=True)
 
 class UserLoginAPIView(APIView):
     def post(self, request):
@@ -151,7 +139,7 @@ class UserLoginAPIView(APIView):
             return response
         
         # If the serializer is not valid
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_200_OK)
 
 class LogoutUserView(APIView):
     @method_decorator(token_required)

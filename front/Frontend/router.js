@@ -142,8 +142,6 @@ function attachLoginFormListener() {
             //     alert("Login failed. Please check your username and password.");
             // }
             if(response.ok) {
-                const profileData = await response.json();
-                console.log(profileData);
                 window.location.href = '/profile'; // Redirect to profile page
             } else {
                 alert('Login failed: ' + result.message);
@@ -153,23 +151,26 @@ function attachLoginFormListener() {
 }
 
 async function fetchUserProfile() {
-    const response = await fetch('http://localhost:8000/profile/', {
-        method: 'GET', // Credentials (cookies) are included automatically
-        credentials: 'include', // This line is usually not necessary for same-origin requests
-    });
+    const profile = document.getElementById('profile');
+    if (profile) {
+        const response = await fetch('http://localhost:8000/profile/', {
+            method: 'GET', // Credentials (cookies) are included automatically
+            credentials: 'include', // This line is usually not necessary for same-origin requests
+        });
 
-    if (response.ok) {
-        console.log("hello world!");
-        const profileData = await response.json();
-        console.log(profileData);
-        
-        // Update the page with the user's profile data
-        document.getElementById('username').textContent = profileData.username || 'Unavailable';
-        document.getElementById('display_name').textContent = profileData.display_name || 'Unavailable';
-        // Update more fields as needed based on the profileData object structure
-    } else {
-        // Handle errors, e.g., by redirecting to the login page or showing an error message
-        alert('Failed to load profile. Please try again.');
+        if (response.ok) {
+            console.log("hello world!");
+            // const profileData = await response.json();
+            // console.log(profileData);
+            
+            // // Update the page with the user's profile data
+            // document.getElementById('username').textContent = profileData.username || 'Unavailable';
+            // document.getElementById('display_name').textContent = profileData.display_name || 'Unavailable';
+            // Update more fields as needed based on the profileData object structure
+        } else {
+            // Handle errors, e.g., by redirecting to the login page or showing an error message
+            alert('Failed to load profile. Please try again.');
+        }
     }
 }
 

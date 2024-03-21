@@ -9,7 +9,7 @@ export default {
 
 
     welcome: "Welcome to our website!",
-	about: "About Us",
+	about: "HAAAHOUWA DKHEL",
 	contactUs: "Contact US",
 	home: "Home",
 	not_found: "Page not found",
