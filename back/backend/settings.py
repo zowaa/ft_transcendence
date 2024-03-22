@@ -61,7 +61,7 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_HEADERS = ['*']
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8080',
+    'https://localhost',
 ]
 CORS_ALLOW_CREDENTIALS = True
 
@@ -144,7 +144,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 # 42 OAuth2 settings
 OAUTH42_CLIENT_ID = 'u-s4t2ud-699532163e315a3cae8981883db6d9a71000c12ed5c8c68b78287456e8150fea'
 OAUTH42_CLIENT_SECRET = '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'
-OAUTH42_REDIRECT_URI = 'http://localhost:8000/auth42_callback&response_type=code'
+OAUTH42_REDIRECT_URI = 'https://localhost:8000/auth42_callback&response_type=code'
 
 # ALLOWED_HOSTS = ['https://localhost:8000','*']
 # CSRF_TRUSTED_ORIGINS = ['https://localhost:8000']

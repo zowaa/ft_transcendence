@@ -58,7 +58,7 @@ class OAuth42CallbackView(APIView):
             'client_id': settings.OAUTH42_CLIENT_ID,
             'client_secret': settings.OAUTH42_CLIENT_SECRET,
             'code': code,
-            'redirect_uri': 'http://localhost:8000/auth42_callback',
+            'redirect_uri': 'https://localhost:8000/auth42_callback',
         }
 
         try:
