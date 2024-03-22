@@ -134,12 +134,12 @@ class UserLoginAPIView(APIView):
             response = Response(response_data, status=status.HTTP_200_OK)
 
             # Set the JWT as a cookie in the response
-            response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
+            response.set_cookie("jwt", access_token, httponly=True, secure=True)
             
             return response
         
         # If the serializer is not valid
-        return Response(serializer.errors, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
 
 class LogoutUserView(APIView):
     @method_decorator(token_required)

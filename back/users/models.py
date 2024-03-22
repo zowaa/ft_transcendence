@@ -15,7 +15,7 @@ class CustomUser(AbstractBaseUser):
     date_joined = models.DateTimeField(auto_now=True)
     last_login = models.DateTimeField(auto_now=True)
     # avatar = models.ImageField(upload_to='images/', default="default.png")
-    avatar = models.URLField(max_length=200, null=false, blank=false, default="media/default.png")
+    avatar = models.URLField(max_length=200, null=False, blank=False, default="media/default.png")
     nb_wins = models.IntegerField(default=0)
     nb_losses = models.IntegerField(default=0)
     nb_plays = models.IntegerField(default=0)

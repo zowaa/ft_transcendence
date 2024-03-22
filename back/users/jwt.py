@@ -5,7 +5,36 @@ import hmac
 from datetime import datetime, timedelta
 import os
 
+# def token_generation(userd):
+#     payload = {
+#         'user': {
+#             'id': userd.id,
+#             'username': userd.username,
+#             'double_auth': userd.double_auth,
+#         },
+#         'exp': datetime.timestamp(datetime.utcnow() + timedelta(days=1)),
+#     }
+
+#     encoded_payload = base64.urlsafe_b64encode(json.dumps(payload).encode('utf-8'))
+
+#     secret_key = os.environ.get("JWT_SECRET")
+#     signature = hmac.new(secret_key.encode('utf-8'), encoded_payload, hashlib.sha256).digest()
+#     encoded_signature = base64.urlsafe_b64encode(signature)
+
+#     jwt_token = f"{encoded_payload.decode('utf-8')}.{encoded_signature.decode('utf-8')}"
+
+#     return jwt_token
+
 def token_generation(userd):
+    # Define the header
+    header = {
+        'typ': 'JWT',
+        'alg': 'HS256'
+    }
+    # Encode the header
+    encoded_header = base64.urlsafe_b64encode(json.dumps(header).encode('utf-8')).decode('utf-8').rstrip('=')
+
+    # Define the payload
     payload = {
         'user': {
             'id': userd.id,
@@ -14,14 +43,19 @@ def token_generation(userd):
         },
         'exp': datetime.timestamp(datetime.utcnow() + timedelta(days=1)),
     }
+    # Encode the payload
+    encoded_payload = base64.urlsafe_b64encode(json.dumps(payload).encode('utf-8')).decode('utf-8').rstrip('=')
 
-    encoded_payload = base64.urlsafe_b64encode(json.dumps(payload).encode('utf-8'))
+    # Prepare the string to be signed
+    to_sign = f"{encoded_header}.{encoded_payload}"
 
-    secret_key = os.environ.get("JWT_SECRET")
-    signature = hmac.new(secret_key.encode('utf-8'), encoded_payload, hashlib.sha256).digest()
-    encoded_signature = base64.urlsafe_b64encode(signature)
+    # Sign the header and payload
+    secret_key = os.environ.get("JWT_SECRET", "default_secret").encode('utf-8')
+    signature = hmac.new(secret_key, to_sign.encode('utf-8'), hashlib.sha256).digest()
+    encoded_signature = base64.urlsafe_b64encode(signature).decode('utf-8').rstrip('=')
 
-    jwt_token = f"{encoded_payload.decode('utf-8')}.{encoded_signature.decode('utf-8')}"
+    # Construct the token
+    jwt_token = f"{to_sign}.{encoded_signature}"
 
     return jwt_token
 
