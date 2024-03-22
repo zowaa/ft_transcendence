@@ -158,7 +158,21 @@ services:
       - .env
     restart: always
 
-  app:
+  rproxy:
+    image: rproxy:1.0
+    build: ./rproxy
+    container_name: rproxy
+    ports:
+      - "80:80"
+    command : "nginx -g 'daemon off;'"
+    volumes:
+      - app_data:/etc/nginx/ssl
+    depends_on:
+      - back
+      - front
+    restart: always
+
+  back:
     image: back:1.0
     build: ./back/
     container_name: back
