@@ -94,7 +94,7 @@ function attachSignupFormListener() {
             // Convert the object to a JSON string
             let jsonBody = JSON.stringify(formDataObj);
 
-            let response = await fetch('https://localhost:8000/register/', {
+            let response = await fetch('http://localhost/register/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -127,7 +127,7 @@ function attachLoginFormListener() {
             });
             let json = JSON.stringify(object);
 
-            let response = await fetch('https://localhost:8000/login/', { // Change this URL to your login endpoint
+            let response = await fetch('http://localhost/login/', { // Change this URL to your login endpoint
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json', // Correctly setting Content-Type for JSON
@@ -154,7 +154,7 @@ function attachLoginFormListener() {
 async function fetchUserProfile() {
     const profile = document.getElementById('profile');
     if (profile) {
-        const response = await fetch('https://localhost:8000/profile/', {
+        const response = await fetch('http://localhost/profile/', {
             method: 'GET', // Credentials (cookies) are included automatically
             credentials: 'include', // This line is usually not necessary for same-origin requests
         });
