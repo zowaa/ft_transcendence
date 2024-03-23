@@ -127,14 +127,13 @@ class UserLoginAPIView(APIView):
             response_data = {
                 'message': 'Login successful.',
                 'access': access_token,
-                'infos': serializer.data,
             }
             
             # Create a Response object
             response = Response(response_data, status=status.HTTP_200_OK)
 
             # Set the JWT as a cookie in the response
-            response.set_cookie("jwt", access_token, httponly=True, secure=True)
+            # response.set_cookie("jwt", access_token, httponly=True, domain="localhost",  path='/')
             
             return response
         
@@ -158,17 +157,13 @@ class Profile(APIView):
     @method_decorator(token_required)
     def get(self, request):
         try:
-            username = request.query_params.get('username')
-            if username:
-                user = CustomUser.objects.filter(username=username).first()
-                if not user:
-                    return Response({"status": 404, "message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-                serializer = ProfileSerializer(user)
-                return Response({"status": 200, "user": serializer.data}, status=status.HTTP_200_OK)
-            
-            user = CustomUser.objects.filter(id=request.user_payload['user']['id']).first()
+            user_id = request.user_payload['user']['id']
+            user = CustomUser.objects.get(id=user_id)
+            if not user:
+                return Response({"status": 404, "message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
             serializer = ProfileSerializer(user)
-            return Response({"status": 200, "player": serializer.data}, status=status.HTTP_200_OK)
+            return Response({"status": 200, "user": serializer.data}, status=status.HTTP_200_OK)
+
         except CustomUser.DoesNotExist:
             return Response({"status": 404, "message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:

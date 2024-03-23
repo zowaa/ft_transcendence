@@ -105,24 +105,13 @@ function attachSignupFormListener() {
             if (response.ok) { // Check if the response status is 2xx
                 let result = await response.json();
                 alert(result.message);
-                window.location.href = '/profile'; 
+                // window.location.href = '/profile'; 
             } else {
                 let errorResult = await response.json();
                 alert(errorResult.detail || "An error occurred.");
             }
         };
     }
-}
-
-function getJWTFromCookies() {
-    const cookies = document.cookie.split(';');
-    for(let i = 0; i < cookies.length; i++) {
-        let cookie = cookies[i].trim();
-        if (cookie.startsWith('jwt=')) {
-            return cookie.substring(4);
-        }
-    }
-    return null; // JWT token not found in cookies
 }
 
 function attachLoginFormListener() {
@@ -154,12 +143,8 @@ function attachLoginFormListener() {
             // }
             if(response.ok) {
                 const responseData = await response.json();
-                // const jwtToken = responseData.jwt;
-                // // Set the JWT token as a cookie with an expiry date
-                // document.cookie = `jwt=${jwtToken}; path=/`;
-                console.log(responseData);
-                const jwtToken = getJWTFromCookies();
-                console.log(jwtToken); 
+				// Store the JWT in localStorage
+				localStorage.setItem('jwt', responseData.access);        
                 // window.location.pathname = '/about'; 
                 window.history.pushState({}, "", '/profile'); 
                 urlLocationHandler();// Redirect to profile page
@@ -174,21 +159,34 @@ function attachLoginFormListener() {
 async function fetchUserProfile() {
     const profile = document.getElementById('profile');
     if (profile) {
-        console.log(document.cookie);
+        const jwtToken = localStorage.getItem('jwt');  // Retrieve the JWT from localStorage
+		if (!jwtToken) {
+			console.error("JWT not found, user might not be logged in");
+			return;
+		}
         const response = await fetch('http://localhost/profile/', {
             method: 'GET', // Credentials (cookies) are included automatically
-            credentials: 'include', // This line is usually not necessary for same-origin requests
+            // credentials: 'include', // This line is usually not necessary for same-origin requests
+			headers: {
+				'Authorization': `Bearer ${jwtToken}`,  // Include the JWT in the Authorization header
+			},
         });
 
         if (response.ok) {
-            console.log("hello world!");
             const profileData = await response.json();
             console.log(profileData);
             
             // Update the page with the user's profile data
-            document.getElementById('username').textContent = profileData.username || 'Unavailable';
-            document.getElementById('display_name').textContent = profileData.display_name || 'Unavailable';
-            // Update more fields as needed based on the profileData object structure
+            document.getElementById('username').textContent = profileData.user.username || 'Unavailable';
+			document.getElementById('status').textContent = profileData.user.status || 'Unavailable';
+
+			const avatarUrl = profileData.user.avatar; // This should be the relative or absolute path to the avatar image
+            const avatarElement = document.getElementById('avatar');
+            if (avatarElement) {
+                // Ensure your server gives the correct path to the image.
+                // If it's a relative path, you might need to append the server's base URL.
+                avatarElement.src = "Frontend/default.png";
+            }
         } else {
             // Handle errors, e.g., by redirecting to the login page or showing an error message
             alert('Failed to load profile. Please try again.');

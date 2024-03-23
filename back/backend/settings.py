@@ -62,6 +62,7 @@ CORS_ALLOWED_ORIGINS = [
     'https://localhost',
 ]
 CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_WHITELIST = ['https://localhost']
 
 ROOT_URLCONF = "backend.urls"
 
