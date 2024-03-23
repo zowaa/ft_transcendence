@@ -38,11 +38,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'rest_framework',
     'users',
-    # 'rest_framework_simplejwt',
-    # 'oauth2_provider',
     'sslserver',
     'corsheaders'
-    # 'rest_framework_simplejwt.token_blacklist',
 ]
 
 MIDDLEWARE = [
@@ -50,7 +47,6 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    # 'oauth2_provider.middleware.OAuth2TokenMiddleware', #added
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -58,15 +54,13 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+ALLOWED_HOSTS = ['*']
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_HEADERS = ['*']
 CORS_ALLOWED_ORIGINS = [
     'https://localhost',
 ]
 CORS_ALLOW_CREDENTIALS = True
-
-CSRF_COOKIE_SECURE = False
-SESSION_COOKIE_SECURE = False
 
 ROOT_URLCONF = "backend.urls"
 
@@ -91,13 +85,6 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
 
 # DATABASES = {
 #    'default': {

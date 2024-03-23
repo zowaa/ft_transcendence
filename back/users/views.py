@@ -32,7 +32,7 @@ class RegisterUserView(APIView):
     def post(self, request):
         serializer = RegisterUserSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save() # add jwt
             response_data = {
                 "success": True,
                 "message": "User registered successfully",
@@ -88,7 +88,7 @@ class OAuth42CallbackView(APIView):
     def process_user_data(self, user_data):
         username = user_data['login']
         display_name = user_data['displayname']
-        avatar_url = user_data.get('image_url')
+        avatar_url = user_data['image']['link']
 
         user = CustomUser.objects.filter(username=username, is_42_user=True).first()
         if user:

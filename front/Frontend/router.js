@@ -105,12 +105,24 @@ function attachSignupFormListener() {
             if (response.ok) { // Check if the response status is 2xx
                 let result = await response.json();
                 alert(result.message);
+                window.location.href = '/profile'; 
             } else {
                 let errorResult = await response.json();
                 alert(errorResult.detail || "An error occurred.");
             }
         };
     }
+}
+
+function getJWTFromCookies() {
+    const cookies = document.cookie.split(';');
+    for(let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i].trim();
+        if (cookie.startsWith('jwt=')) {
+            return cookie.substring(4);
+        }
+    }
+    return null; // JWT token not found in cookies
 }
 
 function attachLoginFormListener() {
@@ -133,7 +145,6 @@ function attachLoginFormListener() {
                     'Content-Type': 'application/json', // Correctly setting Content-Type for JSON
                 },
                 body: json,
-                credentials: 'same-origin',
             });
             // if(response.ok) {
             //     let result = await response.json();
@@ -142,18 +153,28 @@ function attachLoginFormListener() {
             //     alert("Login failed. Please check your username and password.");
             // }
             if(response.ok) {
-                alert('XXXXXXXXX: ');
-                // window.location.href = '/profile'; // Redirect to profile page
+                const responseData = await response.json();
+                // const jwtToken = responseData.jwt;
+                // // Set the JWT token as a cookie with an expiry date
+                // document.cookie = `jwt=${jwtToken}; path=/`;
+                console.log(responseData);
+                const jwtToken = getJWTFromCookies();
+                console.log(jwtToken); 
+                // window.location.pathname = '/about'; 
+                window.history.pushState({}, "", '/profile'); 
+                urlLocationHandler();// Redirect to profile page
             } else {
                 alert('Login failed: ');
             }
         };
+        return false;
     }
 }
 
 async function fetchUserProfile() {
     const profile = document.getElementById('profile');
     if (profile) {
+        console.log(document.cookie);
         const response = await fetch('http://localhost/profile/', {
             method: 'GET', // Credentials (cookies) are included automatically
             credentials: 'include', // This line is usually not necessary for same-origin requests
@@ -161,12 +182,12 @@ async function fetchUserProfile() {
 
         if (response.ok) {
             console.log("hello world!");
-            // const profileData = await response.json();
-            // console.log(profileData);
+            const profileData = await response.json();
+            console.log(profileData);
             
-            // // Update the page with the user's profile data
-            // document.getElementById('username').textContent = profileData.username || 'Unavailable';
-            // document.getElementById('display_name').textContent = profileData.display_name || 'Unavailable';
+            // Update the page with the user's profile data
+            document.getElementById('username').textContent = profileData.username || 'Unavailable';
+            document.getElementById('display_name').textContent = profileData.display_name || 'Unavailable';
             // Update more fields as needed based on the profileData object structure
         } else {
             // Handle errors, e.g., by redirecting to the login page or showing an error message
