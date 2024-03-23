@@ -30,15 +30,21 @@ from django.http import HttpResponse
 
 class RegisterUserView(APIView):
     def post(self, request):
-        serializer = RegisterUserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save() # add jwt
-            response_data = {
-                "success": True,
-                "message": "User registered successfully",
-            }
-            return Response(response_data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            serializer = RegisterUserSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save() # add jwt
+                user = CustomUser.objects.get(username=serializer.data['username'])
+                access_token = token_generation(user)
+                response_data = {
+                    "success": True,
+                    "message": "User registered successfully",
+                    "access": access_token,
+                }
+                return Response(response_data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class OAuth42RedirectView(APIView):
     def get(self, request, *args, **kwargs):

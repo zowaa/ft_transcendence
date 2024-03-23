@@ -17,7 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
 class RegisterUserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=100, required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
     password = serializers.CharField(min_length=8, max_length=100, required=True, write_only=True)
-    avatar = serializers.ImageField(required=False)
+
     class Meta:
         model = CustomUser
         fields = ['id', 'username', 'password', 'display_name', 'avatar']
@@ -27,7 +27,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         user = CustomUser(
             username = validated_data['username'],
             display_name = validated_data['username'],
-            # avatar=validated_data['avatar']
+            status = "online"
         )
         user.set_password(validated_data['password'])
         user.save()

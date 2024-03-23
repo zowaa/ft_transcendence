@@ -1,0 +1,57 @@
+#pong {
+	min-height: 70vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+#start {
+	min-height: 20vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#pongCanvas {
+	max-width: 100%;
+	height: auto;
+}
+
+.button-80s {
+    border: none;
+    padding: 1vw 2vw; 
+    font-size: 4vw;
+    background: transparent;
+    color: #ff46f6;
+    font-family: 'Press Start 2P';
+    cursor: pointer;
+    outline: none;
+    user-select: none;
+    transition: text-shadow 0.3s ease-in-out, transform 0.25s, box-shadow 0.25s;
+    text-shadow:
+        0 0 5px #ff46f6, /* left */
+        0 0 10px #ff46f6, /* right */
+        0 0 20px #ff46f6, /* glow */
+        0 0 40px #ff46f6; /* far glow */
+	text-decoration: none;
+}
+
+.button-80s:hover {
+    text-shadow:
+        0 0 10px #ff46f6,
+        0 0 15px #ff46f6,
+        0 0 30px #ff46f6,
+        0 0 60px #ff46f6;
+
+    /* The raise effect */
+    box-shadow: 0 0.5em 0.5em -0.4em #ff46f6;
+    transform: translateY(-0.25em);
+}
+
+@media (max-width: 425px) {
+    .button-80s {
+        padding: 2vw 4vw;
+        font-size: 7vw;
+    }
+}
