@@ -12,7 +12,7 @@
     .navbar-logo img {
         height: 5vw;
     }
-    .btn {
+    .btnn {
         transform: scale(1.2);
     }
    .navbar {
@@ -24,7 +24,7 @@
     .navbar-logo img {
         height: 15vw;
     }
-    .btn {
+    .btnn {
         transform: scale(0.8);
     }
     .navbar {

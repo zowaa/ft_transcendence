@@ -2,6 +2,8 @@ export default {
 	titles: {
 		"404": "404 Non trouvé | Pong",
 		"/": "Accueil | Pong",
+		"/sign_in": "Se connecter | Pong",
+		"/sign_up": "S'inscrire | Pong",
 
 
 		"/about": "Sur nous | Pong",

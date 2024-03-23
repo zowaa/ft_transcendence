@@ -7,14 +7,18 @@ const urlRoutes = {
 		template: "/Frontend/Pages/home.html",
 		description: "This is Home page",
 	},
-
-
-
-
-	"/about": {
-		template: "/Frontend/Pages/about.html",
-		description: "This is About page",
+	"/sign_in": {
+		template: "/Frontend/Pages/sign_in.html",
+		description: "This is Sign_in page",
 	},
+	"/sign_up": {
+		template: "/Frontend/Pages/sign_up.html",
+		description: "This is Sign_up page",
+	},
+
+	
+
+
 	"/contact_us": {
 		template: "/Frontend/Pages/contact_us.html",
 		description: "This is Contact_us page",
