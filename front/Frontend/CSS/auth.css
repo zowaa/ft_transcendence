@@ -1,5 +1,6 @@
 h1 {
 	font-size: 23px;
+	color: #e9ecef;
   }
   
 
@@ -35,6 +36,10 @@ h1 {
 	-webkit-box-shadow: none;
 	box-shadow: none; 
   }
+  .form .control input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: rgb(162 161 161);; /* light pink */
+    opacity: 1; /* Firefox */
+}
   .form .btn {
 	width: 100%;
 	display: block;
@@ -103,6 +108,8 @@ h1 {
   .block-cube .text {
 	position: relative;
 	z-index: 2;
+
+    color:#dee2e6;
   }
   .block-cube.block-input input {
 	position: relative;

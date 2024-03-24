@@ -18,6 +18,7 @@ export default {
 	click: "Click here",
 	or: "Or",
 	signup: "Sign Up",
+	text_signup: "You already have an account?",
 
 
 

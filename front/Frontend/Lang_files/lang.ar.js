@@ -17,6 +17,7 @@ export default {
 	click: "انقر هنا",
 	or: "أو",
 	signup: "سجل",
+	text_signup: "هل لديك حساب بالفعل؟",
 	
 
 	welcome: "مرحبًا بك في موقعنا!",

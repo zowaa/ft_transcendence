@@ -27,10 +27,11 @@ function attachLoginFormListener() {
                 window.history.pushState({}, "", '/profile'); 
                 urlLocationHandler();
             } else {
-                alert('Login failed: ');
+                let errorResult = await response.json();
+                alert(errorResult.detail || "An error occurred.");
             }
         };
-        return false;
+        // return false;
     }
 }
 

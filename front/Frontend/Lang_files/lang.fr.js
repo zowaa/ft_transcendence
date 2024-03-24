@@ -6,7 +6,7 @@ export default {
 		"/sign_up": "S'inscrire | Pong",
 	},
 	placeholders: {
-		"username": "Nom d'utilisateur",
+		"username": "Nom",
 		"password": "Mot de passe",
 	},
 	not_found: "Page non trouvée",
@@ -17,6 +17,7 @@ export default {
 	click: "Cliquez ici",
 	or: "Ou",
 	signup: "S'inscrire",
+	text_signup: "Vous avez déjà un compte?",
 
 
 
