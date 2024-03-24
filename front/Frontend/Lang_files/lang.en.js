@@ -4,7 +4,7 @@ export default {
         "/": "Home | Pong",
 		"/sign_in": "Sign In | Pong",
 		"/sign_up": "Sign Up | Pong",
-		
+		"/game": "Game | Pong",
 
         "/about": "About Us | Pong",
         "/contact_us": "Contact Us | Pong",

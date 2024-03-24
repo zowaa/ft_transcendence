@@ -15,6 +15,10 @@ const urlRoutes = {
 		template: "/Frontend/Pages/sign_up.html",
 		description: "This is Sign_up page",
 	},
+	"/game": {
+		template: "/Frontend/Pages/game.html",
+		description: "This is Game page",
+	},
 
 	
 
