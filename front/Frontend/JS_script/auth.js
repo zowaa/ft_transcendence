@@ -23,7 +23,7 @@ function attachLoginFormListener() {
             if(response.ok) {
                 const responseData = await response.json();
 				// Store the JWT in localStorage
-				localStorage.setItem('jwt',                                                                                                                                                                                                                                                                              .access);
+				localStorage.setItem('jwt', responseData.access);
                 window.history.pushState({}, "", '/profile'); 
                 urlLocationHandler();
             } else {
