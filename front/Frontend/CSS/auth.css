@@ -1,4 +1,4 @@
-h1 {
+.form h1 {
 	font-size: 23px;
 	color: #e9ecef;
   }
@@ -11,7 +11,6 @@ h1 {
 	margin-bottom: 40px;
   }
   .form {
-
     font-family: 'Press Start 2P';
 	width: 300px;
 	padding: 64px 15px 24px;
@@ -23,12 +22,12 @@ h1 {
 .form .control input {
 	width: 100%;
 	padding: 14px 16px;
+	font-size: 16px;
 	border: 0;
 	background: transparent;
 	color: #fff;
     font-family: 'Press Start 2P';
 	letter-spacing: 0.05em;
-	font-size: 16px;
   }
   .form .control input:hover, .form .control input:focus {
 	outline: none;
@@ -183,8 +182,9 @@ h1 {
   .account-prompt a:focus {
 	text-decoration: underline; 
   }
+
 @media (min-width: 2000px) {
-    h1 {
+    .form h1 {
         font-size: 46px; 
 		margin-bottom: 40px; 
     }
@@ -266,5 +266,92 @@ h1 {
 	  }
   
 	}
+
+
+	@media (max-width: 500) {
+		.form h1 {
+			font-size: 23px; 
+			 margin-bottom: 40px;  /* to check */
+		}
+	  
+		.form {
+			width: 30; 
+			padding: 64px 15px 24px;
+		}
+	
+		.form .control {
+			margin: 0 0 24px;
+			/* margin-bottom: 30px; */
+		}
+	
+		.form .control input {
+			
+			padding: 14px 16px;
+			font-size: 16px;
+		}
+		
+		.form .btn {
+			padding: 14 16; 
+			font-size: 16; 
+		}
+	
+		.block-cube .bg-top {
+			left: 5px; 
+			right: -5px; 
+			transform: skew(-45deg, 0); 
+			height: 10px;
+		}
+	
+		.block-cube .bg-right {
+			top: -5;
+			bottom: 5;
+			transform: skew(0, -45deg); 
+			width: 10px; 
+		}
+	
+		.block-cube .bg-inner {
+			left: 2px;
+			top: 2px;
+			right: 2px;
+			bottom: 2px;
+		}
+		.form-group {
+			margin-bottom: 24px;
+		  }
+		
+
+		  .text-center.my-3 {
+			margin-top: 48px;
+			margin-bottom: 48px;
+			border-bottom: 2px solid #fff; 
+			line-height: 0px; 
+		  }
+		  .x {
+			margin-bottom: 40px;
+		  }
+		  .xx {
+			margin-bottom: 80px;
+		  }
+		 
+		
+		.divider-or-container {
+			margin-top: 5px; 
+			margin-bottom: 15px; 
+		  }
+		
+		  .divider-line {
+			height: 2px; 
+			width: 80px;
+		}
+		.divider-or {
+			font-size: 14px; 
+			padding: 0 20px;;
+		}
+		.account-prompt {
+			margin-top: 20px; 
+			font-size: 12px; 
+		  }
+	  
+		}
 
   

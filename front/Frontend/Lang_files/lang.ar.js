@@ -5,10 +5,12 @@ export default {
 		"/sign_in": "تسجيل الدخول | Pong",
 		"/sign_up": "سجل | Pong",
 	},
+
 	placeholders: {
 		"username": "اسم المستخدم",
 		"password": "كلمة المرور",
 	},
+	
 	not_found: "الصفحة غير موجودة",
 	start_now: "ابدأ الآن",
 	signin: "تسجيل الدخول",
@@ -19,9 +21,4 @@ export default {
 	signup: "سجل",
 	text_signup: "هل لديك حساب بالفعل؟",
 	
-
-	welcome: "مرحبًا بك في موقعنا!",
-	about: "حول",
-	contactUs: "اتصل بنا",
-	home: "الصفحة الرئيسية",
 };

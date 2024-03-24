@@ -6,10 +6,12 @@ export default {
 		"/sign_up": "Sign Up | Pong",
 		"/game": "Game | Pong",
     },
+
 	placeholders: {
 		"username": "Username",
 		"password": "Password",
 	},
+	
 	not_found: "Page not found",
 	start_now: "Start Now",
 	signin: "Sign In",
@@ -20,10 +22,4 @@ export default {
 	signup: "Sign Up",
 	text_signup: "You already have an account?",
 
-
-
-    welcome: "Welcome to our website!",
-	about: "About Us",
-	contactUs: "Contact US",
-	home: "Home",
 };

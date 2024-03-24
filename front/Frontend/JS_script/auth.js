@@ -98,7 +98,7 @@ async function fetchUserProfile() {
             if (avatarElement) {
                 // Ensure your server gives the correct path to the image.
                 // If it's a relative path, you might need to append the server's base URL.
-                avatarElement.src = "Frontend/default.png";
+                avatarElement.src = "Frontend/Assets/default.png";
             }
         } else {
             // Handle errors, e.g., by redirecting to the login page or showing an error message
