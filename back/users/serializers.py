@@ -6,7 +6,7 @@ from django.contrib.auth.password_validation import validate_password
 class UserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=100, required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
     password = serializers.CharField(min_length=8, max_length=100, required=False, write_only=True)
-    avatar = serializers.ImageField(required=False)
+    avatar = serializers.URLField(required=False)
     is_42_user = serializers.BooleanField(required=False)
     # print("UserSerializer")
     class Meta:
@@ -27,7 +27,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         user = CustomUser(
             username = validated_data['username'],
             display_name = validated_data['username'],
-            status = "online"
+            status = "online",
         )
         user.set_password(validated_data['password'])
         user.save()

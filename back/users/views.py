@@ -33,8 +33,8 @@ class RegisterUserView(APIView):
         try:
             serializer = RegisterUserSerializer(data=request.data)
             if serializer.is_valid():
-                serializer.save() # add jwt
-                user = CustomUser.objects.get(username=serializer.data['username'])
+                serializer.save()
+                user = CustomUser.objects.get(username=serializer.validated_data['username'])
                 access_token = token_generation(user)
                 response_data = {
                     "success": True,
@@ -42,9 +42,9 @@ class RegisterUserView(APIView):
                     "access": access_token,
                 }
                 return Response(response_data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"success": False, "error": serializer.errors}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"success": False,"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class OAuth42RedirectView(APIView):
     def get(self, request, *args, **kwargs):
@@ -131,20 +131,17 @@ class UserLoginAPIView(APIView):
             access_token = token_generation(user)            
             # Prepare the response data
             response_data = {
+                "success": True,
                 'message': 'Login successful.',
                 'access': access_token,
             }
             
             # Create a Response object
             response = Response(response_data, status=status.HTTP_200_OK)
-
-            # Set the JWT as a cookie in the response
-            # response.set_cookie("jwt", access_token, httponly=True, domain="localhost",  path='/')
-            
             return response
         
         # If the serializer is not valid
-        return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({"success": False, "error": serializer.errors}, status=status.HTTP_401_UNAUTHORIZED)
 
 class LogoutUserView(APIView):
     @method_decorator(token_required)
@@ -166,14 +163,14 @@ class Profile(APIView):
             user_id = request.user_payload['user']['id']
             user = CustomUser.objects.get(id=user_id)
             if not user:
-                return Response({"status": 404, "message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+                return Response({"status": 404, "error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
             serializer = ProfileSerializer(user)
             return Response({"status": 200, "user": serializer.data}, status=status.HTTP_200_OK)
 
         except CustomUser.DoesNotExist:
-            return Response({"status": 404, "message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"status": 404, "error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            return Response({"status": 500, "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"status": 500, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @method_decorator(token_required)
     def put(self, request):
@@ -186,11 +183,44 @@ class Profile(APIView):
                 serializer.save()
                 return Response({"status": 200, "message": "User updated successfully", "user": serializer.data}, status=status.HTTP_200_OK)
             else:
-                return Response({"status": 400, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"status": 400, "error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         except CustomUser.DoesNotExist:
-            return Response({"status": 404, "message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"status": 404, "error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
-            return Response({"status": 500, "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"status": 500, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# class Profile(APIView):
+#     @method_decorator(token_required)
+#     def get(self, request):
+#         try:
+#             user_id = request.user_payload['user']['id']
+#             user = CustomUser.objects.get(id=user_id)
+#             if not user:
+#                 return Response({"status": 404, "message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+#             serializer = ProfileSerializer(user)
+#             return Response({"status": 200, "user": serializer.data}, status=status.HTTP_200_OK)
+
+#         except CustomUser.DoesNotExist:
+#             return Response({"status": 404, "message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+#         except Exception as e:
+#             return Response({"status": 500, "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+#     @method_decorator(token_required)
+#     def put(self, request):
+#         try:
+#             user_data = request.data
+#             user = CustomUser.objects.filter(id=request.user_payload['user']['id']).first()
+#             serializer = UpdateProfileSerializer(user, data=user_data, partial=True)  # partial=True allows for partial updates
+            
+#             if serializer.is_valid():
+#                 serializer.save()
+#                 return Response({"status": 200, "message": "User updated successfully", "user": serializer.data}, status=status.HTTP_200_OK)
+#             else:
+#                 return Response({"status": 400, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+#         except CustomUser.DoesNotExist:
+#             return Response({"status": 404, "message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+#         except Exception as e:
+#             return Response({"status": 500, "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class PlayerAvatarUpload(APIView):
     @method_decorator(token_required)
@@ -198,15 +228,27 @@ class PlayerAvatarUpload(APIView):
         try:
             user_id = request.user_payload['user']['id']
             user = CustomUser.objects.get(id=user_id)
-            
+
             file = request.FILES['avatar']
-            user.avatar.save(file.name, file, save=True)
+            # Define the path for the file
+            file_path = os.path.join(settings.MEDIA_ROOT, 'avatars', file.name)  # You can adjust the 'avatars' subdirectory as needed
+
+            # Save the file to the filesystem
+            with open(file_path, 'wb+') as destination:
+                for chunk in file.chunks():
+                    destination.write(chunk)
             
+            # Generate the URL for the saved file
+            avatar_url = request.build_absolute_uri(settings.MEDIA_URL + 'avatars/' + file.name)
+
+            # Update the user's avatar URL
+            user.avatar = avatar_url
+            user.save()
+
             return Response({
                 "status": 200,
                 "message": "Avatar updated successfully",
-                # "avatar_url": request.build_absolute_uri(user.avatar.url)
-                "avatar_url": request.build_absolute_uri(settings.MEDIA_URL + str(user.avatar))
+                "avatar_url": avatar_url
             }, status=status.HTTP_200_OK)
         except CustomUser.DoesNotExist:
             return Response({
@@ -223,6 +265,38 @@ class PlayerAvatarUpload(APIView):
                 "status": 500,
                 "message": str(e),
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+# class PlayerAvatarUpload(APIView):
+#     @method_decorator(token_required)
+#     def post(self, request):
+#         try:
+#             user_id = request.user_payload['user']['id']
+#             user = CustomUser.objects.get(id=user_id)
+            
+#             file = request.FILES['avatar']
+#             user.avatar.save(file.name, file, save=True)
+            
+#             return Response({
+#                 "status": 200,
+#                 "message": "Avatar updated successfully",
+#                 # "avatar_url": request.build_absolute_uri(user.avatar.url)
+#                 "avatar_url": request.build_absolute_uri(settings.MEDIA_URL + str(user.avatar))
+#             }, status=status.HTTP_200_OK)
+#         except CustomUser.DoesNotExist:
+#             return Response({
+#                 "status": 404,
+#                 "message": "User not found",
+#             }, status=status.HTTP_404_NOT_FOUND)
+#         except KeyError:
+#             return Response({
+#                 "status": 400,
+#                 "message": "No avatar file provided",
+#             }, status=status.HTTP_400_BAD_REQUEST)
+#         except Exception as e:
+#             return Response({
+#                 "status": 500,
+#                 "message": str(e),
+#             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class ChangePasswordView(APIView):
     @method_decorator(token_required)
