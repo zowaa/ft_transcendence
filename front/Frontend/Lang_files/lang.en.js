@@ -5,16 +5,24 @@ export default {
 		"/sign_in": "Sign In | Pong",
 		"/sign_up": "Sign Up | Pong",
 		"/game": "Game | Pong",
-
-        "/about": "About Us | Pong",
-        "/contact_us": "Contact Us | Pong",
     },
+	placeholders: {
+		"username": "Username",
+		"password": "Password",
+	},
+	not_found: "Page not found",
 	start_now: "Start Now",
-	
+	signin: "Sign In",
+	signin_intra: "Sign with 42",
+	text_signin: "You don't have an account yet?",
+	click: "Click here",
+	or: "Or",
+	signup: "Sign Up",
+
+
 
     welcome: "Welcome to our website!",
 	about: "About Us",
 	contactUs: "Contact US",
 	home: "Home",
-	not_found: "Page not found",
 };

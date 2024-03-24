@@ -4,12 +4,19 @@ export default {
 		"/": "Accueil | Pong",
 		"/sign_in": "Se connecter | Pong",
 		"/sign_up": "S'inscrire | Pong",
-
-
-		"/about": "Sur nous | Pong",
-		"/contact_us": "Contact nous | Pong",
 	},
+	placeholders: {
+		"username": "Nom d'utilisateur",
+		"password": "Mot de passe",
+	},
+	not_found: "Page non trouvée",
 	start_now: "Commencer",
+	signin: "Se connecter",
+	signin_intra: "Se connecter avec 42",
+	text_signin: "Vous n'avez pas encore de compte?",
+	click: "Cliquez ici",
+	or: "Ou",
+	signup: "S'inscrire",
 
 
 
@@ -18,5 +25,4 @@ export default {
 	contactUs: "Contact nous",
 	home: "Accueil",
 	
-	not_found: "Page non trouvée",
 };

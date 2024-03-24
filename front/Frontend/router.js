@@ -111,6 +111,9 @@ function applyLanguageToContent(lang) {
     elementsToTranslate.forEach((element) => {
         const key = element.getAttribute('data-i18n');
         element.textContent = lang[key] || '';
+		if (element.tagName === "INPUT") {
+			element.placeholder = lang.placeholders[key] || '';
+		}
     });
 
 	if(lang.titles[window.location.pathname]){

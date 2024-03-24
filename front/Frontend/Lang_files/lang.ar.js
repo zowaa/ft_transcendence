@@ -4,17 +4,23 @@ export default {
 		"/": "الصفحة الرئيسية | Pong",
 		"/sign_in": "تسجيل الدخول | Pong",
 		"/sign_up": "سجل | Pong",
-
-
-		"/about": "حول | Pong",
-		"/contact_us": "اتصل بنا | Pong",
 	},
+	placeholders: {
+		"username": "اسم المستخدم",
+		"password": "كلمة المرور",
+	},
+	not_found: "الصفحة غير موجودة",
 	start_now: "ابدأ الآن",
+	signin: "تسجيل الدخول",
+	signin_intra: "تسجيل ب 42",
+	text_signin: " ليس لديك حساب بعد؟",
+	click: "انقر هنا",
+	or: "أو",
+	signup: "سجل",
 	
 
 	welcome: "مرحبًا بك في موقعنا!",
 	about: "حول",
 	contactUs: "اتصل بنا",
 	home: "الصفحة الرئيسية",
-	not_found: "الصفحة غير موجودة",
 };

@@ -32,6 +32,8 @@ h1 {
   .form .control input:hover, .form .control input:focus {
 	outline: none;
 	border: 0;
+	-webkit-box-shadow: none;
+	box-shadow: none; 
   }
   .form .btn {
 	width: 100%;
@@ -54,7 +56,7 @@ h1 {
 	position: absolute;
 	height: 10px;
 	background: #020024;
-	background: linear-gradient(90deg, #020024 0%, #340979 37%, #00d4ff 94%);
+	background: linear-gradient(90deg, #ff46f6 27%, #00d4ff 84%);
 	bottom: 100%;
 	left: 5px;
 	right: -5px;
@@ -71,7 +73,7 @@ h1 {
 	right: 0;
 	bottom: 0;
 	background: #020024;
-	background: linear-gradient(90deg, #020024 0%, #340979 37%, #00d4ff 94%);
+	background: linear-gradient(90deg, #ff46f6 27%, #00d4ff 84%);
   }
   .block-cube .bg-right {
 	position: absolute;
