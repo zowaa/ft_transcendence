@@ -34,7 +34,7 @@ then
   curl -k -X PUT -u "${ELASTIC_USER}:${ELASTIC_PASSWORD}" "${ELASTICSEARCH_HOSTS}/_ilm/policy/${ILM_POLICY_NAME2}" -H 'Content-Type: application/json' -d "${ILM_POLICY_BODY}"
 
   curl -k -X POST -u "${ELASTIC_USER}:${ELASTIC_PASSWORD}" "https://localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/usr/share/kibana/config/users_stats_dashboard.ndjson
-  curl -k -X POST -u "${ELASTIC_USER}:${ELASTIC_PASSWORD}" "https://localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/usr/share/kibana/config/containers_logs_dashboard.ndjson
+  curl -k -X POST -u "${ELASTIC_USER}:${ELASTIC_PASSWORD}" "https://localhost:5601/api/saved_objects/_import?overwrite=true" -H "kbn-xsrf: true" --form file=@/usr/share/kibana/config/app_logs_dashboard.ndjson
 
   curl -k -X POST -u "${ELASTIC_USER}:${ELASTIC_PASSWORD}" "${ELASTICSEARCH_HOSTS}/_security/role/viewer_role" -H 'Content-Type: application/json' -d '{
     "cluster": ["monitor"],
