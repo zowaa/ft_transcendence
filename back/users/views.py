@@ -58,30 +58,42 @@ class OAuth42RedirectView(APIView):
 class OAuth42CallbackView(APIView):
     def get(self, request, *args, **kwargs):
         code = request.query_params.get('code')
+        error = request.query_params.get('error')
+        if error:
+            return Response({"success": False, "error": error}, status=status.HTTP_401_UNAUTHORIZED)
+        if not code:
+            return Response({"success": False, "error": "Code parameter is required"}, status=status.HTTP_401_UNAUTHORIZED)
+        
         token_url = 'https://api.intra.42.fr/oauth/token'
         payload = {
             "grant_type": "authorization_code",
-            'client_id': settings.OAUTH42_CLIENT_ID,
-            'client_secret': settings.OAUTH42_CLIENT_SECRET,
-            'code': code,
-            'redirect_uri': 'https://localhost:8000/auth42_callback',
+            "client_id": settings.OAUTH42_CLIENT_ID,
+            "client_secret": settings.OAUTH42_CLIENT_SECRET,
+            "code": code,
+            "redirect_uri": "https://localhost:8000/auth42_callback/",
         }
 
         try:
             response = requests.post(token_url, data=payload)
             response.raise_for_status()  # This will raise an exception for HTTP errors
             access_token = response.json().get('access_token')
+
             if not access_token:
-                raise ValueError("Missing access token in response")
+                # Instead of raising ValueError, return an error response
+                return Response({"success": False, "error": "Missing access token in response"}, status=status.HTTP_401_UNAUTHORIZED)
             
             user_data = self.fetch_42_user(access_token)
-            if not user_data:
-                raise ValueError("Failed to fetch user data")
 
-            response = self.process_user_data(user_data)
-            return response
+            if not user_data:
+                # Instead of raising ValueError, return an error response
+                return Response({"success": False, "error": "Failed to fetch user data"}, status=status.HTTP_400_BAD_REQUEST)
+
+            return self.process_user_data(user_data)
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            # This catch block will handle exceptions and ensure a response is returned
+            return Response({"success": False, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        # return Response({"error": "Unexpected error occurred"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def fetch_42_user(self, access_token):
         user_url = 'https://api.intra.42.fr/v2/me'
@@ -94,20 +106,23 @@ class OAuth42CallbackView(APIView):
     def process_user_data(self, user_data):
         username = user_data['login']
         display_name = user_data['displayname']
-        avatar_url = user_data['image']['link']
+        avatar_url = str(user_data['image']['link'])
 
         user = CustomUser.objects.filter(username=username, is_42_user=True).first()
         if user:
             if (user.double_auth == True):
-                return Response({"statusCode": 401, "message": "Double authentification required."})
+                return Response({"success": False, "message": "Double authentification required."}, status=status.HTTP_401_UNAUTHORIZED)
             else :
                 user.status = "online"
                 user.save()
                 # Generate JWT tokens for the user
                 access_token = token_generation(user)
-                response = Response({"success": True,}, status=status.HTTP_200_OK)
-                # Set the JWT as a cookie in the response
+                # response = Response({"success": True, "access": access_token}, status=status.HTTP_200_OK)
+                response = redirect("https://localhost/profile")
                 response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
+                # frontend_redirect_url = "https://localhost/profile"
+                # return redirect(frontend_redirect_url).set_cookie("jwt", value=access_token, httponly=True, secure=True)
+                # # return redirect(frontend_redirect_url)
                 return response
         else:
             serializer = UserSerializer(data={'username': username, 'display_name': display_name, 'is_42_user' : True, 'avatar' : avatar_url})
@@ -118,10 +133,11 @@ class OAuth42CallbackView(APIView):
                 user.save()
                 # Generate JWT tokens for the user
                 access_token = token_generation(user)
-                response = Response({"success": True,}, status=status.HTTP_200_OK)
+                response = Response({"success": True, "access": access_token}, status=status.HTTP_200_OK)
                 # Set the JWT as a cookie in the response
-                response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
+                # response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
                 return response
+            return Response({"success": False, "error": serializer.errors}, status=status.HTTP_401_UNAUTHORIZED)
 
 class UserLoginAPIView(APIView):
     def post(self, request):

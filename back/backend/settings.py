@@ -28,6 +28,9 @@ SECRET_KEY = "kmoutaou78"
 DEBUG = False
 
 # Application definition
+# from corsMiddleware import corsMiddleware
+CORS_ALLOW_HEADERS = "access-control-allow-origin"
+
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -55,8 +58,7 @@ MIDDLEWARE = [
 ]
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
-
-# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
@@ -141,9 +143,9 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'users.CustomUser'
 
 # 42 OAuth2 settings
-OAUTH_CLIENT_ID='u-s4t2ud-110e6a72c470ea3b61e2a1bc09acbd391dbb5fa23ecb37d0c8b88d513aa3865a'
-OAUTH_SECRET_ID='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'
-OAUTH_REDIRECT_URI='http://localhost/auth42_callback/'
+OAUTH42_CLIENT_ID = 'u-s4t2ud-78ad9702e59bae65f5d08c999f83b1a2e1b4bfccd90c7adabaab2faf0d71c2e0'
+OAUTH42_CLIENT_SECRET = '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'
+OAUTH42_REDIRECT_URI = 'https://localhost:8000/auth42_callback/'
 
 # ALLOWED_HOSTS = ['https://localhost:8000','*']
 # CSRF_TRUSTED_ORIGINS = ['https://localhost:8000']

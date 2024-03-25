@@ -43,12 +43,12 @@ document.addEventListener("click", (e) => {
 });
 
 
+
 const urlRoute = (event) => {
 	event.preventDefault();
 	window.history.pushState({}, "", event.target.href);
 	urlLocationHandler();
 };
-
 
 const urlLocationHandler = async () => {
 
@@ -75,6 +75,7 @@ const urlLocationHandler = async () => {
 	attachSignupFormListener();
 	attachLoginFormListener();
     fetchUserProfile();
+	attachOAuthFormListener();
 
 	const init_lang = getSavedLanguagePreference();
 	const language = await import(`./Lang_files/lang.${init_lang}.js`);
