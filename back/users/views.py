@@ -27,6 +27,8 @@ from django.db.models import Q
 from .otp import generate_qrcode, verify_code
 import qrcode
 from django.http import HttpResponse
+from django.http import JsonResponse
+import os
 
 class RegisterUserView(APIView):
     def post(self, request):
@@ -70,14 +72,13 @@ class OAuth42CallbackView(APIView):
             "client_id": settings.OAUTH42_CLIENT_ID,
             "client_secret": settings.OAUTH42_CLIENT_SECRET,
             "code": code,
-            "redirect_uri": "https://localhost:8000/auth42_callback/",
+            "redirect_uri": settings.OAUTH42_REDIRECT_URI,
         }
 
         try:
             response = requests.post(token_url, data=payload)
             response.raise_for_status()  # This will raise an exception for HTTP errors
             access_token = response.json().get('access_token')
-
             if not access_token:
                 # Instead of raising ValueError, return an error response
                 return Response({"success": False, "error": "Missing access token in response"}, status=status.HTTP_401_UNAUTHORIZED)
@@ -106,7 +107,7 @@ class OAuth42CallbackView(APIView):
     def process_user_data(self, user_data):
         username = user_data['login']
         display_name = user_data['displayname']
-        avatar_url = str(user_data['image']['link'])
+        avatar_url = user_data['image']['link']
 
         user = CustomUser.objects.filter(username=username, is_42_user=True).first()
         if user:
@@ -117,12 +118,8 @@ class OAuth42CallbackView(APIView):
                 user.save()
                 # Generate JWT tokens for the user
                 access_token = token_generation(user)
-                # response = Response({"success": True, "access": access_token}, status=status.HTTP_200_OK)
-                response = redirect("https://localhost/profile")
+                response = redirect(os.environ.get("FRONTEND_URL") + "/profile")
                 response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
-                # frontend_redirect_url = "https://localhost/profile"
-                # return redirect(frontend_redirect_url).set_cookie("jwt", value=access_token, httponly=True, secure=True)
-                # # return redirect(frontend_redirect_url)
                 return response
         else:
             serializer = UserSerializer(data={'username': username, 'display_name': display_name, 'is_42_user' : True, 'avatar' : avatar_url})
@@ -133,9 +130,9 @@ class OAuth42CallbackView(APIView):
                 user.save()
                 # Generate JWT tokens for the user
                 access_token = token_generation(user)
-                response = Response({"success": True, "access": access_token}, status=status.HTTP_200_OK)
-                # Set the JWT as a cookie in the response
-                # response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
+                # response = Response({"success": True, "message": "User registered successfully"}, status=status.HTTP_201_CREATED)
+                response = redirect(os.environ.get("FRONTEND_URL") + "/profile")
+                response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
                 return response
             return Response({"success": False, "error": serializer.errors}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -247,8 +244,7 @@ class PlayerAvatarUpload(APIView):
 
             file = request.FILES['avatar']
             # Define the path for the file
-            file_path = os.path.join(settings.MEDIA_ROOT, 'avatars', file.name)  # You can adjust the 'avatars' subdirectory as needed
-
+            file_path = os.path.join(settings.MEDIA_ROOT, 'avatars', file.name)
             # Save the file to the filesystem
             with open(file_path, 'wb+') as destination:
                 for chunk in file.chunks():

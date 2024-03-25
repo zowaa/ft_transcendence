@@ -71,8 +71,8 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 CORS_ALLOWED_ORIGINS = [
-    'https://localhost',
-    'http://localhost',
+    os.environ.get('FRONTEND_URL'),
+    os.environ.get('BACKEND_URL'),
 ]
 CORS_ALLOW_CREDENTIALS = True
 
@@ -145,10 +145,8 @@ AUTH_USER_MODEL = 'users.CustomUser'
 # 42 OAuth2 settings
 OAUTH42_CLIENT_ID = 'u-s4t2ud-78ad9702e59bae65f5d08c999f83b1a2e1b4bfccd90c7adabaab2faf0d71c2e0'
 OAUTH42_CLIENT_SECRET = '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'
-OAUTH42_REDIRECT_URI = 'https://localhost:8000/auth42_callback/'
+OAUTH42_REDIRECT_URI = os.environ.get('BACKEND_URL') + '/auth42_callback/'
 
-# ALLOWED_HOSTS = ['https://localhost:8000','*']
-# CSRF_TRUSTED_ORIGINS = ['https://localhost:8000']
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
