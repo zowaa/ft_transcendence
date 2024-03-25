@@ -165,9 +165,9 @@ class LogoutUserView(APIView):
         response.delete_cookie('jwt')
         return response
 
-###################################################
-#                     profile                     #        
-###################################################
+# ###################################################
+# #                     profile                     #        
+# ###################################################
 
 class Profile(APIView):
     @method_decorator(token_required)
@@ -201,39 +201,6 @@ class Profile(APIView):
             return Response({"status": 404, "error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"status": 500, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-# class Profile(APIView):
-#     @method_decorator(token_required)
-#     def get(self, request):
-#         try:
-#             user_id = request.user_payload['user']['id']
-#             user = CustomUser.objects.get(id=user_id)
-#             if not user:
-#                 return Response({"status": 404, "message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-#             serializer = ProfileSerializer(user)
-#             return Response({"status": 200, "user": serializer.data}, status=status.HTTP_200_OK)
-
-#         except CustomUser.DoesNotExist:
-#             return Response({"status": 404, "message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-#         except Exception as e:
-#             return Response({"status": 500, "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-#     @method_decorator(token_required)
-#     def put(self, request):
-#         try:
-#             user_data = request.data
-#             user = CustomUser.objects.filter(id=request.user_payload['user']['id']).first()
-#             serializer = UpdateProfileSerializer(user, data=user_data, partial=True)  # partial=True allows for partial updates
-            
-#             if serializer.is_valid():
-#                 serializer.save()
-#                 return Response({"status": 200, "message": "User updated successfully", "user": serializer.data}, status=status.HTTP_200_OK)
-#             else:
-#                 return Response({"status": 400, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-#         except CustomUser.DoesNotExist:
-#             return Response({"status": 404, "message": "User not found"}, status=status.HTTP_404_NOT_FOUND)
-#         except Exception as e:
-#             return Response({"status": 500, "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class PlayerAvatarUpload(APIView):
     @method_decorator(token_required)
@@ -334,7 +301,7 @@ class Friends(APIView):
     @method_decorator(token_required)
     def get(self, request):
         user_id = request.user_payload['user']['id']
-        get_type = request.query_params.get('target', 'friends')  # Default to listing friends
+        get_type = request.query_params.get('target', 'friends')
 
         query = Q(sender_id=user_id) | Q(receiver_id=user_id)
         if get_type == 'invites':
