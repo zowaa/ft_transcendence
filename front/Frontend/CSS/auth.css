@@ -3,7 +3,12 @@
 	color: #e9ecef;
   }
   
-
+  .container {
+	display: grid;
+	place-items: center;
+	/* height: 100vh; */
+  }
+  
   .x {
 	margin-bottom: 20px;
   }
@@ -182,176 +187,81 @@
   .account-prompt a:focus {
 	text-decoration: underline; 
   }
-
-@media (min-width: 2000px) {
+  
+  @media (min-width: 2000px) {
     .form h1 {
-        font-size: 46px; 
-		margin-bottom: 40px; 
+        font-size: 36px; /* Slightly reduced from 46px */
+		margin-bottom: 30px; /* Reduced from 40px for balance */
     }
   
     .form {
-        width: 600px; 
-        padding: 128px 30px 48px; 
+        width: 500px; /* Reduced from 600px for better proportion */
+        padding: 100px 25px 40px; /* Slightly less padding for a tighter form */
     }
 
     .form .control {
-        margin: 0 0 48px;
-		/* margin-bottom: 30px; */
+        margin: 0 0 36px; /* Margin adjusted for better spacing */
     }
 
     .form .control input {
-        padding: 28px 32px; 
-        font-size: 32px; 
+        padding: 22px 24px; /* Smaller padding for a more comfortable typing experience */
+        font-size: 24px; /* Adjusted for readability without being too large */
     }
 	
     .form .btn {
-        padding: 28px 32px; 
-        font-size: 32px; 
+        padding: 22px 24px; /* Consistency with input padding */
+        font-size: 24px; /* Large enough for readability and clickability */
     }
 
     .block-cube .bg-top {
-        left: 10px; 
-        right: -10px; 
-        transform: skew(-45deg, 0); 
-		height: 20px;
+        left: 8px; 
+        right: -8px; 
+        height: 15px; /* Adjusted for proportional aesthetics */
 	}
 
     .block-cube .bg-right {
-        top: -10px;
-        bottom: 10px;
-        transform: skew(0, -45deg); 
-		width: 20px; 
+        top: -8px;
+        bottom: 8px;
+        width: 15px; /* Adjusted to match the top border */
     }
 
     .block-cube .bg-inner {
-        left: 4px;
-        top: 4px;
-        right: 4px;
-        bottom: 4px;
+        left: 3px;
+        top: 3px;
+        right: 3px;
+        bottom: 3px; /* Slightly less space for a more defined inner area */
     }
 	.form-group {
-		margin-bottom: 48px;
+		margin-bottom: 36px; /* Adjusted spacing */
 	  }
 	
 	  .text-center.my-3 {
-		margin-top: 48px;
-		margin-bottom: 48px;
-		border-bottom: 2px solid #fff; 
-		line-height: 0px; 
+		margin-top: 36px; /* Consistent margin adjustments */
+		margin-bottom: 36px;
 	  }
 	  .x {
-		margin-bottom: 40px;
+		margin-bottom: 30px; /* Adjusted for consistent spacing */
 	  }
 	  .xx {
-		margin-bottom: 80px;
+		margin-bottom: 60px; /* Doubled the .x value for distinction */
 	  }
-	 
 	
 	.divider-or-container {
-		margin-top: 10px; 
-		margin-bottom: 30px; 
+		margin-top: 15px; /* Slightly increased */
+		margin-bottom: 25px; 
 	  }
 	
 	  .divider-line {
-		height: 4px; 
-		width: 150px;
+		height: 3px; /* Subtle increase */
+		width: 120px; /* Adjusted for balance */
 	}
 	.divider-or {
-		font-size: 28px; 
-		padding: 0 40px;;
+		font-size: 22px; /* Reduced for proportional appearance */
+		padding: 0 30px; /* Adjusted padding */
 	}
 	.account-prompt {
-		margin-top: 40px; 
-		font-size: 24px; 
+		margin-top: 30px; 
+		font-size: 20px; /* Adjusted for readability */
 	  }
   
-	}
-
-
-	@media (max-width: 500) {
-		.form h1 {
-			font-size: 23px; 
-			 margin-bottom: 40px;  /* to check */
-		}
-	  
-		.form {
-			width: 30; 
-			padding: 64px 15px 24px;
-		}
-	
-		.form .control {
-			margin: 0 0 24px;
-			/* margin-bottom: 30px; */
-		}
-	
-		.form .control input {
-			
-			padding: 14px 16px;
-			font-size: 16px;
-		}
-		
-		.form .btn {
-			padding: 14 16; 
-			font-size: 16; 
-		}
-	
-		.block-cube .bg-top {
-			left: 5px; 
-			right: -5px; 
-			transform: skew(-45deg, 0); 
-			height: 10px;
-		}
-	
-		.block-cube .bg-right {
-			top: -5;
-			bottom: 5;
-			transform: skew(0, -45deg); 
-			width: 10px; 
-		}
-	
-		.block-cube .bg-inner {
-			left: 2px;
-			top: 2px;
-			right: 2px;
-			bottom: 2px;
-		}
-		.form-group {
-			margin-bottom: 24px;
-		  }
-		
-
-		  .text-center.my-3 {
-			margin-top: 48px;
-			margin-bottom: 48px;
-			border-bottom: 2px solid #fff; 
-			line-height: 0px; 
-		  }
-		  .x {
-			margin-bottom: 40px;
-		  }
-		  .xx {
-			margin-bottom: 80px;
-		  }
-		 
-		
-		.divider-or-container {
-			margin-top: 5px; 
-			margin-bottom: 15px; 
-		  }
-		
-		  .divider-line {
-			height: 2px; 
-			width: 80px;
-		}
-		.divider-or {
-			font-size: 14px; 
-			padding: 0 20px;;
-		}
-		.account-prompt {
-			margin-top: 20px; 
-			font-size: 12px; 
-		  }
-	  
-		}
-
-  
+}
