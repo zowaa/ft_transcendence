@@ -81,7 +81,7 @@ services:
       - kibanadata:/usr/share/kibana/data
       - "./elk/kibana.yml:/usr/share/kibana/config/kibana.yml:ro"
       - "./elk/.config.sh:/usr/share/kibana/config/.config.sh:ro"
-      - "./elk/containers_logs_dashboard.ndjson:/usr/share/kibana/config/containers_logs_dashboard.ndjson:ro"
+      - "./elk/app_logs_dashboard.ndjson:/usr/share/kibana/config/app_logs_dashboard.ndjson:ro"
       - "./elk/users_stats_dashboard.ndjson:/usr/share/kibana/config/users_stats_dashboard.ndjson:ro"
     ports:
       - ${KIBANA_PORT}:5601
@@ -116,7 +116,7 @@ services:
       - logstashdata01:/usr/share/logstash/data
       - "./elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro"
       - "./elk/users_data_template.json:/usr/share/logstash/users_data_template.json:ro"
-      - "./elk/containers_logs_template.json:/usr/share/logstash/containers_logs_template.json:ro"
+      - "./elk/app_logs_template.json:/usr/share/logstash/app_logs_template.json:ro"
       - "./elk/postgresql-42.7.2.jar:/usr/share/java/postgresql-42.7.2.jar"
     environment:
       - xpack.monitoring.enabled=false

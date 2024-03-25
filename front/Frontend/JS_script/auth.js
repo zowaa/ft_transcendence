@@ -12,28 +12,41 @@ function attachLoginFormListener() {
             });
             let json = JSON.stringify(object);
 
-            let response = await fetch('http://localhost/login/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: json,
-            });
+            try {
+                let response = await fetch('http://localhost/login/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: json,
+                });
 
-            if(response.ok) {
-                const responseData = await response.json();
-				// Store the JWT in localStorage
-				localStorage.setItem('jwt', responseData.access);
-                window.history.pushState({}, "", '/profile'); 
-                urlLocationHandler();
-            } else {
-                let errorResult = await response.json();
-                alert(errorResult.detail || "An error occurred.");
+                if(response.ok) {
+                    const responseData = await response.json();
+                    localStorage.setItem('jwt', responseData.access);
+                    window.history.pushState({}, "", '/profile'); 
+                    urlLocationHandler();
+                } else {
+                    const errorResponse = await response.json(); // Parse the response to get the error object
+                    if (errorResponse.error) {
+                        // Iterate over the keys in the error object and create a message
+                        let errorMessage = Object.keys(errorResponse.error)
+                            .map(key => `${key}: ${errorResponse.error[key].join(", ")}`)
+                            .join("\n");
+                        alert(errorMessage);
+                    } else {
+                        alert("An unknown error occurred.");
+                    }
+                }
+            } catch (error) {
+                // Handle network errors or other unexpected errors
+                console.error("Fetch error: ", error);
+                alert("An error occurred while trying to communicate with the server.");
             }
         };
-        // return false;
     }
 }
+
 
 //Sign-u
 function attachSignupFormListener() {
@@ -42,28 +55,40 @@ function attachSignupFormListener() {
         signupForm.onsubmit = async (event) => {
             event.preventDefault();
 
-            // Convert the object to a JSON string
             let formDataObj = {};
             new FormData(signupForm).forEach((value, key) => formDataObj[key] = value);
             let jsonBody = JSON.stringify(formDataObj);
 
-            let response = await fetch('http://localhost/register/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: jsonBody,
-            });
+            try {
+                let response = await fetch('http://localhost/register/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: jsonBody,
+                });
 
-            if (response.ok) {
-                const responseData = await response.json();
-				// Store the JWT in localStorage
-				localStorage.setItem('jwt', responseData.access);
-                window.history.pushState({}, "", '/profile'); 
-                urlLocationHandler();
-            } else {
-                let errorResult = await response.json();
-                alert(errorResult.detail || "An error occurred.");
+                if (response.ok) {
+                    const responseData = await response.json();
+                    localStorage.setItem('jwt', responseData.access);
+                    window.history.pushState({}, "", '/profile'); 
+                    urlLocationHandler();
+                } else {
+                    const errorResponse = await response.json(); // Parse the response to get the error object
+                    if (errorResponse.error) {
+                        // Iterate over the keys in the error object and create a message
+                        let errorMessage = Object.keys(errorResponse.error)
+                            .map(key => `${key}: ${errorResponse.error[key].join(", ")}`)
+                            .join("\n");
+                        alert(errorMessage);
+                    } else {
+                        alert("An unknown error occurred.");
+                    }
+                }
+            } catch (error) {
+                // Handle network errors or other unexpected errors
+                console.error("Fetch error: ", error);
+                alert("An error occurred while trying to communicate with the server.");
             }
         };
     }

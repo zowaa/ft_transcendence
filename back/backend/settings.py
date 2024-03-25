@@ -56,13 +56,23 @@ MIDDLEWARE = [
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
 
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_HEADERS = ['*']
+# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 CORS_ALLOWED_ORIGINS = [
     'https://localhost',
+    'http://localhost',
 ]
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = ['https://localhost']
 
 ROOT_URLCONF = "backend.urls"
 
@@ -131,9 +141,9 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'users.CustomUser'
 
 # 42 OAuth2 settings
-OAUTH42_CLIENT_ID = 'u-s4t2ud-699532163e315a3cae8981883db6d9a71000c12ed5c8c68b78287456e8150fea'
-OAUTH42_CLIENT_SECRET = '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'
-OAUTH42_REDIRECT_URI = 'https://localhost:8000/auth42_callback&response_type=code'
+OAUTH_CLIENT_ID='u-s4t2ud-110e6a72c470ea3b61e2a1bc09acbd391dbb5fa23ecb37d0c8b88d513aa3865a'
+OAUTH_SECRET_ID='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'
+OAUTH_REDIRECT_URI='http://localhost/auth42_callback/'
 
 # ALLOWED_HOSTS = ['https://localhost:8000','*']
 # CSRF_TRUSTED_ORIGINS = ['https://localhost:8000']
