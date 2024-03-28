@@ -85,6 +85,9 @@ const urlLocationHandler = async () => {
 	if (location === '/') {
         runPongAnimation();
     }
+	if (location === '/game') {
+		runGame();
+	}
 };
 
 function getSavedLanguagePreference() {
