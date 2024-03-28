@@ -22,5 +22,7 @@ export default {
 	text_signup: "Vous avez déjà un compte?",
 	usr_up: "Doit être unique",
 	pwd_up: "Au moins 8 caractères",
+	usr_in: "Utilisateur non trouvé",
+	pwd_in: "Mot de passe incorrect",
 
 };

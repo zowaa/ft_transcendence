@@ -23,4 +23,6 @@ export default {
 	text_signup: "You already have an account?",
 	usr_up: "Must be unique",
 	pwd_up: "At least 8 characters",
+	usr_in: "User not found",
+	pwd_in: "Incorrect password",
 };

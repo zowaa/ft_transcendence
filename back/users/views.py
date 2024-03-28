@@ -136,6 +136,23 @@ class OAuth42CallbackView(APIView):
                 return response
             return Response({"success": False, "error": serializer.errors}, status=status.HTTP_401_UNAUTHORIZED)
 
+# class UserLoginAPIView(APIView):
+#     def post(self, request):
+#         serializer = LoginUserSerializer(data=request.data)
+#         if serializer.is_valid():
+#             user = serializer.validated_data
+#             access_token = token_generation(user)            
+#             # Prepare the response data
+#             response_data = {
+#                 "success": True,
+#                 'message': 'Login successful.',
+#                 'access': access_token,
+#             }
+        
+#             return Response(response_data, status=status.HTTP_200_OK)
+#         else:
+#             return Response({"success": False, "error": serializer.errors}, status=status.HTTP_401_UNAUTHORIZED)
+
 class UserLoginAPIView(APIView):
     def post(self, request):
         serializer = LoginUserSerializer(data=request.data)
@@ -148,10 +165,14 @@ class UserLoginAPIView(APIView):
                 'message': 'Login successful.',
                 'access': access_token,
             }
+            
+            # Create a Response object
+            response = Response(response_data, status=status.HTTP_200_OK)
+            return response
         
-            return Response(response_data, status=status.HTTP_200_OK)
-        else:
-            return Response({"success": False, "error": serializer.errors}, status=status.HTTP_401_UNAUTHORIZED)
+        # If the serializer is not valid
+        return Response({"success": False, "error": serializer.errors}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 class LogoutUserView(APIView):
     @method_decorator(token_required)

@@ -61,9 +61,9 @@ class LoginUserSerializer(serializers.ModelSerializer):
                 user.save()
                 return user
             else:
-                raise serializers.ValidationError("Incorrect password.")
+                raise serializers.ValidationError({"password": ["Incorrect password."]})
         else:
-            raise serializers.ValidationError("User does not exist.")
+            raise serializers.ValidationError({"username": ["User does not exist."]})
 
 class UpdatePasswordSerializer(serializers.ModelSerializer):
     old_password = serializers.CharField(required=True)

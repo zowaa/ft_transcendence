@@ -1,3 +1,4 @@
+// Sign-up
 function attachSignupFormListener() {
     const signupForm = document.getElementById('signupForm');
     if (signupForm) {
@@ -24,7 +25,7 @@ function attachSignupFormListener() {
                     urlLocationHandler();
                 } else {
                     const errorResponse = await response.json();
-                    displayFormErrors(errorResponse.error);
+                    displayFormError_up(errorResponse.error);
                 }
             } catch (error) {
                 console.error("Fetch error: ", error);
@@ -33,7 +34,8 @@ function attachSignupFormListener() {
         };
     }
 }
-function displayFormErrors(errors) {
+
+function displayFormError_up(errors) {
     // Reset previous errors
     resetErrorDisplay();
 
@@ -42,7 +44,6 @@ function displayFormErrors(errors) {
         for (const [field, messages] of Object.entries(errors)) {
             const errorElement = document.getElementById(`${field}`);
             if (errorElement) {
-                // errorElement.textContent = messages.join(", ");
                 errorElement.style.display = 'block';
 
                 const inputElement = document.querySelector(`input[name="${field}"]`);
@@ -58,7 +59,6 @@ function resetErrorDisplay() {
     // Hide all error messages and reset input margins
     document.querySelectorAll('.text-danger').forEach(errorElement => {
         errorElement.style.display = 'none';
-        // errorElement.textContent = '';
     });
 
     const xInput = document.querySelector('.x');
@@ -70,17 +70,64 @@ function resetErrorDisplay() {
 
 
 // Sign-in
+// function attachLoginFormListener() {
+//     const loginForm = document.getElementById('loginForm');
+//     if (loginForm) {
+//         loginForm.onsubmit = async (event) => {
+//             event.preventDefault(); 
+//             let formData = new FormData(loginForm);
+//             // Converting FormData to JSON since we need to send JSON
+//             let object = {};
+//             formData.forEach((value, key) => {
+//                 object[key] = value;
+//             });
+//             let json = JSON.stringify(object);
+
+//             try {
+//                 let response = await fetch('http://localhost/login/', {
+//                     method: 'POST',
+//                     headers: {
+//                         'Content-Type': 'application/json',
+//                     },
+//                     body: json,
+//                 });
+
+//                 if(response.ok) {
+//                     const responseData = await response.json();
+//                     localStorage.setItem('jwt', responseData.access);
+//                     window.history.pushState({}, "", '/profile'); 
+//                     urlLocationHandler();
+//                 } else {
+//                     const errorResponse = await response.json(); // Parse the response to get the error object
+//                     if (errorResponse.error) {
+//                         // Iterate over the keys in the error object and create a message
+//                         let errorMessage = Object.keys(errorResponse.error)
+//                             .map(key => `${key}: ${errorResponse.error[key].join(", ")}`)
+//                             .join("\n");
+//                         alert(errorMessage);
+//                     } else {
+//                         alert("An unknown error occurred.");
+//                     }
+//                 }
+//             } catch (error) {
+//                 // Handle network errors or other unexpected errors
+//                 console.error("Fetch error: ", error);
+//                 alert("An error occurred while trying to communicate with the server.");
+//             }
+//         };
+//     }
+// }
+
+
 function attachLoginFormListener() {
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.onsubmit = async (event) => {
             event.preventDefault(); 
+
             let formData = new FormData(loginForm);
-            // Converting FormData to JSON since we need to send JSON
             let object = {};
-            formData.forEach((value, key) => {
-                object[key] = value;
-            });
+            formData.forEach((value, key) => object[key] = value);
             let json = JSON.stringify(object);
 
             try {
@@ -99,15 +146,7 @@ function attachLoginFormListener() {
                     urlLocationHandler();
                 } else {
                     const errorResponse = await response.json(); // Parse the response to get the error object
-                    if (errorResponse.error) {
-                        // Iterate over the keys in the error object and create a message
-                        let errorMessage = Object.keys(errorResponse.error)
-                            .map(key => `${key}: ${errorResponse.error[key].join(", ")}`)
-                            .join("\n");
-                        alert(errorMessage);
-                    } else {
-                        alert("An unknown error occurred.");
-                    }
+						displayFormError_in(errorResponse.error);
                 }
             } catch (error) {
                 // Handle network errors or other unexpected errors
@@ -117,6 +156,36 @@ function attachLoginFormListener() {
         };
     }
 }
+
+function displayFormError_in(errors) {
+	// Reset previous errors
+	resetErrorDisplay();
+
+	// Display new errors
+	if (errors) {
+		for (const [field, messages] of Object.entries(errors)) {
+			const errorElement = document.getElementById(`${field}`);
+			if (errorElement) {
+				// errorElement.textContent = messages.join(", ");
+				errorElement.style.display = 'block';
+
+				const inputElement = document.querySelector(`input[name="${field}"]`);
+				if (inputElement) {
+					inputElement.style.marginBottom = '0px';
+				}
+			}
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
 
 
 
@@ -130,6 +199,8 @@ function attachOAuthFormListener() {
         };
     }
 }
+
+
 
 async function fetchUserProfile() {
     const profile = document.getElementById('profile');
