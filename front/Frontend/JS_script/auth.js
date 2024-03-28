@@ -104,7 +104,6 @@ function attachOAuthFormListener() {
     }
 }
 
-
 async function fetchUserProfile() {
     const profile = document.getElementById('profile');
     if (profile) {
@@ -119,7 +118,7 @@ async function fetchUserProfile() {
 
         // If JWT token is available, use it in the Authorization header
         if (jwtToken) {
-            headers.append('Authorization', `Bearer ${jwtToken}`);
+            headers['Authorization'] = `Bearer ${jwtToken}`;
         } else {
             fetchOptions.credentials = 'include';
         }
