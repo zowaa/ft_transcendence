@@ -17,7 +17,7 @@ def token_generation(userd):
     # Define the payload
     payload = {
         'user': {
-            'id': userd.id,
+            'id': str(userd.id), #fixed uuid serializer issue
             'username': userd.username,
             'double_auth': userd.double_auth,
         },

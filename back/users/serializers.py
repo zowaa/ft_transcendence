@@ -3,16 +3,20 @@ from .models import CustomUser, Games
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 
+class CustomAuthError(Exception):
+    def __init__(self, detail, status_code):
+        self.detail = detail
+        self.status_code = status_code
+
 class UserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=100, required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
-    password = serializers.CharField(min_length=8, max_length=100, required=False, write_only=True)
+    display_name = serializers.CharField(max_length=100, required=False)
     avatar = serializers.URLField(required=False)
     is_42_user = serializers.BooleanField(required=False)
     # print("UserSerializer")
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'password', 'display_name', 'date_joined', 'last_login', 'avatar', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_42_user']
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = ['username', 'display_name', 'avatar', 'is_42_user']
     
 class RegisterUserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=100, required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
@@ -35,7 +39,8 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
 class LoginUserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=100, required=True)
-    password = serializers.CharField(min_length=8, max_length=100, write_only=True)
+    password = serializers.CharField(max_length=100, required=True, write_only=True)
+
     class Meta:
         model = CustomUser
         fields = ['username', 'password']
@@ -52,7 +57,7 @@ class LoginUserSerializer(serializers.ModelSerializer):
 
         if user:
             if user.check_password(password):
-                user.status = "online";
+                user.status = "online"
                 user.save()
                 return user
             else:

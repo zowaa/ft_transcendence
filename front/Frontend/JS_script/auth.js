@@ -13,7 +13,7 @@ function attachLoginFormListener() {
             let json = JSON.stringify(object);
 
             try {
-                let response = await fetch('https://localhost:8000/login/', {
+                let response = await fetch('http://localhost/login/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ function attachSignupFormListener() {
             let jsonBody = JSON.stringify(formDataObj);
 
             try {
-                let response = await fetch('https://localhost:8000/register/', {
+                let response = await fetch('http://localhost/register/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ function attachOAuthFormListener() {
     if (signInButton) {
         signInButton.onclick = async (event) => {
             event.preventDefault();
-            window.location.href = 'https://localhost:8000/auth42/';
+            window.location.href = 'http://localhost/auth42/';
         };
     }
 }
@@ -112,21 +112,20 @@ async function fetchUserProfile() {
         const jwtToken = localStorage.getItem('jwt');
         
         let headers = {};
+        let fetchOptions = {
+            method: 'GET',
+            headers: headers,
+        };
 
         // If JWT token is available, use it in the Authorization header
         if (jwtToken) {
-            headers['Authorization'] = `Bearer ${jwtToken}`;
+            headers.append('Authorization', `Bearer ${jwtToken}`);
         } else {
-            // If no JWT token, ensure credentials are included to possibly use cookies
-            // This assumes that your server-side setup can handle session cookies or similar for authentication
-            headers['credentials'] = 'include';
+            fetchOptions.credentials = 'include';
         }
 
         try {
-            const response = await fetch('https://localhost:8000/profile/', {
-                method: 'GET',
-                headers: headers,
-            });
+            const response = await fetch('http://localhost/profile/', fetchOptions);
 
             if (response.ok) {
                 const profileData = await response.json();

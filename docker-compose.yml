@@ -164,6 +164,7 @@ services:
     container_name: rproxy
     ports:
       - "80:80"
+      - "81:81"
     command : "nginx -g 'daemon off;'"
     volumes:
       - app_data:/etc/nginx/ssl

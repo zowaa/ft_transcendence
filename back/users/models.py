@@ -5,7 +5,7 @@ import uuid
 class CustomUser(AbstractBaseUser):
     STATUS_CHOICES = (
         ('offline', 'Offline'),
-        ('onlin', 'Online'),
+        ('online', 'Online'),
         ('playing', 'Playing'),
     )
     id = models.CharField(max_length=200, default=uuid.uuid4,unique=True,primary_key=True)
@@ -14,7 +14,6 @@ class CustomUser(AbstractBaseUser):
     display_name = models.CharField(null=True, max_length=150, unique=True)
     date_joined = models.DateTimeField(auto_now=True)
     last_login = models.DateTimeField(auto_now=True)
-    # avatar = models.ImageField(upload_to='images/', default="default.png")
     avatar = models.URLField(max_length=255, null=False, blank=False, default="Frontend/Assets/default.png")
     nb_wins = models.IntegerField(default=0)
     nb_losses = models.IntegerField(default=0)

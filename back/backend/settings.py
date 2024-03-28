@@ -28,9 +28,6 @@ SECRET_KEY = "kmoutaou78"
 DEBUG = False
 
 # Application definition
-# from corsMiddleware import corsMiddleware
-CORS_ALLOW_HEADERS = "access-control-allow-origin"
-
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -42,11 +39,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'users',
     'sslserver',
-    'corsheaders'
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -58,23 +53,6 @@ MIDDLEWARE = [
 ]
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
-CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-]
-CORS_ALLOWED_ORIGINS = [
-    os.environ.get('FRONTEND_URL'),
-    os.environ.get('BACKEND_URL'),
-]
-CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = "backend.urls"
 
@@ -96,20 +74,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "backend.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
-# DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.postgresql',
-#        'NAME': 'postgres',
-#        'USER': 'postgres.eqzdqqudnrlrroimvdon',
-#        'PASSWORD': 'Transcender_78!',
-#        'HOST': 'aws-0-eu-central-1.pooler.supabase.com',
-#        'PORT': '5432',
-#    }
-# }
 
 DATABASES = {
    'default': {
@@ -143,9 +109,9 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'users.CustomUser'
 
 # 42 OAuth2 settings
-OAUTH42_CLIENT_ID = 'u-s4t2ud-78ad9702e59bae65f5d08c999f83b1a2e1b4bfccd90c7adabaab2faf0d71c2e0'
-OAUTH42_CLIENT_SECRET = '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'
-OAUTH42_REDIRECT_URI = os.environ.get('BACKEND_URL') + '/auth42_callback/'
+OAUTH42_CLIENT_ID = 'u-s4t2ud-fabcc3a6f568fd7a8d8ea4bd3af163f1099bf3ac28135c4ff2c535908cac3f7d'
+OAUTH42_CLIENT_SECRET = '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'
+OAUTH42_REDIRECT_URI = 'https://localhost:8000/auth42_callback/'
 
 
 # Internationalization

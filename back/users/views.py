@@ -118,7 +118,7 @@ class OAuth42CallbackView(APIView):
                 user.save()
                 # Generate JWT tokens for the user
                 access_token = token_generation(user)
-                response = redirect(os.environ.get("FRONTEND_URL") + "/profile")
+                response = redirect("http:localhost:81/profile", permanent=True)
                 response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
                 return response
         else:
@@ -131,7 +131,7 @@ class OAuth42CallbackView(APIView):
                 # Generate JWT tokens for the user
                 access_token = token_generation(user)
                 # response = Response({"success": True, "message": "User registered successfully"}, status=status.HTTP_201_CREATED)
-                response = redirect(os.environ.get("FRONTEND_URL") + "/profile")
+                response = redirect("http://localhost:81/profile", permanent=True)
                 response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
                 return response
             return Response({"success": False, "error": serializer.errors}, status=status.HTTP_401_UNAUTHORIZED)
@@ -148,13 +148,10 @@ class UserLoginAPIView(APIView):
                 'message': 'Login successful.',
                 'access': access_token,
             }
-            
-            # Create a Response object
-            response = Response(response_data, status=status.HTTP_200_OK)
-            return response
         
-        # If the serializer is not valid
-        return Response({"success": False, "error": serializer.errors}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(response_data, status=status.HTTP_200_OK)
+        else:
+            return Response({"success": False, "error": serializer.errors}, status=status.HTTP_401_UNAUTHORIZED)
 
 class LogoutUserView(APIView):
     @method_decorator(token_required)
