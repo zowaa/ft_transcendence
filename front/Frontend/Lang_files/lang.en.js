@@ -21,5 +21,6 @@ export default {
 	or: "Or",
 	signup: "Sign Up",
 	text_signup: "You already have an account?",
-
+	usr_up: "Must be unique",
+	pwd_up: "At least 8 characters",
 };

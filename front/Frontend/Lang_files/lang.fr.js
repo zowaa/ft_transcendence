@@ -20,5 +20,7 @@ export default {
 	or: "Ou",
 	signup: "S'inscrire",
 	text_signup: "Vous avez déjà un compte?",
+	usr_up: "Doit être unique",
+	pwd_up: "Au moins 8 caractères",
 
 };

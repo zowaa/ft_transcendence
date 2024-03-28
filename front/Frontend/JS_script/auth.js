@@ -1,3 +1,74 @@
+function attachSignupFormListener() {
+    const signupForm = document.getElementById('signupForm');
+    if (signupForm) {
+        signupForm.onsubmit = async (event) => {
+            event.preventDefault();
+
+            let formDataObj = {};
+            new FormData(signupForm).forEach((value, key) => formDataObj[key] = value);
+            let jsonBody = JSON.stringify(formDataObj);
+
+            try {
+                let response = await fetch('http://localhost/register/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: jsonBody,
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+                    localStorage.setItem('jwt', responseData.access);
+                    window.history.pushState({}, "", '/profile'); 
+                    urlLocationHandler();
+                } else {
+                    const errorResponse = await response.json();
+                    displayFormErrors(errorResponse.error);
+                }
+            } catch (error) {
+                console.error("Fetch error: ", error);
+                alert("An error occurred while trying to communicate with the server.");
+            }
+        };
+    }
+}
+function displayFormErrors(errors) {
+    // Reset previous errors
+    resetErrorDisplay();
+
+    // Display new errors
+    if (errors) {
+        for (const [field, messages] of Object.entries(errors)) {
+            const errorElement = document.getElementById(`${field}`);
+            if (errorElement) {
+                // errorElement.textContent = messages.join(", ");
+                errorElement.style.display = 'block';
+
+                const inputElement = document.querySelector(`input[name="${field}"]`);
+                if (inputElement) {
+                    inputElement.style.marginBottom = '0px';
+                }
+            }
+        }
+    }
+}
+
+function resetErrorDisplay() {
+    // Hide all error messages and reset input margins
+    document.querySelectorAll('.text-danger').forEach(errorElement => {
+        errorElement.style.display = 'none';
+        // errorElement.textContent = '';
+    });
+
+    const xInput = document.querySelector('.x');
+    const xxInput = document.querySelector('.xx');
+    if (xInput) xInput.style.marginBottom = '20px';
+    if (xxInput) xxInput.style.marginBottom = '40px';
+}
+
+
+
 // Sign-in
 function attachLoginFormListener() {
     const loginForm = document.getElementById('loginForm');
@@ -48,51 +119,7 @@ function attachLoginFormListener() {
 }
 
 
-//Sign-up
-function attachSignupFormListener() {
-    const signupForm = document.getElementById('signupForm');
-    if (signupForm) {
-        signupForm.onsubmit = async (event) => {
-            event.preventDefault();
 
-            let formDataObj = {};
-            new FormData(signupForm).forEach((value, key) => formDataObj[key] = value);
-            let jsonBody = JSON.stringify(formDataObj);
-
-            try {
-                let response = await fetch('http://localhost/register/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: jsonBody,
-                });
-
-                if (response.ok) {
-                    const responseData = await response.json();
-                    localStorage.setItem('jwt', responseData.access);
-                    window.history.pushState({}, "", '/profile'); 
-                    urlLocationHandler();
-                } else {
-                    const errorResponse = await response.json(); // Parse the response to get the error object
-                    if (errorResponse.error) {
-                        // Iterate over the keys in the error object and create a message
-                        let errorMessage = Object.keys(errorResponse.error)
-                            .map(key => `${key}: ${errorResponse.error[key].join(", ")}`)
-                            .join("\n");
-                        alert(errorMessage);
-                    } else {
-                        alert("An unknown error occurred.");
-                    }
-                }
-            } catch (error) {
-                // Handle network errors or other unexpected errors
-                console.error("Fetch error: ", error);
-                alert("An error occurred while trying to communicate with the server.");
-            }
-        };
-    }
-}
 
 function attachOAuthFormListener() {
     const signInButton = document.getElementById('btn2');

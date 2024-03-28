@@ -15,6 +15,14 @@
   .xx {
 	margin-bottom: 40px;
   }
+  .m {
+    margin-bottom: 20px;
+	font-size: xx-small;
+  }
+  .mm {
+    margin-bottom: 30px;
+	font-size:xx-small;
+  }
   .form {
     font-family: 'Press Start 2P';
 	width: 300px;
