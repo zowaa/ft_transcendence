@@ -34,3 +34,10 @@ function setStars() {
 	document.getElementById('stars2').style.boxShadow = multipleBoxShadow(starsMedium);
 	document.getElementById('stars3').style.boxShadow = multipleBoxShadow(starsLarge);
 }
+
+
+function go_home() {
+	// window.location.href = "/";
+	window.history.pushState({}, "", "/");
+	urlLocationHandler();
+}
