@@ -1,0 +1,275 @@
+.form h1 {
+	font-size: 23px;
+	color: #e9ecef;
+  }
+  
+  .container {
+	display: grid;
+	place-items: center;
+	/* height: 100vh; */
+  }
+  
+  .x {
+	margin-bottom: 20px;
+  }
+  .xx {
+	margin-bottom: 40px;
+  }
+  .m {
+    margin-bottom: 20px;
+	font-size: xx-small;
+  }
+  .mm {
+    margin-bottom: 30px;
+	font-size:xx-small;
+  }
+  .form {
+    font-family: 'Press Start 2P';
+	width: 300px;
+	padding: 64px 15px 24px;
+	margin: 0 auto;
+  }
+  .form .control {
+	margin: 0 0 24px;
+}
+.form .control input {
+	width: 100%;
+	padding: 14px 16px;
+	font-size: 16px;
+	border: 0;
+	background: transparent;
+	color: #fff;
+    font-family: 'Press Start 2P';
+	letter-spacing: 0.05em;
+  }
+  .form .control input:hover, .form .control input:focus {
+	outline: none;
+	border: 0;
+	-webkit-box-shadow: none;
+	box-shadow: none; 
+  }
+  .form .control input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: rgb(162 161 161);; /* light pink */
+    opacity: 1; /* Firefox */
+}
+  .form .btn {
+	width: 100%;
+	display: block;
+	padding: 14px 16px;
+	background: transparent;
+	outline: none;
+	border: 0;
+	color: #fff;
+	letter-spacing: 0.1em;
+	font-weight: bold;
+    font-family: 'Press Start 2P';
+	font-size: 16px;
+  }
+  
+  .block-cube {
+	position: relative;
+  }
+  .block-cube .bg-top {
+	position: absolute;
+	height: 10px;
+	background: #020024;
+	background: linear-gradient(90deg, #ff46f6 27%, #00d4ff 84%);
+	bottom: 100%;
+	left: 5px;
+	right: -5px;
+	transform: skew(-45deg, 0);
+	margin: 0;
+  }
+  .block-cube .bg-top .bg-inner {
+	bottom: 0;
+  }
+  .block-cube .bg {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background: #020024;
+	background: linear-gradient(90deg, #ff46f6 27%, #00d4ff 84%);
+  }
+  .block-cube .bg-right {
+	position: absolute;
+	background: #020024;
+	background: #00d4ff;
+	top: -5px;
+	z-index: 0;
+	bottom: 5px;
+	width: 10px;
+	left: 100%;
+	transform: skew(0, -45deg);
+  }
+  .block-cube .bg-right .bg-inner {
+	left: 0;
+  }
+  .block-cube .bg .bg-inner {
+	transition: all 0.2s ease-in-out;
+  }
+  .block-cube .bg-inner {
+	background: #212121;
+	position: absolute;
+	left: 2px;
+	top: 2px;
+	right: 2px;
+	bottom: 2px;
+  }
+  .block-cube .text {
+	position: relative;
+	z-index: 2;
+
+    color:#dee2e6;
+  }
+  .block-cube.block-input input {
+	position: relative;
+	z-index: 2;
+  }
+  .block-cube.block-input input:focus ~ .bg-right .bg-inner, .block-cube.block-input input:focus ~ .bg-top .bg-inner, .block-cube.block-input input:focus ~ .bg-inner .bg-inner {
+	top: 100%;
+	background: rgba(255, 255, 255, 0.5);
+  }
+  .block-cube.block-input .bg-top,
+  .block-cube.block-input .bg-right,
+  .block-cube.block-input .bg {
+	background: rgba(255, 255, 255, 0.5);
+	transition: background 0.2s ease-in-out;
+  }
+  .block-cube.block-input .bg-right .bg-inner,
+  .block-cube.block-input .bg-top .bg-inner {
+	transition: all 0.2s ease-in-out;
+  }
+  .block-cube.block-input:focus .bg-top,
+  .block-cube.block-input:focus .bg-right,
+  .block-cube.block-input:focus .bg, .block-cube.block-input:hover .bg-top,
+  .block-cube.block-input:hover .bg-right,
+  .block-cube.block-input:hover .bg {
+	background: rgba(255, 255, 255, 0.8);
+  }
+  .block-cube.block-cube-hover:focus .bg .bg-inner, .block-cube.block-cube-hover:hover .bg .bg-inner {
+	top: 100%;
+  }
+  .form-group {
+	margin-bottom: 24px; 
+  }
+  
+.divider-or-container {
+	display: flex; 
+	align-items: center; 
+	justify-content: center; 
+	text-align: center;
+	margin-top: 5px;
+	margin-bottom: 15px;
+  }
+  
+  .divider-line {
+	height: 2px; 
+	width: 80px;
+	background: #FFFFFF;
+	opacity: 0.5;
+  }
+  
+  .divider-or {
+	color: #FFFFFF;
+	opacity: 0.7;
+	font-family: 'Press Start 2P', sans-serif;
+	font-size: 14px;
+	padding: 0 20px; 
+  }
+  .account-prompt {
+	text-align: center;
+	margin-top: 20px;
+	font-family: 'Press Start 2P', sans-serif;
+	font-size: 12px; 
+	color: #FFFFFF;
+  }
+  
+  .account-prompt a {
+	color: #00d4ff;
+	text-decoration: none; 
+  }
+  
+  .account-prompt a:hover,
+  .account-prompt a:focus {
+	text-decoration: underline; 
+  }
+  
+  @media (min-width: 2000px) {
+    .form h1 {
+        font-size: 36px; /* Slightly reduced from 46px */
+		margin-bottom: 30px; /* Reduced from 40px for balance */
+    }
+  
+    .form {
+        width: 500px; /* Reduced from 600px for better proportion */
+        padding: 100px 25px 40px; /* Slightly less padding for a tighter form */
+    }
+
+    .form .control {
+        margin: 0 0 36px; /* Margin adjusted for better spacing */
+    }
+
+    .form .control input {
+        padding: 22px 24px; /* Smaller padding for a more comfortable typing experience */
+        font-size: 24px; /* Adjusted for readability without being too large */
+    }
+	
+    .form .btn {
+        padding: 22px 24px; /* Consistency with input padding */
+        font-size: 24px; /* Large enough for readability and clickability */
+    }
+
+    .block-cube .bg-top {
+        left: 8px; 
+        right: -8px; 
+        height: 15px; /* Adjusted for proportional aesthetics */
+	}
+
+    .block-cube .bg-right {
+        top: -8px;
+        bottom: 8px;
+        width: 15px; /* Adjusted to match the top border */
+    }
+
+    .block-cube .bg-inner {
+        left: 3px;
+        top: 3px;
+        right: 3px;
+        bottom: 3px; /* Slightly less space for a more defined inner area */
+    }
+	.form-group {
+		margin-bottom: 36px; /* Adjusted spacing */
+	  }
+	
+	  .text-center.my-3 {
+		margin-top: 36px; /* Consistent margin adjustments */
+		margin-bottom: 36px;
+	  }
+	  .x {
+		margin-bottom: 30px; /* Adjusted for consistent spacing */
+	  }
+	  .xx {
+		margin-bottom: 60px; /* Doubled the .x value for distinction */
+	  }
+	
+	.divider-or-container {
+		margin-top: 15px; /* Slightly increased */
+		margin-bottom: 25px; 
+	  }
+	
+	  .divider-line {
+		height: 3px; /* Subtle increase */
+		width: 120px; /* Adjusted for balance */
+	}
+	.divider-or {
+		font-size: 22px; /* Reduced for proportional appearance */
+		padding: 0 30px; /* Adjusted padding */
+	}
+	.account-prompt {
+		margin-top: 30px; 
+		font-size: 20px; /* Adjusted for readability */
+	  }
+  
+}

@@ -1,0 +1,22 @@
+psql -U transcendencer -d transcendence
+
+INSERT INTO users_customuser
+
+(id, username, display_name, date_joined, last_login, avatar, nb_wins, nb_losses, nb_plays, status, is_active, is_42_user, double_auth, password)
+
+VALUES
+
+('1', 'user1', 'User One', '2024-03-22 00:00:00', '2024-03-22 00:00:00', 'https://example.com/avatar1.png', 10, 5, 20, 'offline', TRUE, TRUE, FALSE, 'password1'),
+('2', 'user2', 'User Two', '2024-03-22 00:00:00', '2024-03-22 00:00:00', 'https://example.com/avatar2.png', 8, 7, 15, 'offline', TRUE, FALSE, FALSE, 'password2'),
+('3', 'user3', 'User Three', '2024-03-22 00:00:00', '2024-03-22 00:00:00', 'https://example.com/avatar3.png', 15, 3, 25, 'offline', TRUE, FALSE, FALSE, 'password3'),
+('4', 'user4', 'User Four', '2024-03-22 00:00:00', '2024-03-22 00:00:00', 'https://example.com/avatar4.png', 12, 6, 18, 'offline', TRUE, TRUE, FALSE, 'password4'),
+('5', 'user5', 'User Five', '2024-03-22 00:00:00', '2024-03-22 00:00:00', 'https://example.com/avatar5.png', 20, 2, 30, 'offline', TRUE, FALSE, FALSE, 'password5'),
+('6', 'user6', 'User Six', '2024-03-22 00:00:00', '2024-03-22 00:00:00', 'https://example.com/avatar6.png', 18, 4, 22, 'offline', TRUE, FALSE, FALSE, 'password6'),
+('7', 'user7', 'User Seven', '2024-03-22 00:00:00', '2024-03-22 00:00:00', 'https://example.com/avatar7.png', 25, 1, 35, 'offline', TRUE, FALSE, FALSE, 'password7'),
+('8', 'user8', 'User Eight', '2024-03-22 00:00:00', '2024-03-22 00:00:00', 'https://example.com/avatar8.png', 22, 3, 28, 'offline', TRUE, TRUE, FALSE, 'password8'),
+('9', 'user9', 'User Nine', '2024-03-22 00:00:00', '2024-03-22 00:00:00', 'https://example.com/avatar9.png', 30, 0, 40, 'offline', TRUE, FALSE, FALSE, 'password9'),
+('10', 'user10', 'User Ten', '2024-03-22 00:00:00', '2024-03-22 00:00:00', 'https://example.com/avatar10.png', 28, 2, 32, 'offline', TRUE, TRUE, FALSE, 'password10'),
+('11', 'user11', 'User Eleven', '2024-03-22 00:00:00', '2024-03-22 00:00:00', 'https://example.com/avatar11.png', 35, 0, 45, 'offline', TRUE, FALSE, FALSE, 'password11'),
+('12', 'user12', 'User Twelve', '2024-03-22 00:00:00', '2024-03-22 00:00:00', 'https://example.com/avatar12.png', 32, 1, 38, 'offline', TRUE, TRUE, FALSE, 'password12'),
+('13', 'user13', 'User Thirteen', '2024-03-22 00:00:00', '2024-03-22 00:00:00', 'https://example.com/avatar13.png', 40, 0, 50, 'offline', TRUE, FALSE, FALSE, 'password13'),
+('14', 'user14', 'User Fourteen', '2024-03-22 00:00:00', '2024-03-22 00:00:00', 'https://example.com/avatar14.png', 38, 2, 42, 'offline', TRUE, TRUE, FALSE, 'password14');

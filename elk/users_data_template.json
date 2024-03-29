@@ -1,0 +1,60 @@
+  {
+    "index_patterns": ["users_data*"],
+    "priority": 1,
+    "template": {
+      "settings": {
+        "index": {
+          "lifecycle": {
+            "name": "users_data_policy",
+            "rollover_alias": "users_data"
+          }
+        }
+      },
+      "mappings": {
+        "properties": {
+          "id": {
+            "type": "keyword"
+          },
+          "email": {
+            "type": "keyword"
+          },
+          "username": {
+            "type": "keyword"
+          },
+          "display_name": {
+            "type": "keyword"
+          },
+          "date_joined": {
+            "type": "date"
+          },
+          "last_login": {
+            "type": "date"
+          },
+          "avatar": {
+            "type": "keyword"
+          },
+          "friends": {
+            "type": "keyword"
+          },
+          "nb_wins": {
+            "type": "integer"
+          },
+          "nb_losses": {
+            "type": "integer"
+          },
+          "nb_plays": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "keyword"
+          },
+          "is_active": {
+            "type": "boolean"
+          },
+          "is_42_user": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
