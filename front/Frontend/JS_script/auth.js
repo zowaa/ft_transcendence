@@ -190,15 +190,70 @@ function displayFormError_in(errors) {
 
 
 
+// function attachOAuthFormListener() {
+//     const signInButton = document.getElementById('btn2');
+//     if (signInButton) {
+//         signInButton.onclick = async (event) => {
+//             event.preventDefault();
+// 			console.log("1111111");
+//             window.location.href = 'http://localhost/auth42/';
+// 			checkForErrors();
+//         };
+//     }
+// }
+
+// function checkForErrors() {
+
+// 	console.log("222222222");
+//     const params = new URLSearchParams(window.location.search);
+//     const error = params.get('error');
+//     if (error) {
+//         console.error(`Authentication Error: ${error}`);
+//         alert(`Authentication Error: ${error}`);
+//     }
+// }
+
+
+
 function attachOAuthFormListener() {
     const signInButton = document.getElementById('btn2');
     if (signInButton) {
         signInButton.onclick = async (event) => {
             event.preventDefault();
-            window.location.href = 'http://localhost/auth42/';
+            
+            // Check for errors before starting a new OAuth flow.
+            const error = checkForErrors();
+            if (!error) {
+                console.log("Starting OAuth flow");
+                window.location.href = 'http://localhost/auth42/';
+            }
         };
     }
 }
+
+function checkForErrors() {
+    console.log("Checking for errors in OAuth callback");
+    const params = new URLSearchParams(window.location.search);
+    const error = params.get('error');
+    if (error) {
+        console.error(`Authentication Error: ${error}`);
+        alert(`Authentication Error: ${error}`);
+        return error; // Returning the error if it exists.
+    }
+    return null; // Returning null if there's no error.
+}
+
+// The above functions should be called in the SPA context when the OAuth callback route is loaded.
+// This could be part of a route/component lifecycle event in frameworks like React, Angular, or Vue.js.
+
+
+
+
+
+
+
+
+
 
 
 
@@ -208,18 +263,21 @@ async function fetchUserProfile() {
         // Retrieve the JWT token from localStorage
         const jwtToken = localStorage.getItem('jwt');
         
-        let headers = {};
+        // let headers = {};
         let fetchOptions = {
-            method: 'GET',
-            headers: headers,
-        };
+			method: 'GET',
+			headers: {
+				'Authorization': jwtToken ? `Bearer ${jwtToken}` : '',
+			},
+			credentials: 'include'
+		};
 
-        // If JWT token is available, use it in the Authorization header
-        if (jwtToken) {
-            headers['Authorization'] = `Bearer ${jwtToken}`;
-        } else {
-            fetchOptions.credentials = 'include';
-        }
+        // // If JWT token is available, use it in the Authorization header
+        // if (jwtToken) {
+        //     headers['Authorization'] = `Bearer ${jwtToken}`;
+        // } else {
+        //     fetchOptions.credentials = 'include';
+        // }
 
         try {
             const response = await fetch('http://localhost/profile/', fetchOptions);

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegisterUserView, UserLoginAPIView, LogoutUserView, OAuth42RedirectView, OAuth42CallbackView, Friends, Profile, PlayerAvatarUpload, ChangePasswordView, QRCodeTwoFactorView, TwoFactorVerifyView
+from .views import RegisterUserView, UserLoginAPIView, LogoutUserView, OAuth42RedirectView, OAuth42CallbackView, Friends, Profile, PlayerAvatarUpload, ChangePasswordView, QRCodeTwoFactorView, TwoFactorVerifyView, CheckUser
 
 urlpatterns = [
 	path('register/', RegisterUserView.as_view(), name='register'),
@@ -13,4 +13,5 @@ urlpatterns = [
     path('change_password/', ChangePasswordView.as_view(), name='change_password'),
     path('qr_code/', QRCodeTwoFactorView.as_view(), name='qr_code'),
     path('double_factor/', TwoFactorVerifyView.as_view(), name='double_factor'),
+	path('check_user/', CheckUser.as_view(), name='check_user'),
 ]

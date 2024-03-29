@@ -136,3 +136,44 @@ function runPongAnimation() {
     setInterval(updateScores, 1500);
     animate(); // Start the animation loop.
 }
+
+function check() {	
+		const endpointUrl = 'http://localhost/check_user/';
+		const jwtToken = localStorage.getItem('jwt');
+        
+        let headers = {};
+        let fetchOptions = {
+            method: 'GET',
+            headers: headers,
+        };
+
+        // If JWT token is available, use it in the Authorization header
+        if (jwtToken) {
+            headers['Authorization'] = `Bearer ${jwtToken}`;
+        } else {
+            fetchOptions.credentials = 'include';
+        }
+
+		fetch(endpointUrl, fetchOptions)
+		  .then(response => {
+			if (!response.ok) {
+			  throw new Error('Network response was not ok');
+			}
+			return response.json(); 
+		  })
+		  .then(data => {
+			
+			if (data.answer === 'yes') {
+				window.history.pushState({}, "", '/profile'); 
+				urlLocationHandler();
+			} else {
+			// else if (data.answer === 'no') {
+				window.history.pushState({}, "", '/sign_in'); 
+				urlLocationHandler();
+			} 
+		  })
+		  .catch(error => {
+			console.error('Error during fetch:', error);
+		  });
+
+}
