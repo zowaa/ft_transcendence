@@ -138,3 +138,4 @@ window.onload = () => {
 window.onresize = () => {
 	setStars();
 } 
+

@@ -12,7 +12,7 @@
 	align-items: center;
 }
 
-.x {
+.z {
     border: none;
     padding: 1vw 2vw; 
     font-size: 4vw;
@@ -31,7 +31,7 @@
 	text-decoration: none;
 }
 
-.x:hover {
+.z:hover {
     text-shadow:
         0 0 10px #ff46f6,
         0 0 15px #ff46f6,

@@ -1,0 +1,88 @@
+#profile .row {
+    position: relative; 
+    min-height: 90vh; 
+}
+
+
+
+.sidebar-navigation {
+    width: 50px; 
+    background-color: rgba(255, 255, 255, 0.14); 
+    color: white;
+    
+    position: absolute; 
+    top: 50%;
+    transform: translateY(-50%);
+	border-radius: 10px;
+}
+
+
+.col-auto{
+	padding-left: 0; 
+}
+
+/* Tooltips */
+.sidebar-navigation ul li .tooltip {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.14);
+    padding: 8px 15px;
+    border-radius: 3px;
+    margin-top: -26px;
+    left: 55px; 
+    opacity: 0;
+    visibility: hidden;
+    transition: visibility 0s, opacity 0.5s linear;
+}
+
+.sidebar-navigation ul li:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.sidebar-navigation ul li:hover i {
+    color: #ffffff;
+}
+
+
+
+
+
+.sidebar-navigation ul {
+    list-style: none; 
+    padding-left: 0; 
+    text-align: center;
+    margin: 0; 
+}
+
+
+.sidebar-navigation ul li {
+    padding: 20px 0; 
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-navigation ul li i,
+.sidebar-navigation ul li span { 
+    display: block; 
+    margin: 0 auto; 
+    text-align: center; 
+    color: white; 
+}
+
+
+.sidebar-navigation ul li:hover{
+    background-color: #ff46f6;
+	border-radius: 10px; 
+}
+
+
+
+
+
+.col {
+    margin-left: 50px; 
+	/* background-color: red; */
+	border: #ffffff 1px solid;
+
+
+}

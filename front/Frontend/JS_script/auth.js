@@ -229,18 +229,18 @@ async function fetchUserProfile() {
                 console.log(profileData);
 
                 // Update the page with the user's profile data
-                document.getElementById('username').textContent = profileData.user.username || 'Unavailable';
-                document.getElementById('status').textContent = profileData.user.status || 'Unavailable';
+                // document.getElementById('username').textContent = profileData.user.username || 'Unavailable';
+                // document.getElementById('status').textContent = profileData.user.status || 'Unavailable';
                 
-                // Corrected the handling of the avatar element to update its 'src' attribute
-                const avatarElement = document.getElementById('avatar');
-                if (avatarElement) {
-                    avatarElement.src = profileData.user.avatar; // Use a default image if avatar URL is unavailable
-                    avatarElement.alt = "User Avatar"; // Ensuring the alt attribute is set for accessibility
-                }
+                // // Corrected the handling of the avatar element to update its 'src' attribute
+                // const avatarElement = document.getElementById('avatar');
+                // if (avatarElement) {
+                //     avatarElement.src = profileData.user.avatar; // Use a default image if avatar URL is unavailable
+                //     avatarElement.alt = "User Avatar"; // Ensuring the alt attribute is set for accessibility
+                // }
             } else {
                 // Handle non-OK responses, e.g., by displaying an error message
-                alert('Failed to load profile. Please try again.');
+                alert('Failed to load profile. Please log in b3da.');
             }
         } catch (error) {
             console.error('Error fetching profile:', error);
