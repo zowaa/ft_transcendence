@@ -30,6 +30,30 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 import os
 
+# @api_view(['GET'])
+# def CheckUserLogin(request):
+#     token = request.COOKIES.get('jwt')
+#     if not token:
+#         auth_header = request.META.get('HTTP_AUTHORIZATION')
+#         if auth_header:
+#             parts = auth_header.split()
+#             if len(parts) == 2 and parts[0].lower() == "bearer":
+#                 token = parts[1]
+
+#     if not token:
+#         return JsonResponse({'answer': 'no', 'status': 'failure'}, status=HTTP_200_OK)
+
+#     try:
+#         payload = token_decode(token)
+#         request.user_payload = payload
+
+#     except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+#         return JsonResponse({'answer': 'no', 'status': 'failure'}, status=HTTP_200_OK)
+#     except Exception as e:
+#         return JsonResponse({'detail': 'An error occurred.', 'status': 'error'}, status=HTTP_500_INTERNAL_SERVER_ERROR)
+
+#     return JsonResponse({'answer': 'yes', 'status': 'success'}, status=HTTP_200_OK )
+
 class RegisterUserView(APIView):
     def post(self, request):
         try:

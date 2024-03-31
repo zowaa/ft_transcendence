@@ -136,3 +136,14 @@ function runPongAnimation() {
     setInterval(updateScores, 1500);
     animate(); // Start the animation loop.
 }
+
+function check() {	
+	const status = localStorage.getItem('logged_in');
+	if (status === 'yes') {
+		window.history.pushState({}, "", '/profile'); 
+		urlLocationHandler();
+	} else {
+		window.history.pushState({}, "", '/sign_in'); 
+		urlLocationHandler();
+	}
+}

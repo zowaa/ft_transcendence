@@ -21,6 +21,7 @@ function attachSignupFormListener() {
                 if (response.ok) {
                     const responseData = await response.json();
                     localStorage.setItem('jwt', responseData.access);
+                    localStorage.setItem('logged_in', 'yes')
                     window.history.pushState({}, "", '/profile'); 
                     urlLocationHandler();
                 } else {
@@ -142,6 +143,7 @@ function attachLoginFormListener() {
                 if(response.ok) {
                     const responseData = await response.json();
                     localStorage.setItem('jwt', responseData.access);
+                    localStorage.setItem('logged_in', 'yes')
                     window.history.pushState({}, "", '/profile'); 
                     urlLocationHandler();
                 } else {
