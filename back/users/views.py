@@ -29,6 +29,7 @@ import qrcode
 from django.http import HttpResponse
 from django.http import JsonResponse
 import os
+from django.http import HttpResponseRedirect
 
 # @api_view(['GET'])
 # def CheckUserLogin(request):
@@ -86,9 +87,11 @@ class OAuth42CallbackView(APIView):
         code = request.query_params.get('code')
         error = request.query_params.get('error')
         if error:
-            return Response({"success": False, "error": error}, status=status.HTTP_401_UNAUTHORIZED)
+            return HttpResponseRedirect("https://localhost:443/sign_in")
+            # return Response({"success": False, "error": error}, status=status.HTTP_401_UNAUTHORIZED)
         if not code:
-            return Response({"success": False, "error": "Code parameter is required"}, status=status.HTTP_401_UNAUTHORIZED)
+            return HttpResponseRedirect("https://localhost:443/sign_in")
+            # return Response({"success": False, "error": "Code parameter is required"}, status=status.HTTP_401_UNAUTHORIZED)
         
         token_url = 'https://api.intra.42.fr/oauth/token'
         payload = {
@@ -105,13 +108,15 @@ class OAuth42CallbackView(APIView):
             access_token = response.json().get('access_token')
             if not access_token:
                 # Instead of raising ValueError, return an error response
-                return Response({"success": False, "error": "Missing access token in response"}, status=status.HTTP_401_UNAUTHORIZED)
+                # return Response({"success": False, "error": "Missing access token in response"}, status=status.HTTP_401_UNAUTHORIZED)
+                return HttpResponseRedirect("https://localhost:443/sign_in")
             
             user_data = self.fetch_42_user(access_token)
 
             if not user_data:
                 # Instead of raising ValueError, return an error response
-                return Response({"success": False, "error": "Failed to fetch user data"}, status=status.HTTP_400_BAD_REQUEST)
+                # return Response({"success": False, "error": "Failed to fetch user data"}, status=status.HTTP_400_BAD_REQUEST)
+                return HttpResponseRedirect("https://localhost:443/sign_in")
 
             return self.process_user_data(user_data)
         except Exception as e:
@@ -136,14 +141,15 @@ class OAuth42CallbackView(APIView):
         user = CustomUser.objects.filter(username=username, is_42_user=True).first()
         if user:
             if (user.double_auth == True):
-                return Response({"success": False, "message": "Double authentification required."}, status=status.HTTP_401_UNAUTHORIZED)
+                return HttpResponseRedirect("https://localhost:443/sign_in") # 2FA link
+                # return Response({"success": False, "message": "Double authentification required."}, status=status.HTTP_401_UNAUTHORIZED)
             else :
                 user.status = "online"
                 user.save()
                 # Generate JWT tokens for the user
                 access_token = token_generation(user)
-                response = redirect("http:localhost:81/profile", permanent=True)
-                response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
+                response = HttpResponseRedirect("https://localhost:443/profile?success=true")
+                response.set_cookie("jwt", value=access_token)
                 return response
         else:
             serializer = UserSerializer(data={'username': username, 'display_name': display_name, 'is_42_user' : True, 'avatar' : avatar_url})
@@ -155,10 +161,11 @@ class OAuth42CallbackView(APIView):
                 # Generate JWT tokens for the user
                 access_token = token_generation(user)
                 # response = Response({"success": True, "message": "User registered successfully"}, status=status.HTTP_201_CREATED)
-                response = redirect("http://localhost:81/profile", permanent=True)
-                response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
+                response = HttpResponseRedirect("https://localhost:443/profile?success=true")
+                response.set_cookie("jwt", value=access_token)
                 return response
-            return Response({"success": False, "error": serializer.errors}, status=status.HTTP_401_UNAUTHORIZED)
+            # return Response({"success": False, "error": serializer.errors}, status=status.HTTP_401_UNAUTHORIZED)
+            return HttpResponseRedirect("https://localhost:443/sign_in")
 
 # class UserLoginAPIView(APIView):
 #     def post(self, request):

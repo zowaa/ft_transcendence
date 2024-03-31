@@ -197,18 +197,42 @@ function attachOAuthFormListener() {
     if (signInButton) {
         signInButton.onclick = async (event) => {
             event.preventDefault();
+            sessionStorage.setItem('oauthAttempt', 'true');
             window.location.href = 'http://localhost/auth42/';
         };
     }
 }
 
+function checkLoginStatus() { // set logged_in to yes if the user 42 is logged in (will be used in other funcs)
+    const oauthAttempt = sessionStorage.getItem('oauthAttempt');
+    const urlParams = new URLSearchParams(window.location.search);
+    const loginSuccess = urlParams.get('success');
 
+    if (loginSuccess === 'true' && oauthAttempt === 'true') {
+        sessionStorage.removeItem('oauthAttempt');
+        localStorage.setItem('logged_in', 'yes')
+    } else if (oauthAttempt === 'true') {
+        sessionStorage.removeItem('oauthAttempt');
+    }
+}
+
+function getCookie(name) {
+    let cookieArray = document.cookie.split(';');
+    for(let i = 0; i < cookieArray.length; i++) {
+        let cookiePair = cookieArray[i].split('=');
+        if(name === cookiePair[0].trim()) {
+            return decodeURIComponent(cookiePair[1]);
+        }
+    }
+    return null; 
+}
 
 async function fetchUserProfile() {
     const profile = document.getElementById('profile');
     if (profile) {
         // Retrieve the JWT token from localStorage
         const jwtToken = localStorage.getItem('jwt');
+        const jwtTokenCookie = getCookie('jwt');
         
         let headers = {};
         let fetchOptions = {
@@ -219,8 +243,8 @@ async function fetchUserProfile() {
         // If JWT token is available, use it in the Authorization header
         if (jwtToken) {
             headers['Authorization'] = `Bearer ${jwtToken}`;
-        } else {
-            fetchOptions.credentials = 'include';
+        } else if (jwtTokenCookie) {
+            headers['Authorization'] = `Bearer ${jwtTokenCookie}`;
         }
 
         try {

@@ -14,23 +14,23 @@ def token_required(view_func):
                 if len(parts) == 2 and parts[0].lower() == "bearer":
                     token = parts[1]
                 else:
-                    return JsonResponse({'detail': 'Authorization header must be Bearer token.'}, status=HTTP_401_UNAUTHORIZED)
+                    return JsonResponse({'detail': 'Authorization header must be Bearer token.'}, status=401)
         
         if not token:
-            return JsonResponse({'detail': 'Authentication credentials were not provided.'}, status=HTTP_401_UNAUTHORIZED)
+            return JsonResponse({'detail': 'Authentication credentials were not provided.'}, status=401)
 
         try:
             payload = token_decode(token)
             request.user_payload = payload
 
             if payload.get('user', {}).get('double_auth') == True:
-                return JsonResponse({'detail': 'Double authentication required.'}, status=HTTP_401_UNAUTHORIZED)
+                return JsonResponse({'detail': 'Double authentication required.'}, status=401)
         except jwt.ExpiredSignatureError:
-            return JsonResponse({'detail': 'Expired token.'}, status=HTTP_401_UNAUTHORIZED)
+            return JsonResponse({'detail': 'Expired token.'}, status=401)
         except jwt.InvalidTokenError:
-            return JsonResponse({'detail': 'Invalid token.'}, status=HTTP_401_UNAUTHORIZED)
+            return JsonResponse({'detail': 'Invalid token.'}, status=401)
         except Exception as e:
-            return JsonResponse({'detail': 'An error occurred.'}, status=HTTP_500_INTERNAL_SERVER_ERROR)
+            return JsonResponse({'detail': 'An error occurred.'}, status=401)
 
         return view_func(request, *args, **kwargs)
 
