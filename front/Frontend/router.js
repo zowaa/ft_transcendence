@@ -19,6 +19,10 @@ const urlRoutes = {
 		template: "/Frontend/Pages/game.html",
 		description: "This is Game page",
 	},
+	"/profile": {
+		template: "/Frontend/Pages/profile.html",
+		description: "This is the profile page",
+	},
 
 	
 
@@ -26,10 +30,6 @@ const urlRoutes = {
 	"/contact_us": {
 		template: "/Frontend/Pages/contact_us.html",
 		description: "This is Contact_us page",
-	},
-	"/profile": {
-		template: "/Frontend/Pages/profile.html",
-		description: "This is the profile page",
 	},
 };
 

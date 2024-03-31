@@ -1,27 +1,24 @@
-#profile .row {
+
+   #profile .row {
     position: relative; 
     min-height: 90vh; 
 }
-
-
 
 .sidebar-navigation {
     width: 50px; 
     background-color: rgba(255, 255, 255, 0.14); 
     color: white;
-    
     position: absolute; 
     top: 50%;
     transform: translateY(-50%);
-	border-radius: 10px;
+    border-radius: 10px;
 }
 
-
-.col-auto{
-	padding-left: 0; 
+.col-auto {
+    padding-left: 0; 
+    padding-right: 60px;
 }
 
-/* Tooltips */
 .sidebar-navigation ul li .tooltip {
     position: absolute;
     background-color: rgba(255, 255, 255, 0.14);
@@ -43,17 +40,12 @@
     color: #ffffff;
 }
 
-
-
-
-
 .sidebar-navigation ul {
     list-style: none; 
     padding-left: 0; 
     text-align: center;
     margin: 0; 
 }
-
 
 .sidebar-navigation ul li {
     padding: 20px 0; 
@@ -69,20 +61,193 @@
     color: white; 
 }
 
-
-.sidebar-navigation ul li:hover{
+.sidebar-navigation ul li:hover {
     background-color: #ff46f6;
+    border-radius: 10px; 
+}
+
+/* .col {
+    border: #ffffff 1px solid;
+} */
+
+/* .row>* {
+    max-width: 70%;
+} */
+
+.profile-card {
+    background: rgba(255, 255, 255, 0.14); 
+    color: #ffffff;
+    border-radius: 10px;
+    font-family: 'Press Start 2P';
+    padding: 20px;
+    width: 300px; 
+    margin: auto; 
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); 
+    transform: scale(1);
+    transition: transform 0.5s;
+
+	max-width: 70%;
+
+	animation: float 3s ease-in-out infinite;
+}
+
+.card-header {
+    text-align: center;
+}
+
+
+
+
+.avatar {
+
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: auto;
+    border: 3px solid #FF46F6; 
+	animation: glow 2s ease-in-out infinite alternate;
+}
+
+.avatar img {
+    width: 100%;
+    height: auto;
+}
+
+.player-name {
+    margin-top: 10px;
+}
+
+.username {
+    color: #a9a9a9;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    color: #a9a9a9;
+}
+
+.stat-value {
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.wins .stat-value {
+    color: #4CAF50; 
+}
+
+.losses .stat-value {
+    color: #F44336; 
+}
+
+
+.box {
+    background-color: transparent; 
+    border: 4px solid transparent;
+    border-image: 16px round; 
+    border-image-source: url('path-to-your-pixel-border-image.png'); 
+    padding: 10px 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 	border-radius: 10px; 
+    transition: transform 0.3s ease-out, border-image-source 0.3s ease-out;
+}
+
+.box:hover {
+    transform: scale(1.1);
+    border-image-source: url('path-to-your-pixel-border-hover-image.png'); 
 }
 
 
-
-
-
-.col {
-    margin-left: 50px; 
-	/* background-color: red; */
-	border: #ffffff 1px solid;
-
-
+.wins {
+    
+    box-shadow:0 0 10px #00FF00;
 }
+
+.losses {
+    
+    box-shadow:0 0 10px #FF0000;
+}
+
+
+.stat-value {
+    font-family: 'Press Start 2P', cursive;
+    color: #ffffff;
+    text-shadow:
+      0 0 6px rgba(255, 255, 255, 0.7),
+      0 0 30px rgba(255, 255, 255, 0.35);
+}
+
+
+.box:hover .stat-value {
+    text-shadow:
+      0 0 10px rgba(255, 255, 255, 0.85),
+      0 0 40px rgba(255, 255, 255, 0.65),
+      0 0 80px rgba(255, 255, 255, 0.5);
+}
+
+
+.stat-label {
+    font-family: 'Press Start 2P', cursive;
+    color: #a9a9a9;
+    text-shadow: 0 0 3px #000000;
+}
+
+
+@media (max-width: 500px) {
+	.stats {
+	  flex-direction: column; 
+	}
+  
+	
+	
+	
+	.box {
+	  width: 100%; 
+	  margin-bottom: 20px; 
+	  justify-content: space-between; 
+	}
+	.profile-card {
+		max-width: 76%;
+	
+		/* animation: float 3s ease-in-out infinite; */
+	}
+	
+	.box:last-child {
+	  margin-bottom: 0;
+	}
+  }
+ 
+@keyframes glow {
+	0%, 100% {
+	  box-shadow: 0 0 10px #FF46F6, 0 0 20px #FF46F6, 0 0 30px #FF46F6;
+	}
+	50% {
+	  box-shadow: 0 0 20px #FF46F6, 0 0 30px #FF46F6, 0 0 40px #FF46F6;
+	}
+  }
+  
+
+
+
+
+  @keyframes float {
+	0%, 100% {
+	  transform: translateY(-10px); 
+	}
+	50% {
+	  transform: translateY(10px);
+	}
+  }
+  
+
+  
