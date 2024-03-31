@@ -7,12 +7,11 @@
 </div> -->
 <div id="profile" class="container-fluid">
     <div class="row">
-		<!-- <div class="sidebar-wrapper"> -->
 			<div class="col-auto">
 				<nav class="sidebar-navigation">
 					<ul>
 						<li class="nav-item">
-							<a class="nav-link" href="#">
+							<a class="nav-link"  onclick="add_pr()">
 								<i class="fas fa-home"></i>
 								<span class="tooltip">Home</span>
 							</a>
@@ -50,12 +49,34 @@
 					</ul>
 				</nav>
 			</div>
-		<!-- </div> -->
-        <div class="col">
 			
-			
+			<div class="col profile-card">
+				<div class="card-header">
+				  <div class="avatar">
+					<img src="Frontend/Assets/logo.png" alt="Player Avatar">
 
-
-        </div>
+				  </div>
+				  <h3 class="player-name">Player Name</h3>
+				  <span class="username">@username</span>
+				</div>
+				<div class="card-body">
+				  <div class="stats">
+					<div class="wins box">
+					  <span class="stat-label" data-i18n="wins"></span>
+					  <span class="stat-value" id="wins-value">24</span>
+					</div>
+					<div class="losses box">
+					  <span class="stat-label" data-i18n="losses"></span>
+					  <span class="stat-value" id="losses-value">10</span>
+					</div>
+				  </div>
+				</div>
+			  </div>
     </div>
 </div> 
+
+
+
+
+
+

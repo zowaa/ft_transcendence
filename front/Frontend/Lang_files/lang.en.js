@@ -5,6 +5,7 @@ export default {
 		"/sign_in": "Sign In | Pong",
 		"/sign_up": "Sign Up | Pong",
 		"/game": "Game | Pong",
+		"/profile": "Profile | Pong",
     },
 
 	placeholders: {
@@ -25,4 +26,6 @@ export default {
 	pwd_up: "At least 8 characters",
 	usr_in: "User not found",
 	pwd_in: "Incorrect password",
+	wins: "Wins: ",
+	losses: "Losses: ",
 };
