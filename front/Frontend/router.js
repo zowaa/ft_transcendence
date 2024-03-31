@@ -139,3 +139,7 @@ window.onresize = () => {
 	setStars();
 } 
 
+function add_pr() {
+	window.history.pushState({}, "", "/profile");
+	urlLocationHandler();
+}
