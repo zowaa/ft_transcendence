@@ -24,6 +24,12 @@ const urlRoutes = {
 		description: "This is the profile page",
 	},
 
+
+	"/2fa": {
+		template: "/Frontend/Pages/2fa.html",
+		description: "This is the 2fa page",
+	},
+
 	
 
 

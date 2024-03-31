@@ -30,30 +30,7 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 import os
 from django.http import HttpResponseRedirect
-
-# @api_view(['GET'])
-# def CheckUserLogin(request):
-#     token = request.COOKIES.get('jwt')
-#     if not token:
-#         auth_header = request.META.get('HTTP_AUTHORIZATION')
-#         if auth_header:
-#             parts = auth_header.split()
-#             if len(parts) == 2 and parts[0].lower() == "bearer":
-#                 token = parts[1]
-
-#     if not token:
-#         return JsonResponse({'answer': 'no', 'status': 'failure'}, status=HTTP_200_OK)
-
-#     try:
-#         payload = token_decode(token)
-#         request.user_payload = payload
-
-#     except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
-#         return JsonResponse({'answer': 'no', 'status': 'failure'}, status=HTTP_200_OK)
-#     except Exception as e:
-#         return JsonResponse({'detail': 'An error occurred.', 'status': 'error'}, status=HTTP_500_INTERNAL_SERVER_ERROR)
-
-#     return JsonResponse({'answer': 'yes', 'status': 'success'}, status=HTTP_200_OK )
+# from uploadcare import FileUpload, conf
 
 class RegisterUserView(APIView):
     def post(self, request):
@@ -251,25 +228,22 @@ class Profile(APIView):
         except Exception as e:
             return Response({"status": 500, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class PlayerAvatarUpload(APIView):
+class PlayerAvatarUpload(APIView): # CDN UploadCare to be tested after installing the package (gotta check w/ yassine)
     @method_decorator(token_required)
     def post(self, request):
+        conf.pub_key = settings.UPLOADCARE['pub_key']
+        conf.secret = settings.UPLOADCARE['secret']
+        
         try:
             user_id = request.user_payload['user']['id']
             user = CustomUser.objects.get(id=user_id)
 
             file = request.FILES['avatar']
-            # Define the path for the file
-            file_path = os.path.join(settings.MEDIA_ROOT, 'avatars', file.name)
-            # Save the file to the filesystem
-            with open(file_path, 'wb+') as destination:
-                for chunk in file.chunks():
-                    destination.write(chunk)
-            
-            # Generate the URL for the saved file
-            avatar_url = request.build_absolute_uri(settings.MEDIA_URL + 'avatars/' + file.name)
 
-            # Update the user's avatar URL
+            # uc_file = FileUpload.upload(file)
+
+            # avatar_url = uc_file.cdn_url
+
             user.avatar = avatar_url
             user.save()
 
@@ -293,38 +267,6 @@ class PlayerAvatarUpload(APIView):
                 "status": 500,
                 "message": str(e),
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-# class PlayerAvatarUpload(APIView):
-#     @method_decorator(token_required)
-#     def post(self, request):
-#         try:
-#             user_id = request.user_payload['user']['id']
-#             user = CustomUser.objects.get(id=user_id)
-            
-#             file = request.FILES['avatar']
-#             user.avatar.save(file.name, file, save=True)
-            
-#             return Response({
-#                 "status": 200,
-#                 "message": "Avatar updated successfully",
-#                 # "avatar_url": request.build_absolute_uri(user.avatar.url)
-#                 "avatar_url": request.build_absolute_uri(settings.MEDIA_URL + str(user.avatar))
-#             }, status=status.HTTP_200_OK)
-#         except CustomUser.DoesNotExist:
-#             return Response({
-#                 "status": 404,
-#                 "message": "User not found",
-#             }, status=status.HTTP_404_NOT_FOUND)
-#         except KeyError:
-#             return Response({
-#                 "status": 400,
-#                 "message": "No avatar file provided",
-#             }, status=status.HTTP_400_BAD_REQUEST)
-#         except Exception as e:
-#             return Response({
-#                 "status": 500,
-#                 "message": str(e),
-#             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class ChangePasswordView(APIView):
     @method_decorator(token_required)
@@ -493,7 +435,7 @@ class TwoFactorVerifyView(APIView):
     @method_decorator(token_required)
     def post(self, request, *args, **kwargs):
         code = request.data.get("code")
-        # jwt = request.COOKIES.get("jwt")
+        # jwt = request.jwt
 
         try:
             user_id = request.user_payload['user']['id']
@@ -505,10 +447,9 @@ class TwoFactorVerifyView(APIView):
                     user.save()
                     return Response({"statusCode": 200, "message": "2FA setup successfully."})
                 
-                # regenerate JWT token if needed
-                access_token = token_generation(user)
-                user.status = "online"
-                user.save()
+                # access_token = token_generation(user)
+                # user.status = "online"
+                # user.save()
                 response = Response({"statusCode": 200, "message": "2FA verified successfully."})
                 # response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
                 return response

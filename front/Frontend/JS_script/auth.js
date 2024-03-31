@@ -275,3 +275,80 @@ async function fetchUserProfile() {
     }
 }
 
+
+
+
+
+
+
+
+
+
+// Function to fetch and display the QR code for 2FA setup/verification
+async function fetchQRCode() {
+    const jwtToken = localStorage.getItem('jwt');
+    const jwtTokenCookie = getCookie('jwt');
+    
+    let headers = {};
+    let fetchOptions = {
+        method: 'GET',
+        headers: headers,
+    };
+
+    if (jwtToken) {
+        headers['Authorization'] = `Bearer ${jwtToken}`;
+    } else if (jwtTokenCookie) {
+        headers['Authorization'] = `Bearer ${jwtTokenCookie}`;
+    }
+    try {
+        const response = await fetch('http://localhost/qr_code/', fetchOptions);
+        if (response.ok) {
+            const imageUrl = URL.createObjectURL(await response.blob());
+            document.getElementById('qrCodeImageContainer').innerHTML = `<img src="${imageUrl}" alt="QR Code">`;
+        } else {
+            alert('Failed to load QR code. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error fetching QR code:', error);
+        alert('An error occurred. Please try again.');
+    }
+}
+
+// Function to verify the code entered by the user
+async function verifyCode() {
+    const code = document.getElementById('verificationCode').value.trim();
+
+    const jwtToken = localStorage.getItem('jwt');
+    const jwtTokenCookie = getCookie('jwt');
+    
+    let headers = {
+        'Content-Type': 'application/json'
+    };
+
+    if (jwtToken) {
+        headers['Authorization'] = `Bearer ${jwtToken}`;
+    } else if (jwtTokenCookie) {
+        headers['Authorization'] = `Bearer ${jwtTokenCookie}`;
+    }
+    try {
+        const response = await fetch('http://localhost/double_factor/', {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify({ code: code })
+        });
+        const data = await response.json();
+        if (response.ok) {
+            alert(data.message);
+        } else {
+            alert(data.message || 'Verification failed. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error verifying code:', error);
+        alert('An error occurred. Please try again.');
+    }
+}
+
+// Uncomment to test 2FA:
+
+// fetchQRCode();
+// verifyCode();
