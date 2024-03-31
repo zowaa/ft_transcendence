@@ -1,19 +1,24 @@
 import pyotp
 from base64 import b32encode
+from django.conf import settings
+from .models import CustomUser
 
-def generate_secret(user_id: int) -> str:
-    """Generates a base32-encoded secret for the user based on their ID."""
-    user_id_encoded = str(user_id).encode("utf-8")
-    return b32encode(user_id_encoded).decode('utf-8')
+def get_or_create_user_secret(user_id: int) -> str:
+    """Retrieve or create a TOTP secret for a given user."""
+    user = CustomUser.objects.get(id=user_id)
+    if not user.totp_secret:
+        user.totp_secret = pyotp.random_base32()
+        user.save(update_fields=['totp_secret'])
+    return user.totp_secret
 
 def generate_qrcode(user_id: int, issuer_name: str = "transcending") -> str:
     """Generates a provisioning URI for a QR code."""
-    secret = generate_secret(user_id)
+    secret = get_or_create_user_secret(user_id)
     totp = pyotp.TOTP(secret)
-    return totp.provisioning_uri(name=f"user{user_id}", issuer_name=issuer_name)
+    return totp.provisioning_uri(name=f"user{user_id}@{issuer_name}", issuer_name=issuer_name)
 
 def verify_code(user_id: int, code: str) -> bool:
     """Verifies the provided 2FA code against the user's TOTP secret."""
-    secret = generate_secret(user_id)
+    secret = get_or_create_user_secret(user_id)
     totp = pyotp.TOTP(secret)
     return totp.verify(code)

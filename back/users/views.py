@@ -346,17 +346,20 @@ class ChangePasswordView(APIView):
 #                     friends                     #        
 ###################################################
 
-class Friends(APIView):
+class FriendsView(APIView):
     @method_decorator(token_required)
-    def get(self, request):
-        user_id = request.user_payload['user']['id']
+    def get(self, request): # get friends, friend requests, or friend invites
+        current_user_username = request.user_payload['user']['username']
         get_type = request.query_params.get('target', 'friends')
 
-        query = Q(sender_id=user_id) | Q(receiver_id=user_id)
-        if get_type == 'invites':
-            query &= Q(receiver_id=user_id, status='pending')
-        elif get_type == 'requests':
-            query &= Q(sender_id=user_id, status='pending')
+        try:
+            current_user = CustomUser.objects.get(username=current_user_username)
+        except CustomUser.DoesNotExist:
+            return Response({"status": 404, "message": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        query = Q(sender=current_user) | Q(receiver=current_user)
+        if get_type == 'requests':
+            query &= Q(sender=current_user, status='pending')
         elif get_type == 'friends':
             query &= Q(status='accepted')
         else:
@@ -365,25 +368,26 @@ class Friends(APIView):
         friends = Friends.objects.filter(query)
         friends_data = []
         for f in friends:
-            friend = friends.sender if friends.sender.id != user_id else friends.receiver
-            friend_data = ProfileSerializer(friend).data
+            # Determine the friend (the other user in the relationship)
+            friend = f.sender if f.sender != current_user else f.receiver
+            friend_data = ProfileSerializer(friend).data  # Assuming each user has a related Profile object
             friends_data.append(friend_data)
 
         return Response({"status": 200, "friendships": friends_data}, status=status.HTTP_200_OK)
 
     @method_decorator(token_required)
-    def post(self, request):
-        user_id = request.user_payload['user']['id']
-        receiver_id = request.data.get('receiver_id')
+    def post(self, request): # send friend request
+        sender_username = request.user_payload['user']['username']
+        receiver_username = request.data.get('username')
 
-        if not receiver_id:
-            return Response({"status": 400, "message": "Receiver ID is required."}, status=status.HTTP_400_BAD_REQUEST)
-        if user_id == receiver_id:
+        if not receiver_username:
+            return Response({"status": 400, "message": "Receiver username is required."}, status=status.HTTP_400_BAD_REQUEST)
+        if sender_username == receiver_username:
             return Response({"status": 400, "message": "You cannot send a friend request to yourself."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            sender = CustomUser.objects.get(id=user_id)
-            receiver = CustomUser.objects.get(id=receiver_id)
+            sender = CustomUser.objects.get(username=sender_username)
+            receiver = CustomUser.objects.get(username=receiver_username)
 
             # Check if there's already a friend request in any direction
             existing_friend = Friends.objects.filter(
@@ -401,51 +405,54 @@ class Friends(APIView):
             return Response({"status": 200, "message": "Friend request sent successfully."}, status=status.HTTP_200_OK)
 
         except CustomUser.DoesNotExist:
-            return Response({"status": 404, "message": "Player not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"status": 404, "message": "User not found."}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"status": 500, "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @method_decorator(token_required)
-    def put(self, request):
-        # New endpoint for accepting or rejecting friend requests
-        user_id = request.user_payload['user']['id']
-        receiver_id = request.data.get('receiver_id')
+    def put(self, request): # accept or reject friend request
+        current_user_username = request.user_payload['user']['username']
+        sender_username = request.data.get('sender_username')  # Username of the request sender
         action = request.data.get('action')  # "accept" or "reject"
 
         if action not in ['accept', 'reject']:
             return Response({"status": 400, "message": "Invalid action."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            # request where the current user is the receiver (to ensure they have the right to accept/reject)
-            request = Friends.objects.get(receiver_id=user_id, sender_id=receiver_id, status='pending')
+            current_user = CustomUser.objects.get(username=current_user_username)
+            sender = CustomUser.objects.get(username=sender_username)
+
+            request_obj = Friends.objects.get(receiver=current_user, sender=sender, status='pending')
 
             if action == 'accept':
-                request.status = 'accepted'
-                request.save()
-                message = "Friend request accepted."
+                request_obj.status = 'accepted'
             else:  # Reject
-                request.status = 'rejected'
-                request.save()
-                message = "Friend request rejected."
+                request_obj.status = 'rejected'
+            request_obj.save()
+
+            message = "Friend request accepted." if action == 'accept' else "Friend request rejected."
             return Response({"status": 200, "message": message}, status=status.HTTP_200_OK)
-        except request.DoesNotExist:
+        except CustomUser.DoesNotExist:
+            return Response({"status": 404, "message": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Friends.DoesNotExist:
             return Response({"status": 404, "message": "Friend request not found."}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"status": 500, "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @method_decorator(token_required)
-    def delete(self, request):
-        user_id = request.user_payload['user']['id']
-        receiver_id = request.data.get('receiver_id')
+    def delete(self, request): # delete friend or friend request
+        current_user_username = request.user_payload['user']['username']
+        receiver_username = request.data.get('username')
 
-        if not receiver_id:
-            return Response({"status": 400, "message": "Receiver ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+        if not other_username:
+            return Response({"status": 400, "message": "Username is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            # Attempt to find a relation where the current user is either the sender or receiver
+            current_user = CustomUser.objects.get(username=current_user_username)
+            other_user = CustomUser.objects.get(username=other_username)
+
             friend = Friends.objects.filter(
-                (Q(sender_id=user_id) & Q(receiver_id=receiver_id)) | 
-                (Q(sender_id=receiver_id) & Q(receiver_id=user_id))
+                (Q(sender=current_user, receiver=other_user) | Q(sender=other_user, receiver=current_user))
             ).first()
 
             if friend:
@@ -459,7 +466,8 @@ class Friends(APIView):
                     "status": 404,
                     "message": "Friendship or friend request not found."
                 }, status=status.HTTP_404_NOT_FOUND)
-
+        except CustomUser.DoesNotExist:
+            return Response({"status": 404, "message": "User not found."}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"status": 500, "message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -470,18 +478,22 @@ class Friends(APIView):
 class QRCodeTwoFactorView(APIView):
     @method_decorator(token_required)
     def get(self, request, *args, **kwargs):
-        user = request.user
-        qr_code_uri = generate_qrcode(user.id, issuer_name="transcending")
+        user_id = request.user_payload['user']['id']
+        qr_code_uri = generate_qrcode(user_id, issuer_name="transcending")
 
         img = qrcode.make(qr_code_uri)
         response = HttpResponse(content_type="image/png")
         img.save(response, "PNG")
+
+        debug_info = qr_code_uri
+        response['X-Debug-Info'] = debug_info
         return response
 
 class TwoFactorVerifyView(APIView):
+    @method_decorator(token_required)
     def post(self, request, *args, **kwargs):
         code = request.data.get("code")
-        jwt = request.COOKIES.get("jwt")
+        # jwt = request.COOKIES.get("jwt")
 
         try:
             user_id = request.user_payload['user']['id']
@@ -498,11 +510,13 @@ class TwoFactorVerifyView(APIView):
                 user.status = "online"
                 user.save()
                 response = Response({"statusCode": 200, "message": "2FA verified successfully."})
-                response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
+                # response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
                 return response
             else:
                 return Response({"statusCode": 401, "message": "Incorrect 2FA code."})
-        except jwt.ExpiredSignatureError:
-            return Response({"statusCode": 401, "error": "Expired token"})
-        except (jwt.InvalidTokenError, CustomUser.DoesNotExist):
-            return Response({"statusCode": 401, "error": "Invalid token or player not found"})
+        # except jwt.ExpiredSignatureError:
+        #     return Response({"statusCode": 401, "error": "Expired token"})
+        # except (jwt.InvalidTokenError, CustomUser.DoesNotExist):
+        #     return Response({"statusCode": 401, "error": "Invalid token or player not found"})
+        except Exception as e:
+            return Response({"statusCode": 500, "error": str(e)})

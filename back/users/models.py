@@ -22,6 +22,7 @@ class CustomUser(AbstractBaseUser):
     is_active = models.BooleanField(default = True)
     is_42_user = models.BooleanField(default=False)
     double_auth = models.BooleanField(default=False)
+    totp_secret = models.CharField(max_length=100, null=True, blank=True)
 
     # REQUIRED_FIELDS = ["username"]
     USERNAME_FIELD = 'username'
