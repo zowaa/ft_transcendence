@@ -1,0 +1,139 @@
+<div id="profile" class="container-fluid">
+    <div class="row">
+			<div class="col-auto">
+				<nav class="sidebar-navigation">
+					<ul>
+						<li class="nav-item" onclick="add_pr()">
+							<a class="nav-link"  >
+								<i class="fas fa-home"></i>
+								<span class="tooltip">Home</span>
+							</a>
+						</li>
+						<li class="nav-item" onclick="add_gm()">
+							<a class="nav-link" >
+								<i class="fas fa-gamepad"></i>
+								<span class="tooltip">Game</span>
+							</a>
+						</li>
+						<li class="nav-item" onclick="add_hs()">
+							<a class="nav-link" >
+								<i class="fas fa-history"></i>
+								<span class="tooltip">History</span>
+							</a>
+						</li>
+						<li class="nav-item" onclick="add_fr()">
+							<a class="nav-link">
+								<i class="fas fa-user-friends"></i>
+								<span class="tooltip">Friends</span>
+							</a>
+						</li>
+						<li class="nav-item" onclick="add_st()">
+							<a class="nav-link" >
+								<i class="fas fa-cogs"></i>
+								<span class="tooltip">Settings</span>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" >
+								<i class="fas fa-sign-out-alt"></i>
+								<span class="tooltip">Logout</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+			
+			<div class="col d-flex align-items-center justify-content-center">
+				<form id="update_info" class="form" method="POST" style="max-width: 500px; width: 100%;">
+				   <div class="text-center mb-4">
+						<h1>Settings</h1>
+					</div>
+					
+					<!-- Name Field -->
+					<label for="name" class="form-label" style="margin-bottom: 18px;color: #dee2e6;">Name:</label>
+					<div class="form-group mb-3 control block-cube block-input">
+						<input id="name" name="name" type="text" class="form-control" placeholder="Name" required>
+						<div class="bg-top">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg-right">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg">
+							<div class="bg-inner"></div>
+						</div>
+					</div>
+					
+					<!-- Tournament Name Field -->
+					<label for="tournament_name" class="form-label" style="margin-bottom: 18px; color: #dee2e6;">Tournament Name:</label>
+					<div class="form-group mb-3 control block-cube block-input">
+                    
+						<input id="tournament_name" name="tournament_name" type="text" class="form-control" style="margin-bottom: 30px;" placeholder="Tournament Name" required>
+						<div class="bg-top">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg-right">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg">
+							<div class="bg-inner"></div>
+						</div>
+					</div>
+					
+					<!-- Update Info Button -->
+					<button class="btn block-cube block-cube-hover mb-3" type="submit">
+						<div class="bg-top">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg-right">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="text">Update Info</div>
+					</button>
+					
+					<div class="divider-or-container mb-3">
+						<div class="divider-line"></div>
+						<div class="divider-or">OR</div>
+						<div class="divider-line"></div>
+					</div>
+					
+					<!-- Change Password Button -->
+					<button class="btn block-cube block-cube-hover mb-3" type="button" onclick="go_pwd()">
+						<div class="bg-top">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg-right">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="text">Change Password</div>
+					</button>
+					
+					<div class="divider-or-container mb-3">
+						<div class="divider-line"></div>
+						<div class="divider-or">OR</div>
+						<div class="divider-line"></div>
+					</div>
+					
+					<!-- Change Avatar Button -->
+					<button class="btn block-cube block-cube-hover" type="button">
+						<div class="bg-top">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg-right">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="text">Change Avatar</div>
+					</button>
+				</form>
+			</div>
+    </div>
+</div> 

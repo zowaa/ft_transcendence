@@ -23,6 +23,27 @@ const urlRoutes = {
 		template: "/Frontend/Pages/profile.html",
 		description: "This is the profile page",
 	},
+	"/game_b": {
+		template: "/Frontend/Pages/game_b.html",
+		description: "This is the game_b page",
+	},
+	"/settings": {
+		template: "/Frontend/Pages/settings.html",
+		description: "This is the settings page",
+	},
+	"/go_pwd": {
+		template: "/Frontend/Pages/go_pwd.html",
+		description: "This is the go_pwd page",
+	},
+	"/friends": {
+		template: "/Frontend/Pages/friends.html",
+		description: "This is the friends page",
+	},
+	"/history": {
+		template: "/Frontend/Pages/history.html",
+		description: "This is the history page",
+	},
+	
 
 
 	"/2fa": {
@@ -148,5 +169,28 @@ window.onresize = () => {
 
 function add_pr() {
 	window.history.pushState({}, "", "/profile");
+	urlLocationHandler();
+}
+
+function add_gm() {
+	window.history.pushState({}, "", "/game_b");
+	urlLocationHandler();
+}
+function add_st() {
+	window.history.pushState({}, "", "/settings");
+	urlLocationHandler();
+}
+
+function go_pwd() {
+	window.history.pushState({}, "", "/go_pwd");
+	urlLocationHandler();
+}
+
+function add_fr() {
+	window.history.pushState({}, "", "/friends");
+	urlLocationHandler();
+}
+function add_hs() {
+	window.history.pushState({}, "", "/history");
 	urlLocationHandler();
 }

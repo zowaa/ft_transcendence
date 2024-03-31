@@ -1,5 +1,5 @@
-
-   #profile .row {
+/* Side menu */
+#profile .row {
     position: relative; 
     min-height: 90vh; 
 }
@@ -66,14 +66,10 @@
     border-radius: 10px; 
 }
 
-/* .col {
-    border: #ffffff 1px solid;
-} */
 
-/* .row>* {
-    max-width: 70%;
-} */
 
+
+/* profile card */
 .profile-card {
     background: rgba(255, 255, 255, 0.14); 
     color: #ffffff;
@@ -85,9 +81,7 @@
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); 
     transform: scale(1);
     transition: transform 0.5s;
-
 	max-width: 70%;
-
 	animation: float 3s ease-in-out infinite;
 }
 
@@ -95,11 +89,7 @@
     text-align: center;
 }
 
-
-
-
 .avatar {
-
     position: relative;
     width: 100px;
     height: 100px;
@@ -147,12 +137,10 @@
     color: #F44336; 
 }
 
-
 .box {
     background-color: transparent; 
     border: 4px solid transparent;
     border-image: 16px round; 
-    border-image-source: url('path-to-your-pixel-border-image.png'); 
     padding: 10px 20px;
     display: inline-flex;
     align-items: center;
@@ -164,20 +152,15 @@
 
 .box:hover {
     transform: scale(1.1);
-    border-image-source: url('path-to-your-pixel-border-hover-image.png'); 
 }
 
-
 .wins {
-    
     box-shadow:0 0 10px #00FF00;
 }
 
-.losses {
-    
+.losses {    
     box-shadow:0 0 10px #FF0000;
 }
-
 
 .stat-value {
     font-family: 'Press Start 2P', cursive;
@@ -187,7 +170,6 @@
       0 0 30px rgba(255, 255, 255, 0.35);
 }
 
-
 .box:hover .stat-value {
     text-shadow:
       0 0 10px rgba(255, 255, 255, 0.85),
@@ -195,22 +177,16 @@
       0 0 80px rgba(255, 255, 255, 0.5);
 }
 
-
 .stat-label {
     font-family: 'Press Start 2P', cursive;
     color: #a9a9a9;
     text-shadow: 0 0 3px #000000;
 }
 
-
 @media (max-width: 500px) {
 	.stats {
 	  flex-direction: column; 
 	}
-  
-	
-	
-	
 	.box {
 	  width: 100%; 
 	  margin-bottom: 20px; 
@@ -218,14 +194,11 @@
 	}
 	.profile-card {
 		max-width: 76%;
-	
-		/* animation: float 3s ease-in-out infinite; */
 	}
-	
 	.box:last-child {
 	  margin-bottom: 0;
 	}
-  }
+}
  
 @keyframes glow {
 	0%, 100% {
@@ -235,19 +208,117 @@
 	  box-shadow: 0 0 20px #FF46F6, 0 0 30px #FF46F6, 0 0 40px #FF46F6;
 	}
   }
-  
 
-
-
-
-  @keyframes float {
+@keyframes float {
 	0%, 100% {
 	  transform: translateY(-10px); 
 	}
 	50% {
 	  transform: translateY(10px);
 	}
-  }
+}
   
 
   
+
+
+
+
+
+/* game_b style */
+.game-section {
+    font-family: 'Press Start 2P', cursive;
+    height: 100%;
+    color: #fff;
+    min-height: 90vh;
+    background-size: 400% 400%;
+}
+
+.btn-game {
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+#oneVsOne {
+	animation: float_btn1 4s ease-in-out infinite;
+}
+
+#tournament {
+	animation: float_btn2 4s ease-in-out infinite;
+}
+
+.retro-gif {
+    max-width: 60%; 
+    height: auto;
+    display: block;
+    margin: 20px auto;
+}
+
+@keyframes float_btn1 {
+	0%, 100% {
+		transform: translateX(-20px); 
+	}
+	50% {
+		transform: translateX(20px);
+	}
+}
+
+@keyframes float_btn2 {
+	0%, 100% {
+		transform: translateX(10px); 
+	}
+	50% {
+		transform: translateX(-10px);
+	}
+}
+
+
+/* Settings style */
+
+
+/* Friends style */
+.form-and-friends-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.friends-list {
+	width: 50%;
+    max-height: 200px; /* Adjust the height as necessary */
+	overflow-y: auto; /* Enables vertical scrolling if content overflows */
+	border: 1px solid #ccc; /* Optional: adds a border around the friends list */
+	margin-top: 20px;
+	background-color:  rgba(255, 255, 255, 0.14);;
+  }
+  
+  .friend {
+	display: flex;
+	align-items: center;
+	padding: 10px;
+	border-bottom: 1px solid #eee; /* Optional: adds a separator between friends */
+  }
+  
+  .avatarr {
+	width: 50px; /* Adjust the size as necessary */
+	height: 50px; /* Adjust the size as necessary */
+	border-radius: 50%; /* Makes the image round */
+	margin-right: 10px;
+  }
+  
+  .friend-info {
+	flex-grow: 1;
+  }
+  
+  .friend-name {
+	margin: 0;
+	font-size: 1em; /* Adjust the size as necessary */
+  }
+  
+  .friend-status {
+	margin: 0;
+	font-size: 0.8em; /* Adjust the size as necessary */
+	color: #666; /* Adjust the color as necessary */
+  }
+  
+
+  /* history */

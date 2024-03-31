@@ -1,0 +1,98 @@
+<div id="profile" class="container-fluid">
+    <div class="row">
+			<div class="col-auto">
+				<nav class="sidebar-navigation">
+					<ul>
+						<li class="nav-item" onclick="add_pr()">
+							<a class="nav-link"  >
+								<i class="fas fa-home"></i>
+								<span class="tooltip">Home</span>
+							</a>
+						</li>
+						<li class="nav-item" onclick="add_gm()">
+							<a class="nav-link" >
+								<i class="fas fa-gamepad"></i>
+								<span class="tooltip">Game</span>
+							</a>
+						</li>
+						<li class="nav-item" onclick="add_hs()">
+							<a class="nav-link" >
+								<i class="fas fa-history"></i>
+								<span class="tooltip">History</span>
+							</a>
+						</li>
+						<li class="nav-item" onclick="add_fr()">
+							<a class="nav-link">
+								<i class="fas fa-user-friends"></i>
+								<span class="tooltip">Friends</span>
+							</a>
+						</li>
+						<li class="nav-item" onclick="add_st()">
+							<a class="nav-link">
+								<i class="fas fa-cogs"></i>
+								<span class="tooltip">Settings</span>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link">
+								<i class="fas fa-sign-out-alt"></i>
+								<span class="tooltip">Logout</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+			
+			<div class="col d-flex align-items-center justify-content-center">
+				<form id="update_pwd" class="form" method="POST" style="max-width: 500px; width: 100%;">
+					<div class="text-center mb-4">
+						<h1>Update Password</h1>
+					</div>
+			
+					<!-- Old Password Field -->
+					<label for="old_password" class="form-label" style="margin-bottom: 18px; color: #dee2e6;">Old Password:</label>
+					<div class="form-group mb-3 control block-cube block-input">
+						<input id="old_password" name="old_password" type="password" class="form-control" placeholder="Old Password" required>
+						<div class="bg-top">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg-right">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg">
+							<div class="bg-inner"></div>
+						</div>
+					</div>
+			
+					<!-- New Password Field -->
+					<label for="new_password" class="form-label" style="margin-bottom: 18px; color: #dee2e6;">New Password:</label>
+					<div class="form-group mb-3 control block-cube block-input">
+						<input id="new_password" name="new_password" type="password" class="form-control" placeholder="New Password" style="margin-bottom: 30px;" required>
+						<div class="bg-top">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg-right">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg">
+							<div class="bg-inner"></div>
+						</div>
+					</div>
+			
+					<!-- Submit Button -->
+					<button class="btn block-cube block-cube-hover" type="submit">
+						<div class="bg-top">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg-right">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="text">Update Password</div>
+					</button>
+				</form>
+			</div>
+    </div>
+</div> 

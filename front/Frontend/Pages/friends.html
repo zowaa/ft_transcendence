@@ -1,0 +1,145 @@
+<div id="profile" class="container-fluid">
+    <div class="row">
+			<div class="col-auto">
+				<nav class="sidebar-navigation">
+					<ul>
+						<li class="nav-item" onclick="add_pr()">
+							<a class="nav-link"  >
+								<i class="fas fa-home"></i>
+								<span class="tooltip">Home</span>
+							</a>
+						</li>
+						<li class="nav-item" onclick="add_gm()">
+							<a class="nav-link" >
+								<i class="fas fa-gamepad"></i>
+								<span class="tooltip">Game</span>
+							</a>
+						</li>
+						<li class="nav-item" onclick="add_hs()">
+							<a class="nav-link" >
+								<i class="fas fa-history"></i>
+								<span class="tooltip">History</span>
+							</a>
+						</li>
+						<li class="nav-item" onclick="add_fr()">
+							<a class="nav-link">
+								<i class="fas fa-user-friends"></i>
+								<span class="tooltip">Friends</span>
+							</a>
+						</li>
+						<li class="nav-item" onclick="add_st()">
+							<a class="nav-link">
+								<i class="fas fa-cogs"></i>
+								<span class="tooltip">Settings</span>
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link">
+								<i class="fas fa-sign-out-alt"></i>
+								<span class="tooltip">Logout</span>
+							</a>
+						</li>
+					</ul>
+				</nav>
+			</div>
+			
+			<!-- <div class="col d-flex align-items-center justify-content-center"> -->
+				<div class="col form-and-friends-container">
+				<form id="add_fr" class="form" method="POST" style="max-width: 500px; width: 100%;">
+					<div class="text-center mb-4">
+						<h1>Add friends</h1>
+					</div>
+			
+					<label for="friend_name" class="form-label" style="margin-bottom: 18px; color: #dee2e6;">Friend name:</label>
+					<div class="form-group mb-3 control block-cube block-input">
+						<input id="friend_name" name="friend_name"  class="form-control" placeholder="Friend name" required>
+						<div class="bg-top">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg-right">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg">
+							<div class="bg-inner"></div>
+						</div>
+					</div>
+			
+			
+					<!-- Submit Button -->
+					<button class="btn block-cube block-cube-hover" type="submit">
+						<div class="bg-top">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg-right">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="text">Add</div>
+					</button>
+					<div class="divider-or-container mb-3">
+						<div class="divider-line"></div>
+						<div class="divider-line"></div>
+						<div class="divider-line"></div>
+					</div>
+				</form>
+
+				<div class="friends-list">
+					<ul style="padding-left: 0px;">
+					  <!-- Repeat this list item for each friend -->
+					  <li class="friend">
+						<img src="Frontend/Assets/logo.png" alt="Friend's Avatar" class="avatarr">
+						<div class="friend-info">
+						  <h2 class="friend-name">Friend's Name</h2>
+						  <p class="friend-status">Status: Online</p>
+						</div>
+					  </li>
+					  <li class="friend">
+						<img src="Frontend/Assets/logo.png" alt="Friend's Avatar" class="avatarr">
+						<div class="friend-info">
+						  <h2 class="friend-name">Friend's Name</h2>
+						  <p class="friend-status">Status: Online</p>
+						</div>
+					  </li>
+					  <li class="friend">
+						<img src="Frontend/Assets/logo.png" alt="Friend's Avatar" class="avatarr">
+						<div class="friend-info">
+						  <h2 class="friend-name">Friend's Name</h2>
+						  <p class="friend-status">Status: Online</p>
+						</div>
+					  </li>
+					  <li class="friend">
+						<img src="Frontend/Assets/logo.png" alt="Friend's Avatar" class="avatarr">
+						<div class="friend-info">
+						  <h2 class="friend-name">Friend's Name</h2>
+						  <p class="friend-status">Status: Online</p>
+						</div>
+					  </li>
+					  <li class="friend">
+						<img src="Frontend/Assets/logo.png" alt="Friend's Avatar" class="avatarr">
+						<div class="friend-info">
+						  <h2 class="friend-name">Friend's Name</h2>
+						  <p class="friend-status">Status: Online</p>
+						</div>
+					  </li>
+					  <li class="friend">
+						<img src="Frontend/Assets/logo.png" alt="Friend's Avatar" class="avatarr">
+						<div class="friend-info">
+						  <h2 class="friend-name">Friend's Name</h2>
+						  <p class="friend-status">Status: Online</p>
+						</div>
+					  </li>
+					  <li class="friend">
+						<img src="Frontend/Assets/logo.png" alt="Friend's Avatar" class="avatarr">
+						<div class="friend-info">
+						  <h2 class="friend-name">Friend's Name</h2>
+						  <p class="friend-status">Status: Online</p>
+						</div>
+					  </li>
+					  <!-- More friends -->
+					</ul>
+				</div>
+			</div>
+    </div>
+</div> 
