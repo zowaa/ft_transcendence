@@ -40,8 +40,8 @@
 								<span class="tooltip">Settings</span>
 							</a>
 						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="#">
+						<li class="nav-item" onclick="logout()">
+							<a class="nav-link" >
 								<i class="fas fa-sign-out-alt"></i>
 								<span class="tooltip">Logout</span>
 							</a>
@@ -50,14 +50,14 @@
 				</nav>
 			</div>
 			
-			<div class="col profile-card">
+			<div class="col profile-card" id="kk">
 				<div class="card-header">
 				  <div class="avatar">
-					<img src="Frontend/Assets/logo.png" alt="Player Avatar">
+					<img src="Frontend/Assets/logo.png" id="avata">
 
 				  </div>
-				  <h3 class="player-name">Player Name</h3>
-				  <span class="username">@username</span>
+				  <h3 class="player-name" id="disp-n"></h3>
+				  <span class="username" id="username"></span>
 				</div>
 				<div class="card-body">
 				  <div class="stats">

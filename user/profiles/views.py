@@ -7,7 +7,7 @@ from .serializers import UserSerializer, RegisterUserSerializer, LoginUserSerial
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 from django.core.exceptions import ObjectDoesNotExist
-from rest_framework_simplejwt.tokens import RefreshToken
+# from rest_framework_simplejwt.tokens import RefreshToken
 from django.http import JsonResponse
 from django.conf import settings
 import requests

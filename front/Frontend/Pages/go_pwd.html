@@ -44,7 +44,7 @@
 			</div>
 			
 			<div class="col d-flex align-items-center justify-content-center">
-				<form id="update_pwd" class="form" method="POST" style="max-width: 500px; width: 100%;">
+				<form autocomplete="off" id="update_pwd" class="form" method="PUT" style="max-width: 500px; width: 100%;">
 					<div class="text-center mb-4">
 						<h1>Update Password</h1>
 					</div>
@@ -52,7 +52,7 @@
 					<!-- Old Password Field -->
 					<label for="old_password" class="form-label" style="margin-bottom: 18px; color: #dee2e6;">Old Password:</label>
 					<div class="form-group mb-3 control block-cube block-input">
-						<input id="old_password" name="old_password" type="password" class="form-control" placeholder="Old Password" required>
+						<input id="old_password" autocomplete="l" name="old_password" type="password" class="form-control" placeholder="Old Password" required>
 						<div class="bg-top">
 							<div class="bg-inner"></div>
 						</div>
@@ -67,7 +67,7 @@
 					<!-- New Password Field -->
 					<label for="new_password" class="form-label" style="margin-bottom: 18px; color: #dee2e6;">New Password:</label>
 					<div class="form-group mb-3 control block-cube block-input">
-						<input id="new_password" name="new_password" type="password" class="form-control" placeholder="New Password" style="margin-bottom: 30px;" required>
+						<input id="new_password" autocomplete="l" name="new_password" type="password" class="form-control" placeholder="New Password" style="margin-bottom: 30px;" required>
 						<div class="bg-top">
 							<div class="bg-inner"></div>
 						</div>

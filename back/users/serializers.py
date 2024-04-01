@@ -18,24 +18,24 @@ class UserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['username', 'display_name', 'avatar', 'is_42_user']
     
-class RegisterUserSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(max_length=100, required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
-    password = serializers.CharField(min_length=8, max_length=100, required=True, write_only=True)
+# class RegisterUserSerializer(serializers.ModelSerializer):
+#     username = serializers.CharField(max_length=100, required=True, validators=[UniqueValidator(queryset=CustomUser.objects.all())])
+#     password = serializers.CharField(min_length=8, max_length=100, required=True, write_only=True)
 
-    class Meta:
-        model = CustomUser
-        fields = ['id', 'username', 'password']
-        extra_kwargs = {'password': {'write_only': True}}
+#     class Meta:
+#         model = CustomUser
+#         fields = ['id', 'username', 'password']
+#         extra_kwargs = {'password': {'write_only': True}}
 
-    def create(self, validated_data):
-        user = CustomUser(
-            username = validated_data['username'],
-            display_name = validated_data['username'],
-            status = "online",
-        )
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
+#     def create(self, validated_data):
+#         user = CustomUser(
+#             username = validated_data['username'],
+#             display_name = validated_data['username'],
+#             status = "online",
+#         )
+#         user.set_password(validated_data['password'])
+#         user.save()
+#         return user
 
 class LoginUserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=100, required=True)
@@ -64,14 +64,6 @@ class LoginUserSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({"password": ["Incorrect password."]})
         else:
             raise serializers.ValidationError({"username": ["User does not exist."]})
-
-class UpdatePasswordSerializer(serializers.ModelSerializer):
-    old_password = serializers.CharField(required=True)
-    new_password = serializers.CharField(required=True)
-
-    def validate_new_password(self, value):
-        validate_password(value)
-        return value
 
 class UpdateProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=150, allow_blank=True, required=False)

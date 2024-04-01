@@ -228,7 +228,7 @@ function getCookie(name) {
 }
 
 async function fetchUserProfile() {
-    const profile = document.getElementById('profile');
+    const profile = document.getElementById('kk');
     if (profile) {
         // Retrieve the JWT token from localStorage
         const jwtToken = localStorage.getItem('jwt');
@@ -255,15 +255,18 @@ async function fetchUserProfile() {
                 console.log(profileData);
 
                 // Update the page with the user's profile data
-                // document.getElementById('username').textContent = profileData.user.username || 'Unavailable';
+                document.getElementById('username').textContent ='@'+ profileData.user.username || 'Unavailable';
+				// add '@' before the username
+
+				document.getElementById('disp-n').textContent =  profileData.user.display_name || 'Unavailable';
                 // document.getElementById('status').textContent = profileData.user.status || 'Unavailable';
                 
                 // // Corrected the handling of the avatar element to update its 'src' attribute
-                // const avatarElement = document.getElementById('avatar');
-                // if (avatarElement) {
-                //     avatarElement.src = profileData.user.avatar; // Use a default image if avatar URL is unavailable
-                //     avatarElement.alt = "User Avatar"; // Ensuring the alt attribute is set for accessibility
-                // }
+                const avatarElement = document.getElementById('avata');
+                if (avatarElement) {
+                    avatarElement.src = profileData.user.avatar; // Use a default image if avatar URL is unavailable
+                    avatarElement.alt = "User Avatar"; // Ensuring the alt attribute is set for accessibility
+                }
             } else {
                 // Handle non-OK responses, e.g., by displaying an error message
                 alert('Failed to load profile. Please log in b3da.');
@@ -352,3 +355,40 @@ async function verifyCode() {
 
 // fetchQRCode();
 // verifyCode();
+
+//logout
+async function logout(){
+	const jwtToken = localStorage.getItem('jwt');
+    const jwtTokenCookie = getCookie('jwt');
+    
+    let headers = {};
+    let fetchOptions = {
+        method: 'POST',
+        headers: headers,
+    };
+
+    if (jwtToken) {
+        headers['Authorization'] = `Bearer ${jwtToken}`;
+    } else if (jwtTokenCookie) {
+        headers['Authorization'] = `Bearer ${jwtTokenCookie}`;
+    }
+    try {
+        const response = await fetch('http://localhost/logout/', fetchOptions);
+        if (response.ok) {
+			// localStorage.removeItem('jwt');
+			//remove from cookie or local storage
+			document.cookie = "jwt=; expires" + new Date(0).toUTCString();
+			localStorage.removeItem('jwt');
+
+			localStorage.removeItem('logged_in');
+			window.history.pushState({}, "", '/sign_in'); 
+			urlLocationHandler();
+		} else {
+			alert('mabach ykhrej');
+		}
+}
+catch (error) {
+	console.error('Error logging out:', error);
+	alert('An error occurred. Please try again.');
+}
+}
