@@ -12,6 +12,10 @@
       },
       "mappings": {
         "properties": {
+          "timestamp": {
+            "type": "date",
+            "format": "dd/MMM/yyyy:HH:mm:ss"
+          },
           "id": {
             "type": "keyword"
           },
