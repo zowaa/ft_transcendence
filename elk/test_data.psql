@@ -1,4 +1,4 @@
-psql -U transcendencer -d transcendence
+psql -U $POSTGRES_USER -d $POSTGRES_DB
 
 INSERT INTO users_customuser
 
