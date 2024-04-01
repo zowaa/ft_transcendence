@@ -62,17 +62,20 @@ To parse container logs with Logstash filters:
 
 4. View parsed logs in Kibana and create visualizations and dashboards as needed.
 
+## DASHBOARDS
+
+1. Users stats dashboard:
+
+![users_stats](images/users_stats.png)
+
+2. app logs dashboard:
+
+![app_logs](images/app_logs.png)
+
 ## Conclusion
 
 You have successfully set up and configured the ELK stack, imported dashboards to Kibana using the Kibana API, managed users and roles using scripts, configured Logstash to ingest data from PostgreSQL and container logs, and parsed container logs using Logstash filters. You can now explore and analyze your log data effectively using Kibana's visualization and exploration capabilities.
 
 For more advanced configurations and usage, refer to the official documentation and community resources.
 
-## DASHBOARD 
-
-1. Users stats dashboard: 
-![users_stats](images/users_stats.png)
-
-2. app logs dashboard: 
-![app_logs](images/app_logs.png)
-
+### MADE BY YASSINE RIMAH
