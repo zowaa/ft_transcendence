@@ -68,3 +68,11 @@ You have successfully set up and configured the ELK stack, imported dashboards t
 
 For more advanced configurations and usage, refer to the official documentation and community resources.
 
+## DASHBOARD 
+
+1. Users stats dashboard: 
+![users_stats](images/users_stats.png)
+
+2. app logs dashboard: 
+![app_logs](images/app_logs.png)
+
