@@ -51,13 +51,7 @@ const urlRoutes = {
 		description: "This is the 2fa page",
 	},
 
-	
 
-
-	"/contact_us": {
-		template: "/Frontend/Pages/contact_us.html",
-		description: "This is Contact_us page",
-	},
 };
 
 
@@ -79,12 +73,27 @@ const urlRoute = (event) => {
 
 const urlLocationHandler = async () => {
 
-	const location = window.location.pathname;
-	if (location.length == 0) {
-		location = "/";
+	let locationn = window.location.pathname;
+	if (locationn.length == 0) {
+		locationn = "/";
 	}
 
-	const route = urlRoutes[location] || urlRoutes[404];
+	checkLoginStatus();
+	const status = localStorage.getItem('logged_in');
+	if (status === 'yes' && (locationn === '/sign_in' || locationn === '/sign_up')){
+		// alert("You are already logged in");
+		locationn = "/profile";
+		console.log("You are already logged in");
+	}
+	else if (status !== 'yes' && (locationn === '/profile' || locationn === '/game' || locationn === '/friends' || locationn === '/settings' || locationn === '/go_pwd' || locationn === '/history')){
+		// alert("You need to be logged in to access this page");
+		locationn = "/sign_in";
+		console.log("You need to be logged in to access this page");
+	}
+
+
+
+	const route = urlRoutes[locationn] || urlRoutes[404];
 	const response = await fetch(route.template);
 
 	let html;
@@ -103,7 +112,7 @@ const urlLocationHandler = async () => {
 	attachLoginFormListener();
     fetchUserProfile();
 	attachOAuthFormListener();
-	checkLoginStatus();
+	// checkLoginStatus();
 	updatePassword();
 	updateUsername();
 	addFriend();
@@ -114,10 +123,10 @@ const urlLocationHandler = async () => {
 	saveLanguagePreference(init_lang);
 	applyLanguageToContent(language.default);
 
-	if (location === '/') {
+	if (locationn === '/') {
         runPongAnimation();
     }
-	if (location === '/game') {
+	if (locationn === '/game') {
 		runGame();
 	}
 };

@@ -203,7 +203,7 @@ function attachOAuthFormListener() {
     }
 }
 
-function checkLoginStatus() { // set logged_in to yes if the user 42 is logged in (will be used in other funcs)
+function checkLoginStatus() { // set logged_in to yes if the user 42 is logged in 
     const oauthAttempt = sessionStorage.getItem('oauthAttempt');
     const urlParams = new URLSearchParams(window.location.search);
     const loginSuccess = urlParams.get('success');
