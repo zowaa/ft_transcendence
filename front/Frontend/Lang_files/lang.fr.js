@@ -6,11 +6,21 @@ export default {
 		"/sign_up": "S'inscrire | Pong",
 		"/game": "Jeu | Pong",
 		"/profile": "Profil | Pong",
+		"/friends": "Amis | Pong",
+		"/game_b": "Mode de jeu | Pong",
+		"/go_pwd": "Changer mot de passe | Pong",
+		"/history": "Historique | Pong",
+		"/settings": "Paramètres | Pong",
 	},
 
 	placeholders: {
 		"username": "Nom",
 		"password": "Mot de passe",
+		"his_username" : "Son nom d'utilisateur",
+		"old_ph": "Ancien mot de passe",
+		"new_ph": "Nouveau mot de passe",
+		"dis_nh": "Nom d'affichage",
+		"dis_unh": "Nom d'utilisateur",
 	},
 
 	not_found: "Page non trouvée",
@@ -28,5 +38,26 @@ export default {
 	pwd_in: "Mot de passe incorrect",
 	wins: "Victoires: ",
 	losses: "Défaites: ",
+	add_fr: "Ajouter des amis",
+	fr_name: "Nom d'utilisateur:",
+	add: "Ajouter",
+	fr_list: "Liste d'amis",
+	vs: "1 vS 1",
+	tour: "Tournoi",
+	upd_p: "Mettre à jour le mot de passe",
+	old_p: "Ancien mot de passe:",
+	new_p: "Nouveau mot de passe:",
+	change: "Changer",
+
+	date: "Date",
+	won: "Gagné",
+	lost: "Perdu",
+
+	st: "Paramètres",
+	dis_n: "Nom d'affichage:",
+	dis_un: "Nom d'utilisateur:",
+	up_inf: "Mettre à jour ",
+	chng: "Changer le mot de passe",
+	chng_av: "Changer l'avatar",
 
 };

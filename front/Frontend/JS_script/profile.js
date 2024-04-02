@@ -111,7 +111,7 @@ function updateUsername() {
 
 			const data = {
 				username: updateUsernameForm.disp_name.value,
-				display_name: updateUsernameForm.username.value,
+				display_name: updateUsernameForm.name.value,
 			};
 			try {
 				const response = await fetch('http://localhost:82/chihaja/', {

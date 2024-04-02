@@ -46,13 +46,13 @@
 			<div class="col d-flex align-items-center justify-content-center">
 				<form autocomplete="off" id="update_pwd" class="form" method="PUT" style="max-width: 500px; width: 100%;">
 					<div class="text-center mb-4">
-						<h1>Update Password</h1>
+						<h1 data-i18n="upd_p"></h1>
 					</div>
 			
 					<!-- Old Password Field -->
-					<label for="old_password" class="form-label" style="margin-bottom: 18px; color: #dee2e6;">Old Password:</label>
+					<label for="old_password" data-i18n="old_p" class="form-label" style="margin-bottom: 18px; color: #dee2e6;"></label>
 					<div class="form-group mb-3 control block-cube block-input">
-						<input id="old_password" autocomplete="l" name="old_password" type="password" class="form-control" placeholder="Old Password" required>
+						<input id="old_password" data-i18n="old_ph" autocomplete="l" name="old_password" type="password" class="form-control"  required>
 						<div class="bg-top">
 							<div class="bg-inner"></div>
 						</div>
@@ -65,9 +65,9 @@
 					</div>
 			
 					<!-- New Password Field -->
-					<label for="new_password" class="form-label" style="margin-bottom: 18px; color: #dee2e6;">New Password:</label>
+					<label data-i18n="new_p" for="new_password" class="form-label" style="margin-bottom: 18px; color: #dee2e6;"></label>
 					<div class="form-group mb-3 control block-cube block-input">
-						<input id="new_password" autocomplete="l" name="new_password" type="password" class="form-control" placeholder="New Password" style="margin-bottom: 30px;" required>
+						<input id="new_password" data-i18n="new_ph" autocomplete="l" name="new_password" type="password" class="form-control"  style="margin-bottom: 30px;" required>
 						<div class="bg-top">
 							<div class="bg-inner"></div>
 						</div>
@@ -90,7 +90,7 @@
 						<div class="bg">
 							<div class="bg-inner"></div>
 						</div>
-						<div class="text">Update Password</div>
+						<div data-i18n="change" class="text"></div>
 					</button>
 				</form>
 			</div>
