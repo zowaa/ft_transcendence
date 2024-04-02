@@ -105,6 +105,9 @@ const urlLocationHandler = async () => {
 	attachOAuthFormListener();
 	checkLoginStatus();
 	updatePassword();
+	updateUsername();
+	addFriend();
+	// fetchAndPrefillUserInfo();
 
 	const init_lang = getSavedLanguagePreference();
 	const language = await import(`./Lang_files/lang.${init_lang}.js`);
