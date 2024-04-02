@@ -51,11 +51,17 @@ export default {
 	date: "Date",
 	won: "Won",
 	lost: "Lost",
-
 	st: "Settings",
 	dis_n: "Display name:",
 	dis_un: "Username:",
 	up_inf: "Update information",
 	chng: "Change Password",
 	chng_av: "Change Avatar",
+	nav_home: "Home",
+	nav_game: "Game",
+	nav_his: "History",
+	nav_fr: "Friends",
+	nav_st: "Settings",
+	nav_logout: "Log out",
+
 };

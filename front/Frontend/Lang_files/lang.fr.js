@@ -48,16 +48,20 @@ export default {
 	old_p: "Ancien mot de passe:",
 	new_p: "Nouveau mot de passe:",
 	change: "Changer",
-
 	date: "Date",
 	won: "Gagné",
 	lost: "Perdu",
-
 	st: "Paramètres",
 	dis_n: "Nom d'affichage:",
 	dis_un: "Nom d'utilisateur:",
 	up_inf: "Mettre à jour ",
 	chng: "Changer le mot de passe",
 	chng_av: "Changer l'avatar",
+	nav_home: "Accueil",
+	nav_game: "Jeu",
+	nav_his: "Historique",
+	nav_fr: "Amis",
+	nav_st: "Paramètres",
+	nav_logout: "Se déconnecter",
 
 };

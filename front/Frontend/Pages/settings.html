@@ -1,47 +1,47 @@
 <div id="profile" class="container-fluid">
     <div class="row">
-			<div class="col-auto">
-				<nav class="sidebar-navigation">
-					<ul>
-						<li class="nav-item" onclick="add_pr()">
-							<a class="nav-link"  >
-								<i class="fas fa-home"></i>
-								<span class="tooltip">Home</span>
-							</a>
-						</li>
-						<li class="nav-item" onclick="add_gm()">
-							<a class="nav-link" >
-								<i class="fas fa-gamepad"></i>
-								<span class="tooltip">Game</span>
-							</a>
-						</li>
-						<li class="nav-item" onclick="add_hs()">
-							<a class="nav-link" >
-								<i class="fas fa-history"></i>
-								<span class="tooltip">History</span>
-							</a>
-						</li>
-						<li class="nav-item" onclick="add_fr()">
-							<a class="nav-link">
-								<i class="fas fa-user-friends"></i>
-								<span class="tooltip">Friends</span>
-							</a>
-						</li>
-						<li class="nav-item" onclick="add_st()">
-							<a class="nav-link" >
-								<i class="fas fa-cogs"></i>
-								<span class="tooltip">Settings</span>
-							</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" >
-								<i class="fas fa-sign-out-alt"></i>
-								<span class="tooltip">Logout</span>
-							</a>
-						</li>
-					</ul>
-				</nav>
-			</div>
+		<div class="col-auto">
+			<nav class="sidebar-navigation">
+				<ul>
+					<li class="nav-item" onclick="add_pr()">
+						<a class="nav-link"  >
+							<i class="fas fa-home"></i>
+							<span class="tooltip" data-i18n="nav_home"></span>
+						</a>
+					</li>
+					<li class="nav-item" onclick="add_gm()">
+						<a class="nav-link" >
+							<i class="fas fa-gamepad"></i>
+							<span class="tooltip" data-i18n="nav_game"></span>
+						</a>
+					</li>
+					<li class="nav-item" onclick="add_hs()">
+						<a class="nav-link" >
+							<i class="fas fa-history"></i>
+							<span class="tooltip" data-i18n="nav_his"></span>
+						</a>
+					</li>
+					<li class="nav-item" onclick="add_fr()">
+						<a class="nav-link">
+							<i class="fas fa-user-friends"></i>
+							<span class="tooltip" data-i18n="nav_fr"></span>
+						</a>
+					</li>
+					<li class="nav-item" onclick="add_st()">
+						<a class="nav-link">
+							<i class="fas fa-cogs"></i>
+							<span class="tooltip" data-i18n="nav_st"></span>
+						</a>
+					</li>
+					<li class="nav-item" onclick="logout()">
+						<a class="nav-link">
+							<i class="fas fa-sign-out-alt"></i>
+							<span class="tooltip" data-i18n="nav_logout"></span>
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
 			
 			<div class="col d-flex align-items-center justify-content-center">
 				<form id="update_info" class="form" method="PUT" style="max-width: 500px; width: 100%;">
