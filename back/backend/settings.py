@@ -110,10 +110,9 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTH_USER_MODEL = 'users.CustomUser'
 
 # 42 OAuth2 settings
-OAUTH42_CLIENT_ID = 'u-s4t2ud-fabcc3a6f568fd7a8d8ea4bd3af163f1099bf3ac28135c4ff2c535908cac3f7d'
-OAUTH42_CLIENT_SECRET = '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'
-OAUTH42_REDIRECT_URI = 'https://localhost:8000/auth42_callback/'
-
+OAUTH42_CLIENT_ID = os.environ.get('OAUTH42_CLIENT_ID', '')
+OAUTH42_CLIENT_SECRET = os.environ.get('OAUTH42_CLIENT_SECRET', '')
+OAUTH42_REDIRECT_URI = os.environ.get('OAUTH42_REDIRECT_URI', '')
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
