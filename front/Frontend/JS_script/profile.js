@@ -134,7 +134,7 @@ function updateUsername() {
 				display_name: updateUsernameForm.name.value,
 			};
 			try {
-				const response = await fetch('http://localhost:82/chihaja/', {
+				const response = await fetch('http://localhost:82/profile/', {
 					method: 'PUT',
 					headers: headers,
 					body: JSON.stringify(data),
@@ -178,10 +178,10 @@ function addFriend() {
 			}
 
 			const data = {
-				friend: addFriendForm.friend_name.value,
+				username: addFriendForm.friend_name.value,
 			};
 			try {
-				const response = await fetch('http://localhost:82/add_friend/', {
+				const response = await fetch('http://localhost:81/friends/', {
 					method: 'POST',
 					headers: headers,
 					body: JSON.stringify(data),
