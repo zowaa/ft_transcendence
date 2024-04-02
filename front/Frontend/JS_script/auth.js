@@ -248,7 +248,7 @@ async function fetchUserProfile() {
         }
 
         try {
-            const response = await fetch('http://localhost/profile/', fetchOptions);
+            const response = await fetch('http://localhost:82/profile/', fetchOptions);
 
             if (response.ok) {
                 const profileData = await response.json();
