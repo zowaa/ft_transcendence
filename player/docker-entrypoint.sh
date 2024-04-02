@@ -6,7 +6,12 @@ while ! nc -z postgres 5432; do
     sleep 1
 done
 
-python3 manage.py makemigrations users
+while ! nc -z rproxy 80; do
+    echo "Waiting for Back to be ready..."
+    sleep 1
+done
+
+python3 manage.py makemigrations players
 python3 manage.py migrate
 # python3 manage.py runserver 0.0.0.0:8000
-python3 manage.py runsslserver 0.0.0.0:8000
+python3 manage.py runsslserver 0.0.0.0:8001

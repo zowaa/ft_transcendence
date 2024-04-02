@@ -24,7 +24,7 @@ function updatePassword() {
                 new_password: updatePasswordForm.new_password.value,
             };
 			try {
-				const response = await fetch('http://localhost/change_password/', {
+				const response = await fetch('http://localhost:82/change_password/', {
 					method: 'PUT',
 					headers: headers,
 					body: JSON.stringify(data),

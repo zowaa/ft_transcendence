@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser, Games
+from .models import CustomUser
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 
@@ -89,8 +89,3 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ['id', 'username', 'display_name', 'date_joined', 'last_login', 'avatar', 'nb_wins', 'nb_losses', 'nb_plays', 'status', 'is_42_user', 'double_auth']
-
-class GamesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Games
-        fields = ['id', 'first_player', 'second_player', 'first_player_score', 'second_player_score', 'created_at', 'updated_at']
