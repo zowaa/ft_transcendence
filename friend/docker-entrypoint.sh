@@ -6,6 +6,8 @@ while ! nc -z postgres 5432; do
     sleep 1
 done
 
+. friend_env/bin/activate
+
 python3 manage.py makemigrations users
 
 python3 manage.py migrate
