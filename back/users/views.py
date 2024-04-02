@@ -34,27 +34,26 @@ import os
 # 	@method_decorator(token_required)
 #     def get(self, request):
 # 		return Response({'answer': 'yes'}, status=200)
-        # token = request.COOKIES.get('jwt')
-        # if not token:
-        #     auth_header = request.META.get('HTTP_AUTHORIZATION')
-        #     if auth_header:
-        #         parts = auth_header.split()
-        #         if len(parts) == 2 and parts[0].lower() == "bearer":
-        #             token = parts[1]
-        
-        # if not token:
-        #     return Response({'answer': 'no'}, status=200)
+#         token = request.COOKIES.get('jwt')
+#         if not token:
+#             auth_header = request.META.get('HTTP_AUTHORIZATION')
+#             if auth_header:
+#                 parts = auth_header.split()
+#                 if len(parts) == 2 and parts[0].lower() == "bearer":
+#                     token = parts[1]
+#         if not token:
+#             return Response({'answer': 'no'}, status=200)
 
-        # try:
-        #     payload = token_decode(token)
-        #     request.user_payload = payload
-        #     return Response({'answer': 'yes'}, status=200)
-        # except jwt.ExpiredSignatureError:
-        #     return Response({'answer': 'no'}, status=200)
-        # except jwt.InvalidTokenError:
-        #     return Response({'answer': 'no'}, status=200)
-        # except Exception as e:
-        #     return Response({'answer': 'no'}, status=200)
+#         try:
+#             payload = token_decode(token)
+#             request.user_payload = payload
+#             return Response({'answer': 'yes'}, status=200)
+#         except jwt.ExpiredSignatureError:
+#             return Response({'answer': 'no'}, status=200)
+#         except jwt.InvalidTokenError:
+#             return Response({'answer': 'no'}, status=200)
+#         except Exception as e:
+#             return Response({'answer': 'no'}, status=200)
 
 class RegisterUserView(APIView):
     def post(self, request):
