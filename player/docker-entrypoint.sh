@@ -7,6 +7,7 @@ while ! nc -z postgres 5432; do
 done
 
 python3 manage.py makemigrations users
+
 python3 manage.py migrate
-# python3 manage.py runserver 0.0.0.0:8000
-python3 manage.py runsslserver 0.0.0.0:8001
+
+python3 manage.py runsslserver 0.0.0.0:8002

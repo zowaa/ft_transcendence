@@ -194,6 +194,21 @@ services:
       - DJANGO_SETTINGS_MODULE=backend.settings
     restart: always
 
+  friend:
+    image: friend:1.0
+    build: ./friend/
+    container_name: friend
+    depends_on:
+      - postgres
+    entrypoint: "./docker-entrypoint.sh"
+    ports:
+      - 8001:8001
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=friend.settings
+    restart: always
+
   player:
     image: player:1.0
     build: ./player/
@@ -202,7 +217,7 @@ services:
       - postgres
     entrypoint: "./docker-entrypoint.sh"
     ports:
-      - 8001:8001
+      - 8002:8002
     env_file:
       - .env
     environment:

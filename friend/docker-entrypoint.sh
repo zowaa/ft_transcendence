@@ -10,4 +10,4 @@ python3 manage.py makemigrations users
 
 python3 manage.py migrate
 
-python3 manage.py runsslserver 0.0.0.0:8000
+python3 manage.py runsslserver 0.0.0.0:8001
