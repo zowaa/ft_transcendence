@@ -1,5 +1,5 @@
-let game = [];
 
+let players = ["Player1","Player2","Player3","Player4"];
 function runGame(){
 //   // Make a POST request
 // fetch('http://127.0.0.1:8000/tournement/registre/', {
@@ -45,6 +45,8 @@ let player2name = '';
 let message = document.querySelector('.po');
 // let message2 = document.querySelector('.yx');
 let gameendscore = 3;
+let game1 = [0, 1];
+let game2 = [2, 3];
 let gamecounter = 0;
 let final = [];
 let Tournementid;
@@ -54,6 +56,8 @@ let endtournement = false;
 const data = {
     player1: players[0],
     player2: players[1],
+    player3: players[2],
+    player4: players[3]
   };
 let balls = [
     { x: canvas.width / 2, y: canvas.height / 2, xSpeed: 2, ySpeed: 2, size: ballSize }

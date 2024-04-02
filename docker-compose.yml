@@ -16,10 +16,10 @@ volumes:
   app_data: 
     driver: local
 
-networks:
-  default:
-    name: transcendence
-    external: false
+# networks:
+#   default:
+#     name: transcendence
+#     external: false
 
 services:
   # setup:
