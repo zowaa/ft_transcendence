@@ -83,11 +83,17 @@ const urlLocationHandler = async () => {
 	if (status === 'yes' && (locationn === '/sign_in' || locationn === '/sign_up')){
 		// alert("You are already logged in");
 		locationn = "/profile";
+		//change pathname
+		window.history.pushState({}, "", "/profile");
+		urlLocationHandler();
 		console.log("You are already logged in");
 	}
 	else if (status !== 'yes' && (locationn === '/profile' || locationn === '/game' || locationn === '/friends' || locationn === '/settings' || locationn === '/go_pwd' || locationn === '/history')){
 		// alert("You need to be logged in to access this page");
 		locationn = "/sign_in";
+		//change pathname
+		window.history.pushState({}, "", "/sign_in");
+		urlLocationHandler();
 		console.log("You need to be logged in to access this page");
 	}
 

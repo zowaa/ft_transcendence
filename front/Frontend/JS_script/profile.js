@@ -49,12 +49,6 @@ function updatePassword() {
 }
 
 
-
-
-
-
-
-
 async function fetchAndPrefillUserInfo() {
     const myform = document.getElementById('update_info');
 	if (myform) {
@@ -63,8 +57,13 @@ async function fetchAndPrefillUserInfo() {
 		let headers = {};
 		if (jwtToken) {
 			headers['Authorization'] = `Bearer ${jwtToken}`;
+			//disable button
+			
 		} else if (jwtTokenCookie) {
 			headers['Authorization'] = `Bearer ${jwtTokenCookie}`;
+			document.getElementById("up").disabled = true;
+			document.getElementById("bn").disabled = true;
+			document.getElementById("avt").disabled = true;
 		}
 		try {
 			const response = await fetch('http://localhost:82/profile/', {
