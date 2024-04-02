@@ -31,7 +31,8 @@ function updatePassword() {
 				});
 				const result = await response.json();
 				if (result.error) {
-					alert(result.error);
+					// alert(result.error);
+					display_password_error(result.error);
 					
 				} else {
 					// alert(result.message);
@@ -47,6 +48,26 @@ function updatePassword() {
 		}
 	}
 }
+
+
+function display_password_error(error) {
+	resetErrorDisplay();
+
+	if (error) {
+		for(const [key, value] of Object.entries(error)) {
+			const errorElement = document.getElementById(`${key}`);
+			if (errorElement) {
+				errorElement.style.display = 'block';
+
+				const inputElement = document.querySelector(`input[name="${key}"]`);
+				if (inputElement) {
+					inputElement.style.marginBottom = '0px';
+				}
+			}
+		}
+	}
+}
+
 
 
 async function fetchAndPrefillUserInfo() {
@@ -165,21 +186,38 @@ function addFriend() {
 					headers: headers,
 					body: JSON.stringify(data),
 				});
-				const result = await response.json();
-				if (result.error) {
-					alert(result.error);
-					
-				} else {
-					// alert(result.message);
-					//push
+
+				if (response.status == 200) {
 					window.history.pushState({}, "", "/friends");
 					urlLocationHandler();
+				}
+				else {
+					const result = await response.json();
+					display_friend_error(result.error);
 				}
 			}
 			catch (error) {
 				console.error(error);
 				alert('An error occurred');
 			}
+		}
+	}
+}
+
+function display_friend_error(error) {
+	resetErrorDisplay();
+
+	if (error) {
+		for(const [key, value] of Object.entries(error)) {
+			const errorElement = document.getElementById("fri");
+			if (errorElement) {
+                errorElement.style.display = 'block';
+
+                const inputElement = document.querySelector(`input[name="${field}"]`);
+                if (inputElement) {
+                    inputElement.style.marginBottom = '0px';
+                }
+            }
 		}
 	}
 }

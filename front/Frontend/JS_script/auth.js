@@ -70,55 +70,6 @@ function resetErrorDisplay() {
 
 
 
-// Sign-in
-// function attachLoginFormListener() {
-//     const loginForm = document.getElementById('loginForm');
-//     if (loginForm) {
-//         loginForm.onsubmit = async (event) => {
-//             event.preventDefault(); 
-//             let formData = new FormData(loginForm);
-//             // Converting FormData to JSON since we need to send JSON
-//             let object = {};
-//             formData.forEach((value, key) => {
-//                 object[key] = value;
-//             });
-//             let json = JSON.stringify(object);
-
-//             try {
-//                 let response = await fetch('http://localhost/login/', {
-//                     method: 'POST',
-//                     headers: {
-//                         'Content-Type': 'application/json',
-//                     },
-//                     body: json,
-//                 });
-
-//                 if(response.ok) {
-//                     const responseData = await response.json();
-//                     localStorage.setItem('jwt', responseData.access);
-//                     window.history.pushState({}, "", '/profile'); 
-//                     urlLocationHandler();
-//                 } else {
-//                     const errorResponse = await response.json(); // Parse the response to get the error object
-//                     if (errorResponse.error) {
-//                         // Iterate over the keys in the error object and create a message
-//                         let errorMessage = Object.keys(errorResponse.error)
-//                             .map(key => `${key}: ${errorResponse.error[key].join(", ")}`)
-//                             .join("\n");
-//                         alert(errorMessage);
-//                     } else {
-//                         alert("An unknown error occurred.");
-//                     }
-//                 }
-//             } catch (error) {
-//                 // Handle network errors or other unexpected errors
-//                 console.error("Fetch error: ", error);
-//                 alert("An error occurred while trying to communicate with the server.");
-//             }
-//         };
-//     }
-// }
-
 
 function attachLoginFormListener() {
     const loginForm = document.getElementById('loginForm');

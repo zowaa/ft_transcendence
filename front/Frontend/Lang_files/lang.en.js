@@ -63,5 +63,6 @@ export default {
 	nav_fr: "Friends",
 	nav_st: "Settings",
 	nav_logout: "Log out",
+	fri: "Friend not found",
 
 };
