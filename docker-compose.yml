@@ -222,6 +222,21 @@ services:
     environment:
       - DJANGO_SETTINGS_MODULE=player.settings
     restart: always
+  
+  matchmaking:
+    image: matchmaking:1.0
+    build: ./matchmaking/
+    container_name: matchmaking
+    depends_on:
+      - postgres
+    entrypoint: "./docker-entrypoint.sh"
+    ports:
+      - 8003:8003
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=matchmaking.settings
+    restart: always
 
   front:
     image: front:1.0
