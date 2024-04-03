@@ -163,10 +163,103 @@ function updateUsername() {
 }
 
 
+
+
+
+
+
+
+async function fetchFriendships() {
+    const jwtToken = localStorage.getItem('jwt');
+    const jwtTokenCookie = getCookie('jwt');
+
+    let headers = {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+    };
+    if (jwtToken) {
+        headers['Authorization'] = `Bearer ${jwtToken}`;
+    } else if (jwtTokenCookie) {
+        headers['Authorization'] = `Bearer ${jwtTokenCookie}`;
+    }
+
+    try {
+        const response = await fetch('http://localhost:81/friends/', { 
+            method: 'GET',
+            headers: headers,
+        });
+
+        if (response.status === 200) {
+            const data = await response.json();
+            return data.friendships; 
+        } else {
+            console.error('Failed to fetch friendships', response.status);
+            return []; 
+        }
+    } catch (error) {
+        console.error('Error fetching friendships:', error);
+        return []; 
+    }
+}
+
+
+async function populateFriendsList() {
+    const friendships = await fetchFriendships(); 
+    const friendsListUl = document.querySelector('.friends-list ul');
+
+    
+    friendsListUl.innerHTML = '';
+
+    friendships.forEach(friend => {
+       
+        const li = document.createElement('li');
+        li.className = 'friend';
+
+        
+        const img = document.createElement('img');
+        img.src = friend.avatar;
+        img.className = 'avatarr';
+
+        
+        const div = document.createElement('div');
+        div.className = 'friend-info';
+
+        
+        const h2 = document.createElement('h2');
+        h2.className = 'friend-name';
+        h2.textContent = friend.display_name;
+
+        
+        const p = document.createElement('p');
+        p.className = 'friend-status';
+        p.textContent = friend.status;
+
+        
+        div.appendChild(h2);
+        div.appendChild(p);
+        li.appendChild(img);
+        li.appendChild(div);
+
+       
+        friendsListUl.appendChild(li);
+    });
+}
+
+
+
+
+
+
+
+
+
+
 //add friend
 function addFriend() {
 	const addFriendForm = document.getElementById('add_friend');
+	
 	if (addFriendForm) {
+		populateFriendsList(); 
 		addFriendForm.onsubmit = async function(e) {
 			e.preventDefault();
 			const jwtToken = localStorage.getItem('jwt');

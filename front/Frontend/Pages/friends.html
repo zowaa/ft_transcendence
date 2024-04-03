@@ -1,150 +1,109 @@
 <div id="profile" class="container-fluid">
     <div class="row">
-		<div class="col-auto">
-			<nav class="sidebar-navigation">
-				<ul>
-					<li class="nav-item" onclick="add_pr()">
-						<a class="nav-link"  >
-							<i class="fas fa-home"></i>
-							<span class="tooltip" data-i18n="nav_home"></span>
-						</a>
-					</li>
-					<li class="nav-item" onclick="add_gm()">
-						<a class="nav-link" >
-							<i class="fas fa-gamepad"></i>
-							<span class="tooltip" data-i18n="nav_game"></span>
-						</a>
-					</li>
-					<li class="nav-item" onclick="add_hs()">
-						<a class="nav-link" >
-							<i class="fas fa-history"></i>
-							<span class="tooltip" data-i18n="nav_his"></span>
-						</a>
-					</li>
-					<li class="nav-item" onclick="add_fr()">
-						<a class="nav-link">
-							<i class="fas fa-user-friends"></i>
-							<span class="tooltip" data-i18n="nav_fr"></span>
-						</a>
-					</li>
-					<li class="nav-item" onclick="add_st()">
-						<a class="nav-link">
-							<i class="fas fa-cogs"></i>
-							<span class="tooltip" data-i18n="nav_st"></span>
-						</a>
-					</li>
-					<li class="nav-item" onclick="logout()">
-						<a class="nav-link">
-							<i class="fas fa-sign-out-alt"></i>
-							<span class="tooltip" data-i18n="nav_logout"></span>
-						</a>
-					</li>
-				</ul>
-			</nav>
-		</div>
-			
-				<div class="col form-and-friends-container">
-				<form id="add_friend" class="form" method="POST" style="max-width: 500px; width: 100%;padding-top: 0px;">
-					<div class="text-center mb-4">
-						<h1 data-i18n="add_fr"></h1>
-					</div>
-			
-					<label for="friend_name" class="form-label" style="margin-bottom: 18px; color: #dee2e6;" data-i18n="fr_name"></label>
-					<div class="form-group mb-3 control block-cube block-input">
-						<input id="friend_name" name="friend_name"  class="form-control" style="margin-bottom: 25px;" data-i18n="his_username" placeholder="Friend name" required>
-						<div class="bg-top">
-							<div class="bg-inner"></div>
-						</div>
-						<div class="bg-right">
-							<div class="bg-inner"></div>
-						</div>
-						<div class="bg">
-							<div class="bg-inner"></div>
-						</div>
-					</div>
-					<!-- <p class="text-danger m" id="fri_msg" data-i18n="fri" style="display: none;"></p> -->
-					<p class="text-danger m" id="msg1" data-i18n="fri1" style="display: none;"></p>
-					<p class="text-danger m" id="msg2" data-i18n="fri2" style="display: none;"></p>
-					
-					<p class="text-success" id="msg3" data-i18n="fri3" style="display: none;"></p>
-					<p class="text-danger m" id="msg4" data-i18n="fri4" style="display: none;"></p>
-			
-			
-					<!-- Submit Button -->
-					<button class="btn block-cube block-cube-hover" type="submit" style="margin-bottom: 30px;">
-						<div class="bg-top">
-							<div class="bg-inner"></div>
-						</div>
-						<div class="bg-right">
-							<div class="bg-inner"></div>
-						</div>
-						<div class="bg">
-							<div class="bg-inner"></div>
-						</div>
-						<div class="text" data-i18n="add"></div>
-					</button>
-					<div class="divider-or-container mb-3">
-						<div class="divider-line"></div>
-						<div class="divider-line"></div>
-						<div class="divider-line"></div>
-					</div>
-				</form>
+        <div class="col-auto">
+            <nav class="sidebar-navigation">
+                <ul>
+                    <li class="nav-item" onclick="add_pr()">
+                        <a class="nav-link"  >
+                            <i class="fas fa-home"></i>
+                            <span class="tooltip" data-i18n="nav_home"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item" onclick="add_gm()">
+                        <a class="nav-link" >
+                            <i class="fas fa-gamepad"></i>
+                            <span class="tooltip" data-i18n="nav_game"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item" onclick="add_hs()">
+                        <a class="nav-link" >
+                            <i class="fas fa-history"></i>
+                            <span class="tooltip" data-i18n="nav_his"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item" onclick="add_fr()">
+                        <a class="nav-link">
+                            <i class="fas fa-user-friends"></i>
+                            <span class="tooltip" data-i18n="nav_fr"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item" onclick="add_st()">
+                        <a class="nav-link">
+                            <i class="fas fa-cogs"></i>
+                            <span class="tooltip" data-i18n="nav_st"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item" onclick="logout()">
+                        <a class="nav-link">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span class="tooltip" data-i18n="nav_logout"></span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+            
+                <div class="col form-and-friends-container">
+                <form id="add_friend" class="form" method="POST" style="max-width: 500px; width: 100%;padding-top: 0px;">
+                    <div class="text-center mb-4">
+                        <h1 data-i18n="add_fr"></h1>
+                    </div>
+            
+                    <label for="friend_name" class="form-label" style="margin-bottom: 18px; color: #dee2e6;" data-i18n="fr_name"></label>
+                    <div class="form-group mb-3 control block-cube block-input">
+                        <input id="friend_name" name="friend_name"  class="form-control" style="margin-bottom: 25px;" data-i18n="his_username" placeholder="Friend name" required>
+                        <div class="bg-top">
+                            <div class="bg-inner"></div>
+                        </div>
+                        <div class="bg-right">
+                            <div class="bg-inner"></div>
+                        </div>
+                        <div class="bg">
+                            <div class="bg-inner"></div>
+                        </div>
+                    </div>
+                    <!-- <p class="text-danger m" id="fri_msg" data-i18n="fri" style="display: none;"></p> -->
+                    <p class="text-danger m" id="msg1" data-i18n="fri1" style="display: none;"></p>
+                    <p class="text-danger m" id="msg2" data-i18n="fri2" style="display: none;"></p>
+                    
+                    <p class="text-success" id="msg3" data-i18n="fri3" style="display: none;"></p>
+                    <p class="text-danger m" id="msg4" data-i18n="fri4" style="display: none;"></p>
+            
+            
+                    <!-- Submit Button -->
+                    <button class="btn block-cube block-cube-hover" type="submit" style="margin-bottom: 30px;">
+                        <div class="bg-top">
+                            <div class="bg-inner"></div>
+                        </div>
+                        <div class="bg-right">
+                            <div class="bg-inner"></div>
+                        </div>
+                        <div class="bg">
+                            <div class="bg-inner"></div>
+                        </div>
+                        <div class="text" data-i18n="add"></div>
+                    </button>
+                    <div class="divider-or-container mb-3">
+                        <div class="divider-line"></div>
+                        <div class="divider-line"></div>
+                        <div class="divider-line"></div>
+                    </div>
+                </form>
 
-				<h1  data-i18n="fr_list" style="font-size: 23px;font-family: 'Press Start 2P';" ></h1>
-				<div class="friends-list">
-					<ul style="padding-left: 0px;">
-					  <li class="friend">
-						<img src="Frontend/Assets/logo.png" alt="Friend's Avatar" class="avatarr">
-						<div class="friend-info">
-						  <h2 class="friend-name">Friend's Name</h2>
-						  <p class="friend-status">Status: Online</p>
-						</div>
-					  </li>
-					  <li class="friend">
-						<img src="Frontend/Assets/logo.png" alt="Friend's Avatar" class="avatarr">
-						<div class="friend-info">
-						  <h2 class="friend-name">Friend's Name</h2>
-						  <p class="friend-status">Status: Online</p>
-						</div>
-					  </li>
-					  <li class="friend">
-						<img src="Frontend/Assets/logo.png" alt="Friend's Avatar" class="avatarr">
-						<div class="friend-info">
-						  <h2 class="friend-name">Friend's Name</h2>
-						  <p class="friend-status">Status: Online</p>
-						</div>
-					  </li>
-					  <li class="friend">
-						<img src="Frontend/Assets/logo.png" alt="Friend's Avatar" class="avatarr">
-						<div class="friend-info">
-						  <h2 class="friend-name">Friend's Name</h2>
-						  <p class="friend-status">Status: Online</p>
-						</div>
-					  </li>
-					  <li class="friend">
-						<img src="Frontend/Assets/logo.png" alt="Friend's Avatar" class="avatarr">
-						<div class="friend-info">
-						  <h2 class="friend-name">Friend's Name</h2>
-						  <p class="friend-status">Status: Online</p>
-						</div>
-					  </li>
-					  <li class="friend">
-						<img src="Frontend/Assets/logo.png" alt="Friend's Avatar" class="avatarr">
-						<div class="friend-info">
-						  <h2 class="friend-name">Friend's Name</h2>
-						  <p class="friend-status">Status: Online</p>
-						</div>
-					  </li>
-					  <li class="friend">
-						<img src="Frontend/Assets/logo.png" alt="Friend's Avatar" class="avatarr">
-						<div class="friend-info">
-						  <h2 class="friend-name">Friend's Name</h2>
-						  <p class="friend-status">Status: Online</p>
-						</div>
-					  </li>
-					  <!-- More friends -->
-					</ul>
-				</div>
-			</div>
+                <h1  data-i18n="fr_list" style="font-size: 23px;font-family: 'Press Start 2P';" ></h1>
+                <div class="friends-list">
+                    <ul style="padding-left: 0px;">
+                        
+                      <!-- <li class="friend">
+                        <img src="[avatar]"  class="avatarr">
+                        <div class="friend-info">
+                          <h2 class="friend-name">[display_name]</h2>
+                          <p class="friend-status">[status]</p>
+                        </div>
+                      </li> -->
+                      <!-- More friends -->
+                    </ul>
+                </div>
+            </div>
     </div>
 </div> 
