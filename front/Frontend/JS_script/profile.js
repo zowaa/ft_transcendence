@@ -74,47 +74,95 @@ function display_password_error(error) {
 
 
 
-async function fetchAndPrefillUserInfo() {
-    const myform = document.getElementById('update_info');
-	if (myform) {
-		const jwtToken = localStorage.getItem('jwt');
-		const jwtTokenCookie = getCookie('jwt');
-		let headers = {};
-		if (jwtToken) {
-			headers['Authorization'] = `Bearer ${jwtToken}`;
-			//disable button
+// async function fetchAndPrefillUserInfo() {
+//     const myform = document.getElementById('update_info');
+// 	if (myform) {
+
+		
+
+// 		const jwtToken = localStorage.getItem('jwt');
+// 		const jwtTokenCookie = getCookie('jwt');
+// 		let headers = {};
+// 		if (jwtToken) {
+// 			headers['Authorization'] = `Bearer ${jwtToken}`;
+// 			//disable button
 			
-		} else if (jwtTokenCookie) {
-			headers['Authorization'] = `Bearer ${jwtTokenCookie}`;
-			document.getElementById("up").disabled = true;
-			document.getElementById("bn").disabled = true;
-			document.getElementById("avt").disabled = true;
-		}
-		try {
-			const response = await fetch('http://localhost:82/profile/', {
-				method: 'GET',
-				headers: headers,
-			});
-			const result = await response.json();
-			if (result.error) {
-				alert(result.error);
-			} else {
-				myform.name.value = result.user.display_name;
-				myform.disp_name.value = result.user.username;
-			}
-		}
-		catch (error) {
-			console.error(error);
-			alert('An error occurred');
-		}
-	}
-}
+// 		} else if (jwtTokenCookie) {
+// 			headers['Authorization'] = `Bearer ${jwtTokenCookie}`;
+// 			document.getElementById("up").disabled = true;
+// 			document.getElementById("bn").disabled = true;
+// 			document.getElementById("avt").disabled = true;
+// 		}
+// 		try {
+// 			const response = await fetch('http://localhost:82/profile/', {
+// 				method: 'GET',
+// 				headers: headers,
+// 			});
+// 			const result = await response.json();
+// 			if (result.error) {
+// 				alert(result.error);
+// 			} else {
+// 				myform.name.value = result.user.display_name;
+// 				myform.disp_name.value = result.user.username;
+// 			}
+// 		}
+// 		catch (error) {
+// 			console.error(error);
+// 			alert('An error occurred');
+// 		}
+// 	}
+// }
 
 
 // update username && display name
 function updateUsername() {
 	const updateUsernameForm = document.getElementById('update_info');
 	if (updateUsernameForm) {
+		let hadi;
+
+
+
+		async function fetchAndPrefillUserInfo() {
+			const myform = document.getElementById('update_info');
+			if (myform) {
+		
+				
+		
+				const jwtToken = localStorage.getItem('jwt');
+				const jwtTokenCookie = getCookie('jwt');
+				let headers = {};
+				if (jwtToken) {
+					headers['Authorization'] = `Bearer ${jwtToken}`;
+					//disable button
+					
+				} else if (jwtTokenCookie) {
+					headers['Authorization'] = `Bearer ${jwtTokenCookie}`;
+					document.getElementById("up").disabled = true;
+					document.getElementById("bn").disabled = true;
+					document.getElementById("avt").disabled = true;
+				}
+				try {
+					const response = await fetch('http://localhost:82/profile/', {
+						method: 'GET',
+						headers: headers,
+					});
+					const result = await response.json();
+					if (result.error) {
+						alert(result.error);
+					} else {
+						myform.name.value = result.user.display_name;
+						myform.disp_name.value = result.user.username;
+						hadi = result.user.username;
+					}
+				}
+				catch (error) {
+					console.error(error);
+					alert('An error occurred');
+				}
+			}
+		}
+		
+
 
 		fetchAndPrefillUserInfo();
 
@@ -148,10 +196,22 @@ function updateUsername() {
 					alert(result.error);
 					
 				} else {
+
+
+					if (data.username !== hadi) {
+						console.log(data.username, hadi);
+						
+						logout(); 
+					} else {
+						window.history.pushState({}, "", "/profile");
+						urlLocationHandler(); 
+					}
+
 					// alert(result.message);
 					//push
-					window.history.pushState({}, "", "/profile");
-					urlLocationHandler();
+					// logout();
+					// window.history.pushState({}, "", "/profile");
+					// urlLocationHandler();
 				}
 			}
 			catch (error) {
@@ -335,4 +395,47 @@ function resetErrorDisplay_friend() {
     // const xxInput = document.querySelector('.xx');
     // if (xInput) xInput.style.marginBottom = '20px';
     // if (xxInput) xxInput.style.marginBottom = '40px';
+}
+
+// Update avatar
+
+async function changeav() {
+    const avatarInput = document.getElementById('avatar');
+    if (avatarInput.files.length === 0) {
+        alert('Please select a file.');
+        return;
+    }
+
+    const file = avatarInput.files[0];
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    const jwtToken = localStorage.getItem('jwt');
+    const jwtTokenCookie = getCookie('jwt');
+
+    
+    let headers = {};
+    if (jwtToken) {
+        headers['Authorization'] = `Bearer ${jwtToken}`;
+    } else if (jwtTokenCookie) {
+        headers['Authorization'] = `Bearer ${jwtTokenCookie}`;
+    }
+
+    try {
+        const response = await fetch('http://localhost:82/change_avatar/', {
+            method: 'PUT',
+            headers: headers, 
+            body: formData,
+        });
+        const result = await response.json();
+        if (result.error) {
+            alert(result.error);
+        } else {
+            alert('Avatar updated successfully!');
+            window.location.reload();
+        }
+    } catch (error) {
+        console.error('An error occurred:', error);
+        alert('An error occurred');
+    }
 }

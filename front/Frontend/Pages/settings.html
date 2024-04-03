@@ -121,7 +121,7 @@
 					</div>
 					
 					<!-- Change Avatar Button -->
-					<button id="avt" class="btn block-cube block-cube-hover" type="button">
+					<!-- <button id="avt" class="btn block-cube block-cube-hover" type="button">
 						<div class="bg-top">
 							<div class="bg-inner"></div>
 						</div>
@@ -132,7 +132,25 @@
 							<div class="bg-inner"></div>
 						</div>
 						<div class="text" data-i18n="chng_av"></div>
+					</button> -->
+					<!-- Change Avatar Section -->
+					<label for="avatar" class="form-label" style="color: #dee2e6;">Change Avatar</label>
+					<div class="form-group mb-3" >
+						<input type="file" id="avatar" style="color: #ff46f6;" name="avatar" class="form-control">
+					</div>
+					<button id="avt" class="btn block-cube block-cube-hover" type="button" onclick="changeav()">
+						<div class="bg-top">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg-right">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="bg">
+							<div class="bg-inner"></div>
+						</div>
+						<div class="text">Change Avatar</div>
 					</button>
+
 				</form>
 			</div>
     </div>
