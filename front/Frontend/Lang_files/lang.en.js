@@ -71,5 +71,7 @@ export default {
 	new_p_err: "New password not secured",
 	av_err: "Avatar upload failed",
 	empty: "No file added",
+	display_name: "Display name must be unique",
+	username: "Username must be unique",
 
 };

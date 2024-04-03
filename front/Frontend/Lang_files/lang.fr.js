@@ -69,6 +69,10 @@ export default {
 	fri4: "Ami non trouvé",
 	old_p_err: "Ancien mot de passe incorrect",
 	new_p_err: "Nouveau mot de passe non sécurisé",
+	av_err: "Opération échouée",
+	empty: "Aucun fichier ajouté",
+	display_name: "Doit être unique",
+	username: "Déjà utilisé",
 
 
 };

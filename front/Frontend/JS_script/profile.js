@@ -194,7 +194,9 @@ function updateUsername() {
 				});
 				const result = await response.json();
 				if (result.error) {
-					alert(result.error);
+					// alert(result.error);
+					//display error
+					display_error_up_form(result.error);
 					
 				} else {
 
@@ -222,6 +224,28 @@ function updateUsername() {
 		}
 	}
 }
+
+//display error
+function display_error_up_form(error) {
+	//print object in just alert key: field
+	// alert(JSON.stringify(error));
+	//rest error
+	const sp1 = document.getElementById("display_name");
+	const sp2 = document.getElementById("username");
+	sp1.style.display = 'none';
+	sp2.style.display = 'none';
+
+	//display error
+	if (error) {
+		for(const [key, value] of Object.entries(error)) {
+			const errorElement = document.getElementById(`${key}`);
+			if (errorElement) {
+				errorElement.style.display = 'block';
+			}
+		}
+	}
+}
+	
 
 
 
