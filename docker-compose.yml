@@ -238,6 +238,21 @@ services:
       - DJANGO_SETTINGS_MODULE=matchmaking.settings
     restart: always
 
+  stats:
+    image: stats:1.0
+    build: ./stats/
+    container_name: stats
+    depends_on:
+      - postgres
+    entrypoint: "./docker-entrypoint.sh"
+    ports:
+      - 8004:8004
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=stats.settings
+    restart: always
+
   front:
     image: front:1.0
     build: ./front/
