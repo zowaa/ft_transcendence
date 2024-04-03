@@ -19,6 +19,10 @@ const urlRoutes = {
 		template: "/Frontend/Pages/game.html",
 		description: "This is Game page",
 	},
+	"/tournement": {
+		template: "/Frontend/Pages/tournement.html",
+		description: "This is Game page",
+	},
 	"/profile": {
 		template: "/Frontend/Pages/profile.html",
 		description: "This is the profile page",
@@ -132,9 +136,7 @@ const urlLocationHandler = async () => {
 	if (locationn === '/') {
         runPongAnimation();
     }
-	if (locationn === '/game') {
-		runGame();
-	}
+
 };
 
 function getSavedLanguagePreference() {

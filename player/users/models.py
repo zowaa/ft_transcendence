@@ -10,14 +10,14 @@ class CustomUser(AbstractBaseUser):
     )
     id = models.CharField(max_length=200, default=uuid.uuid4,unique=True,primary_key=True)
     email = None
-    username = models.CharField(null=False, max_length=150, unique=True)
+    username = models.CharField(null=False, max_length=150, unique=True) #
     display_name = models.CharField(null=True, max_length=150, unique=True)
     date_joined = models.DateTimeField(auto_now=True)
     last_login = models.DateTimeField(auto_now=True)
     avatar = models.URLField(max_length=255, null=False, blank=False, default="Frontend/Assets/default.png")
-    nb_wins = models.IntegerField(default=0)
-    nb_losses = models.IntegerField(default=0)
-    nb_plays = models.IntegerField(default=0)
+    nb_wins = models.IntegerField(default=0)  #
+    nb_losses = models.IntegerField(default=0)  #
+    nb_plays = models.IntegerField(default=0)  #
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default="offline")
     is_active = models.BooleanField(default = True)
     is_42_user = models.BooleanField(default=False)
