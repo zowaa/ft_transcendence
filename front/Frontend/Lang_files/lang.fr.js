@@ -73,6 +73,8 @@ export default {
 	empty: "Aucun fichier ajouté",
 	display_name: "Doit être unique",
 	username: "Déjà utilisé",
+	avva: "Changer l'avatar",
+	change_a: "Changer",
 
 
 };

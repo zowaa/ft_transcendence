@@ -73,5 +73,6 @@ export default {
 	empty: "No file added",
 	display_name: "Display name must be unique",
 	username: "Username must be unique",
-
+	avva: "Change Avatar",
+	change_a: "Change",
 };
