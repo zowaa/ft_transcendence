@@ -32,6 +32,7 @@ function updatePassword() {
 				const result = await response.json();
 				if (result.error) {
 					// alert(result.error);
+
 					display_password_error(result.error);
 					
 				} else {
@@ -51,7 +52,10 @@ function updatePassword() {
 
 
 function display_password_error(error) {
-	resetErrorDisplay();
+	// resetErrorDisplay();
+	document.querySelectorAll('.text-danger').forEach(errorElement => {
+        errorElement.style.display = 'none';
+    });
 
 	if (error) {
 		for(const [key, value] of Object.entries(error)) {
@@ -59,10 +63,10 @@ function display_password_error(error) {
 			if (errorElement) {
 				errorElement.style.display = 'block';
 
-				const inputElement = document.querySelector(`input[name="${key}"]`);
-				if (inputElement) {
-					inputElement.style.marginBottom = '0px';
-				}
+				// const inputElement = document.querySelector(`input[name="${key}"]`);
+				// if (inputElement) {
+				// 	inputElement.style.marginBottom = '0px';
+				// }
 			}
 		}
 	}
@@ -188,12 +192,19 @@ function addFriend() {
 				});
 
 				if (response.status == 200) {
+					// document.getElementById('msg3').style.color = 'green';
+					document.getElementById('msg3').style.display = 'block';
+					
+					
+					await new Promise(r => setTimeout(r, 1000));
+					
 					window.history.pushState({}, "", "/friends");
 					urlLocationHandler();
 				}
 				else {
 					const result = await response.json();
-					display_friend_error(result.error);
+					// alert(result.message);
+					display_friend_error(result.message);
 				}
 			}
 			catch (error) {
@@ -205,19 +216,30 @@ function addFriend() {
 }
 
 function display_friend_error(error) {
-	resetErrorDisplay();
-
+	
+	resetErrorDisplay_friend();
 	if (error) {
-		for(const [key, value] of Object.entries(error)) {
-			const errorElement = document.getElementById("fri");
-			if (errorElement) {
-                errorElement.style.display = 'block';
+		const errMsg = error;
+		const errorElementId = `msg${errMsg.charAt(3)}`;
+		const errorElement = document.getElementById(errorElementId);
 
-                const inputElement = document.querySelector(`input[name="${field}"]`);
-                if (inputElement) {
-                    inputElement.style.marginBottom = '0px';
-                }
-            }
-		}
+		if (errorElement) {
+            errorElement.style.display = 'block'; 
+			
+        }
 	}
+
+
+}
+
+function resetErrorDisplay_friend() {
+    // Hide all error messages and reset input margins
+    document.querySelectorAll('.text-danger').forEach(errorElement => {
+        errorElement.style.display = 'none';
+    });
+
+    // const xInput = document.querySelector('.x');
+    // const xxInput = document.querySelector('.xx');
+    // if (xInput) xInput.style.marginBottom = '20px';
+    // if (xxInput) xxInput.style.marginBottom = '40px';
 }

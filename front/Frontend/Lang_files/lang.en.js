@@ -33,7 +33,7 @@ export default {
 	signup: "Sign Up",
 	text_signup: "You already have an account?",
 	usr_up: "Must be unique",
-	pwd_up: "At least 8 characters",
+	pwd_up: "Password not secured",
 	usr_in: "User not found",
 	pwd_in: "Incorrect password",
 	wins: "Wins: ",
@@ -63,6 +63,11 @@ export default {
 	nav_fr: "Friends",
 	nav_st: "Settings",
 	nav_logout: "Log out",
-	fri: "Friend not found",
+	fri1: "You cannot send a friend request to yourself",
+	fri2: "Friend already exists",
+	fri3: "Friend added successfully",
+	fri4: "User not found",
+	old_p_err: "Old password is incorrect",
+	new_p_err: "New password not secured",
 
 };

@@ -33,7 +33,7 @@ export default {
 	signup: "S'inscrire",
 	text_signup: "Vous avez déjà un compte?",
 	usr_up: "Doit être unique",
-	pwd_up: "Au moins 8 caractères",
+	pwd_up: "Mot de passe non sécurisé",
 	usr_in: "Utilisateur non trouvé",
 	pwd_in: "Mot de passe incorrect",
 	wins: "Victoires: ",
@@ -63,5 +63,12 @@ export default {
 	nav_fr: "Amis",
 	nav_st: "Paramètres",
 	nav_logout: "Se déconnecter",
+	fri1: "Tu ne peux pas t'ajouter toi-même",
+	fri2: "Ami existe déjà",
+	fri3: "Ami ajouté avec succès",
+	fri4: "Ami non trouvé",
+	old_p_err: "Ancien mot de passe incorrect",
+	new_p_err: "Nouveau mot de passe non sécurisé",
+
 
 };

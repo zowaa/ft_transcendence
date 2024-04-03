@@ -127,15 +127,15 @@ class ChangePasswordView(APIView):
         new_password = request.data.get('new_password')
 
         if not old_password:
-            return Response({"old_password": ["This field is required."]}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": {"old_password": ["This field is required."]}}, status=status.HTTP_400_BAD_REQUEST)
         if not new_password:
-            return Response({"new_password": ["This field is required."]}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": {"new_password": ["This field is required."]}}, status=status.HTTP_400_BAD_REQUEST)
         if not user.check_password(old_password):
-            return Response({"old_password": ["Old password is incorrect."]}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": {"old_p": ["Old password is incorrect."]}}, status=status.HTTP_400_BAD_REQUEST)
         try:
             validate_password(new_password, user)
         except ValidationError as e:
-            return Response({"new_password": list(e.messages)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": {"new_p": [e.messages]}}, status=status.HTTP_400_BAD_REQUEST)
 
         user.set_password(new_password)
         user.save()
