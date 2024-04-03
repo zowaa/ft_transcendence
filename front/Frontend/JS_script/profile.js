@@ -140,6 +140,7 @@ function updateUsername() {
 					document.getElementById("up").disabled = true;
 					document.getElementById("bn").disabled = true;
 					document.getElementById("avt").disabled = true;
+					document.getElementById("avatar").disabled = true;
 				}
 				try {
 					const response = await fetch('http://localhost:82/profile/', {
@@ -401,10 +402,7 @@ function resetErrorDisplay_friend() {
 
 async function changeav() {
     const avatarInput = document.getElementById('avatar');
-    if (avatarInput.files.length === 0) {
-        alert('Please select a file.');
-        return;
-    }
+   
 
     const file = avatarInput.files[0];
     const formData = new FormData();
@@ -428,12 +426,20 @@ async function changeav() {
             body: formData,
         });
         const result = await response.json();
-        if (result.error) {
-            alert(result.error);
-        } else {
-            alert('Avatar updated successfully!');
-            window.location.reload();
-        }
+		if (result.status === 200) {
+			window.history.pushState({}, "", "/profile");
+			urlLocationHandler();
+		}
+
+       else {
+            // alert(result.message);
+
+			const span = document.getElementById("av_err");
+			// const span2 = document.getElementById("empty");
+			// span2.style.display = 'none';
+			span.style.display = 'none';
+			span.style.display = 'block';
+        } 
     } catch (error) {
         console.error('An error occurred:', error);
         alert('An error occurred');

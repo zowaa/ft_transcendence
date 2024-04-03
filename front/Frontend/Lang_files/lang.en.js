@@ -69,5 +69,7 @@ export default {
 	fri4: "User not found",
 	old_p_err: "Old password is incorrect",
 	new_p_err: "New password not secured",
+	av_err: "Avatar upload failed",
+	empty: "No file added",
 
 };

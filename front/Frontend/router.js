@@ -88,7 +88,7 @@ const urlLocationHandler = async () => {
 		urlLocationHandler();
 		console.log("You are already logged in");
 	}
-	else if (status !== 'yes' && (locationn === '/profile' || locationn === '/game' || locationn === '/friends' || locationn === '/settings' || locationn === '/go_pwd' || locationn === '/history')){
+	else if (status !== 'yes' && (locationn === '/profile' || locationn === '/game' || locationn === '/friends' || locationn === '/settings' || locationn === '/go_pwd' || locationn === '/history' || locationn === '/game_b')){
 		// alert("You need to be logged in to access this page");
 		locationn = "/sign_in";
 		//change pathname
