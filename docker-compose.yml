@@ -165,6 +165,8 @@ services:
       - "80:80"
       - "81:81"
       - "82:82"
+      - "83:83"
+      - "84:84"
     command : "nginx -g 'daemon off;'"
     volumes:
       - app_data:/etc/nginx/ssl
@@ -221,6 +223,36 @@ services:
       - .env
     environment:
       - DJANGO_SETTINGS_MODULE=player.settings
+    restart: always
+
+  matchmaking:
+    image: matchmaking:1.0
+    build: ./matchmaking/
+    container_name: matchmaking
+    depends_on:
+      - postgres
+    entrypoint: "./docker-entrypoint.sh"
+    ports:
+      - 8003:8003
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=matchmaking.settings
+    restart: always
+
+  stats:
+    image: stats:1.0
+    build: ./stats/
+    container_name: stats
+    depends_on:
+      - postgres
+    entrypoint: "./docker-entrypoint.sh"
+    ports:
+      - 8004:8004
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=stats.settings
     restart: always
 
   front:
