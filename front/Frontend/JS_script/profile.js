@@ -422,8 +422,8 @@ async function changeav() {
     }
 
     try {
-        const response = await fetch('http://localhost:82/change_avatar/', {
-            method: 'PUT',
+        const response = await fetch('http://localhost:82/avatar/', {
+            method: 'POST',
             headers: headers, 
             body: formData,
         });
