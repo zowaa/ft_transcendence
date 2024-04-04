@@ -17,7 +17,7 @@ class RegistreTournement(APIView):
     @method_decorator(token_required)
     def post(self, request):
         try:
-            user_id = request.user_payload['user']['username']
+            user_id = request.user_payload['user']['id']
             user = CustomUser.objects.get(id=user_id)
             serializer = RegisterTournementSerializer(data=request.data)
             if serializer.is_valid():
@@ -45,7 +45,7 @@ class RegistreTournement(APIView):
 class FinishTournement(APIView):
     def post(self, request):
         try:
-            user_id = request.user_payload['user']['username']
+            user_id = request.user_payload['user']['id']
             user = CustomUser.objects.get(id=user_id)
             serializer = FinishTournementSerializer(data=request.data)
             if serializer.is_valid():
@@ -79,7 +79,7 @@ class RegistreGame(APIView):
     @method_decorator(token_required)
     def post(self, request):
         try:
-            user_id = request.user_payload['user']['username']
+            user_id = request.user_payload['user']['id']
             user = CustomUser.objects.get(id=user_id)
             serializer = RegisterGameSerializer(data=request.data)
             if serializer.is_valid():
@@ -103,7 +103,7 @@ class FinishGame(APIView):
     @method_decorator(token_required)
     def post(self, request):
         try:
-            user_id = request.user_payload['user']['username']
+            user_id = request.user_payload['user']['id']
             user = CustomUser.objects.get(id=user_id)
             serializer = FinishGameSerializer(data=request.data)
             if serializer.is_valid():

@@ -32,11 +32,10 @@ class FinishTournementSerializer(serializers.Serializer):
 
 
 class RegisterGameSerializer(serializers.ModelSerializer):
-    player1 = serializers.CharField(max_length=150)
     player2 = serializers.CharField(max_length=150)
     class Meta:
         model = Game
-        fields = ['player1', 'player2']
+        fields = ['player2']
 class FinishGameSerializer(serializers.Serializer):
     winner = serializers.CharField(max_length=150)
     gameid = serializers.CharField(max_length=64)

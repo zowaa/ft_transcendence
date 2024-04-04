@@ -220,23 +220,15 @@ const eventx = document.addEventListener('keydown', (e) => {
     }).then(data => {
         console.log(data);
         Gameid = data.gameid;
-        game[0] = data.player1
+        game[0] = data.player1;
+        player1name = game[0];
+        player2name = game[1];
+        message.innerHTML = player1name + "  VS  " + player2name;
         console.log(Gameid);
     }).catch(error => {
         console.error('There was a problem with your fetch operation:', error);
         // redirect to the login here
     });
-            if (gamecounter == 0) {
-            player1name = game[0];
-            player2name = game[1];
-            message.innerHTML = player1name + "  VS  " + player2name;
-        }else {
-            player1name = '';
-            player2name = '';
-            scorePlayer1 = 0;
-            scorePlayer2 = 0;
-            message.innerHTML = "None";
-        }
         gameState = "pause";
     }
     const normalizedPaddleSpeed = canvas.height * 0.01;
