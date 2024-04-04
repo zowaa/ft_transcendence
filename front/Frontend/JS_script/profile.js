@@ -333,7 +333,17 @@ function addFriend() {
 				});
 
 				if (response.status == 200) {
+					document.getElementById('msg1').style.display = 'none';
+					document.getElementById('msg2').style.display = 'none';
+					document.getElementById('msg3').style.display = 'none';
+					document.getElementById('msg4').style.display = 'none';
+
+					
 					document.getElementById('msg3').style.display = 'block';
+
+
+					const msg = document.getElementById('friend_name');
+					if (msg) msg.style.marginBottom = '0px';
 					
 					
 					await new Promise(r => setTimeout(r, 1000));
@@ -364,6 +374,11 @@ function display_friend_error(error) {
 
 		if (errorElement) {
             errorElement.style.display = 'block'; 
+			errorElement.style.marginBottom = '20px';
+
+	const msg = document.getElementById('friend_name');
+	if (msg) msg.style.marginBottom = '0px';
+			// errorElement.style.marginBottom = '0px';
 			
         }
 	}
@@ -375,6 +390,8 @@ function resetErrorDisplay_friend() {
     document.querySelectorAll('.text-danger').forEach(errorElement => {
         errorElement.style.display = 'none';
     });
+	const msg = document.getElementById('friend_name');
+	if (msg) msg.style.marginBottom = '20px';
 }
 
 // Update avatar
