@@ -134,14 +134,12 @@ let balls = [
                     }else{
                         winner = player2name;
                     }
-                        message.innerHTML = "The winner : " + winner;
-                }
-                gameState = 'pause';
-                let data = {
-                    'Gameid': Gameid,
-                    'winner': winner
-                };
-                fetch('http://localhost:83/game/finish/', {
+                    message.innerHTML = "The winner : " + winner;
+                    let data = {
+                        'gameid': Gameid,
+                        'winner': winner
+                    };
+                    fetch('http://localhost:83/game/finish/', {
                     method: 'POST',
                     headers: {
                         "Accept": "application/json",
@@ -160,7 +158,11 @@ let balls = [
                 }).catch(error => {
                     console.error('There was a problem with your fetch operation:', error);
                     // redirect to the login here
-                });   
+                });
+                }
+                gameState = 'pause';
+                
+                
         }
 		});
 		draw(); // Redraw everything
@@ -185,12 +187,12 @@ const eventx = document.addEventListener('keydown', (e) => {
             player1: game[0],
             player2: game[1],
           };
-fetch('http://localhost:83/game/registre/', {
+fetch('http://localhost:83/game/register/', {
     method: 'POST',
-    // headers: {
-    //     "Accept": "application/json",
-    //     "Content-Type": "application/json"
-    // },
+    headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+    },
     body: JSON.stringify(data)
   }).then(response => {
     if (response.status === 201) {

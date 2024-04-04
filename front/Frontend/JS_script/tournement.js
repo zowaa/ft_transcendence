@@ -233,7 +233,7 @@ const eventx = document.addEventListener('keydown', (e) => {
                 player3: players[2],
                 player4: players[3]
               };
-    fetch('http://localhost:83/tournement/registre/', {
+    fetch('http://localhost:83/tournement/register/', {
         method: 'POST',
         headers: {
             "Accept": "application/json",
@@ -332,30 +332,3 @@ function tournementstart(){
     runTournement();
 };
 
-
-//   // Make a POST request
-// fetch('http://127.0.0.1:8000/tournement/registre/', {
-//     method: 'POST',
-//     headers: {
-//         "Accept": "application/json",
-//         "Content-Type": "application/json"
-//     },
-//     body: JSON.stringify(data)
-//   }).then(response => {
-//     if (response.status === 201) {
-//       return response.json();
-//     } else {
-//       throw new Error(`Error: Status ${response.status}`);
-//     }
-//   }).then(data => {
-//     console.log(data);
-//     game1 = data.game1;
-// 	game2 = data.game2;
-// 	Tournementid = data.Tournementid;
-//     console.log(Tournementid);
-//     player1name = players[game1[0]];
-//     player2name = players[game1[1]];
-//   }).catch(error => {
-//     console.error('There was a problem with your fetch operation:', error);
-//     // redirect to the login here
-//   });
