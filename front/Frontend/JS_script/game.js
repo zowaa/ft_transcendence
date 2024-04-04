@@ -270,7 +270,7 @@ function gamestart(){
     game[1] = document.getElementById('player2').value;
     console.log(game);
     form.style.display = 'none';
-    formcontainer.innerHTML = '<div id="game"><canvas id="gameCanvas"></canvas></div><div id="xx"><p class="po">Press Enter To Start .</p></div>';
+    formcontainer.innerHTML = '<div id="game"><canvas id="gameCanvas"></canvas></div><div id="xx"><p class="po" data-i18n="press">Press enter to start</p></div>';
     runGame();
 };
 

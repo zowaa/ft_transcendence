@@ -341,7 +341,7 @@ function tournementstart(){
     players[3] = document.getElementById('player4').value;
     console.log(players);
     form.style.display = 'none';
-    formcontainer.innerHTML = '<div id="game"><canvas id="gameCanvas"></canvas></div><div id="xx"><p class="po">Press Enter To Start .</p></div>';
+    formcontainer.innerHTML = '<div id="game"><canvas id="gameCanvas"></canvas></div><div id="xx"><p class="po">Press Enter To Start</p></div>';
     runTournement();
 };
 

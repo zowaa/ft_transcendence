@@ -88,5 +88,6 @@ export default {
 	ptwo: "Choose Player 2 name",
 	start_: "Start Game",
 	tr_name: "Choose Tournament names",
+	press: "Press enter to start",
 
 };
