@@ -62,7 +62,7 @@ export default {
 	dis_un: "Username:",
 	up_inf: "Update information",
 	chng: "Change Password",
-	chng_av: "Change Avatar",
+	chng_av: "Change Avatar:",
 	nav_home: "Home",
 	nav_game: "Game",
 	nav_his: "History",

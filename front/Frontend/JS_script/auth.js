@@ -202,8 +202,8 @@ async function fetchUserProfile() {
                     avatarElement.src = profileData.user.avatar;
                     avatarElement.alt = "User Avatar";
                 }
-                // document.getElementById('wins-value').textContent = profileData.user.wins || 'Unavailable';
-                // document.getElementById('losses-value').textContent = profileData.user.losses || 'Unavailable';
+                document.getElementById('wins-value').textContent = profileData.user.nb_wins || '0';
+                document.getElementById('losses-value').textContent = profileData.user.nb_losses || '0';
             } else {
                 alert('Failed to load profile. Please log in b3da.');
             }

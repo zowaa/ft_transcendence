@@ -62,7 +62,7 @@ export default {
 	dis_un: "Nom d'utilisateur:",
 	up_inf: "Mettre à jour ",
 	chng: "Changer le mot de passe",
-	chng_av: "Changer l'avatar",
+	chng_av: "Changer l'avatar:",
 	nav_home: "Accueil",
 	nav_game: "Jeu",
 	nav_his: "Historique",
