@@ -6,7 +6,6 @@
   .container {
 	display: grid;
 	place-items: center;
-	/* height: 100vh; */
   }
   
   .x {
@@ -48,9 +47,9 @@
 	-webkit-box-shadow: none;
 	box-shadow: none; 
   }
-  .form .control input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-    color: rgb(162 161 161);; /* light pink */
-    opacity: 1; /* Firefox */
+  .form .control input::placeholder { 
+    color: rgb(162 161 161);; 
+    opacity: 1; 
 }
   .form .btn {
 	width: 100%;
@@ -195,81 +194,99 @@
   .account-prompt a:focus {
 	text-decoration: underline; 
   }
-  
-  @media (min-width: 2000px) {
+  .cn {
+	margin-top: 200px;
+}
+.cn1 {
+	margin-top: 200px;
+}
+@media (min-width: 2000px) {
+	.cn {
+		margin-top: 50px;
+	}
+	.cn1 {
+		margin-top: 150px;
+	}
+	.m {
+		margin-bottom: 20px;
+		font-size: small;
+	  }
+	  .mm {
+		margin-bottom: 30px;
+		font-size:small;
+	  }
     .form h1 {
-        font-size: 36px; /* Slightly reduced from 46px */
-		margin-bottom: 30px; /* Reduced from 40px for balance */
+        font-size: 36px; 
+		margin-bottom: 30px; 
     }
   
     .form {
-        width: 500px; /* Reduced from 600px for better proportion */
-        padding: 100px 25px 40px; /* Slightly less padding for a tighter form */
+        width: 500px; 
+        padding: 100px 25px 40px; 
     }
 
     .form .control {
-        margin: 0 0 36px; /* Margin adjusted for better spacing */
+        margin: 0 0 36px; 
     }
 
     .form .control input {
-        padding: 22px 24px; /* Smaller padding for a more comfortable typing experience */
-        font-size: 24px; /* Adjusted for readability without being too large */
+        padding: 22px 24px; 
+        font-size: 24px; 
     }
 	
     .form .btn {
-        padding: 22px 24px; /* Consistency with input padding */
-        font-size: 24px; /* Large enough for readability and clickability */
+        padding: 22px 24px; 
+        font-size: 24px; 
     }
 
     .block-cube .bg-top {
         left: 8px; 
         right: -8px; 
-        height: 15px; /* Adjusted for proportional aesthetics */
+        height: 15px; 
 	}
 
     .block-cube .bg-right {
         top: -8px;
         bottom: 8px;
-        width: 15px; /* Adjusted to match the top border */
+        width: 15px; 
     }
 
     .block-cube .bg-inner {
         left: 3px;
         top: 3px;
         right: 3px;
-        bottom: 3px; /* Slightly less space for a more defined inner area */
+        bottom: 3px; 
     }
 	.form-group {
-		margin-bottom: 36px; /* Adjusted spacing */
+		margin-bottom: 36px; 
 	  }
 	
 	  .text-center.my-3 {
-		margin-top: 36px; /* Consistent margin adjustments */
+		margin-top: 36px; 
 		margin-bottom: 36px;
-	  }
-	  .x {
-		margin-bottom: 30px; /* Adjusted for consistent spacing */
+	}
+	.x {
+		margin-bottom: 30px; 
 	  }
 	  .xx {
-		margin-bottom: 60px; /* Doubled the .x value for distinction */
+		margin-bottom: 60px; 
 	  }
 	
 	.divider-or-container {
-		margin-top: 15px; /* Slightly increased */
+		margin-top: 15px; 
 		margin-bottom: 25px; 
 	  }
 	
-	  .divider-line {
-		height: 3px; /* Subtle increase */
-		width: 120px; /* Adjusted for balance */
+	.divider-line {
+		height: 3px; 
+		width: 120px; 
 	}
 	.divider-or {
-		font-size: 22px; /* Reduced for proportional appearance */
-		padding: 0 30px; /* Adjusted padding */
+		font-size: 22px; 
+		padding: 0 30px; 
 	}
 	.account-prompt {
 		margin-top: 30px; 
-		font-size: 20px; /* Adjusted for readability */
+		font-size: 20px; 
 	  }
-  
 }
