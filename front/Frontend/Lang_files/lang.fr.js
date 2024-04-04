@@ -11,6 +11,7 @@ export default {
 		"/go_pwd": "Changer mot de passe | Pong",
 		"/history": "Historique | Pong",
 		"/settings": "Paramètres | Pong",
+		"/tournement": "Tournoi | Pong",
 	},
 
 	placeholders: {
@@ -21,6 +22,11 @@ export default {
 		"new_ph": "Nouveau mot de passe",
 		"dis_nh": "Nom d'affichage",
 		"dis_unh": "Nom d'utilisateur",
+		"p2_placeho": "Nom du joueur 2",
+		"p1": "Joueur 1",
+		"p2": "Joueur 2",
+		"p3": "Joueur 3",
+		"p4": "Joueur 4",
 	},
 
 	not_found: "Page non trouvée",
@@ -78,5 +84,7 @@ export default {
 	on: "en ligne",
 	off: "hors ligne",
 
-
+	ptwo: "choisissez un joueur 2",
+	start_: "Commencer le jeu",
+	tr_name: "Choisissez les noms du tournoi",
 };

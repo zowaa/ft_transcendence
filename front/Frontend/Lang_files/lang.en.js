@@ -11,6 +11,7 @@ export default {
 		"/go_pwd": "Change password | Pong",
 		"/history": "History | Pong",
 		"/settings": "Settings | Pong",
+		"/tournement": "Tournament | Pong",
     },
 
 	placeholders: {
@@ -21,6 +22,11 @@ export default {
 		"new_ph": "New password",
 		"dis_nh": "Display name",
 		"dis_unh": "Username",
+		"p2_placeho": "Player 2 name",
+		"p1": "Player 1 name",
+		"p2": "Player 2 name",
+		"p3": "Player 3 name",
+		"p4": "Player 4 name",
 	},
 	
 	not_found: "Page not found",
@@ -78,4 +84,9 @@ export default {
 	
 	on: "Online",
 	off: "Offline",
+
+	ptwo: "Choose Player 2 name",
+	start_: "Start Game",
+	tr_name: "Choose Tournament names",
+
 };
