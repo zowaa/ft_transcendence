@@ -23,8 +23,8 @@ def token_required(view_func):
             payload = token_decode(token)
             request.user_payload = payload
 
-            if payload.get('user', {}).get('double_auth') == True:
-                return JsonResponse({'detail': 'Double authentication required.'}, status=401)
+            if payload.get('user', {}).get('status') == 'offline':
+                return JsonResponse({'detail': 'User not authenticated'}, status=401)
         except jwt.ExpiredSignatureError:
             return JsonResponse({'detail': 'Expired token.'}, status=401)
         except jwt.InvalidTokenError:

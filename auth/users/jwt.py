@@ -17,6 +17,7 @@ def token_generation(userd):
             'id': str(userd.id),
             'username': userd.username,
             'double_auth': userd.double_auth,
+            'status': userd.status,
         },
         'exp': datetime.timestamp(datetime.utcnow() + timedelta(days=1)),
     }

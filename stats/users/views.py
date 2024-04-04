@@ -14,9 +14,9 @@ from django.db.models import Q
 class GameStatsView(APIView):
     @method_decorator(token_required)
     def get(self, request):
+        user_id = request.user_payload['user']['id']
+        user = CustomUser.objects.get(id=user_id)
         try:
-            user_id = request.user_payload['user']['id']
-            user = CustomUser.objects.get(id=user_id)
             query = Q(player1user=user)
             games_data = []
             data_g= Game.objects.filter(query)
@@ -36,9 +36,11 @@ class GameStatsView(APIView):
 class TournementStatsView(APIView):
     @method_decorator(token_required)
     def get(self, request):
+        user_id = request.user_payload['user']['id']
+        user = CustomUser.objects.get(id=user_id)
+        if not user :
+            return Response({"success": False, "error": "Log in before "}, status=status.HTTP_401_UNAUTHORIZED)
         try:
-            user_id = request.user_payload['user']['id']
-            user = CustomUser.objects.get(id=user_id)
             query = Q(player1user=user)
             games_data = []
             data_t = Tournement.objects.filter(query)
