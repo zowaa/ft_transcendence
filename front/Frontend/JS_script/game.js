@@ -261,3 +261,23 @@ function gamestart(){
     formcontainer.innerHTML = '<div id="game"><canvas id="gameCanvas"></canvas></div><div id="xx"><p class="po">Press Enter To Start .</p></div>';
     runGame();
 };
+
+function gameLaunch() {
+    const gameButton = document.getElementById('oneVsOne');
+    if (gameButton) {
+        gameButton.onclick = async (event) => {
+            event.preventDefault();
+            window.location.href = '/game';
+        };
+    }
+}
+
+function tourLaunch() {
+    const tourButton = document.getElementById('tournament');
+    if (tourButton) {
+        tourButton.onclick = async (event) => {
+            event.preventDefault();
+            window.location.href = '/tournement';
+        };
+    }
+}

@@ -127,6 +127,8 @@ const urlLocationHandler = async () => {
 	updateUsername();
 	addFriend();
 	// fetchAndPrefillUserInfo();
+	gameLaunch();
+	tourLaunch();
 
 	const init_lang = getSavedLanguagePreference();
 	const language = await import(`./Lang_files/lang.${init_lang}.js`);
