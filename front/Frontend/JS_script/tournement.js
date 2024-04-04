@@ -176,30 +176,29 @@ let balls = [
                 }else{
                     winner = player2name;
                 }
-                // let data = {
-                //     'Tournementid': Tournementid,
-                //     'winner': winner
-                // };
-                // fetch('http://127.0.0.1:8000/tournement/finish/', {
-                //     method: 'POST',
-                //     headers: {
-                //         "Accept": "application/json",
-                //         "Content-Type": "application/json"
-                //     },
-                //     body: JSON.stringify(data)
-                // }).then(response => {
-                //     if (response.status === 201) {
-                //         message.innerHTML = 'The Winner of the tournement :' + winner;
-                //         return response.json();
-                //     } else {
-                //         throw new Error(`Error: Status ${response.status}`);
-                //     }
-                // }).then(data => {
-                //     console.log(data);
-                // }).catch(error => {
-                //     console.error('There was a problem with your fetch operation:', error);
-                //     // redirect to the login here
-                // });
+                let data = {
+                    'Gameid': Gameid,
+                    'winner': winner
+                };
+                fetch('http://localhost:83/tournement/finish/', {
+                    method: 'POST',
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                }).then(response => {
+                    if (response.status === 201) {
+                        return response.json();
+                    } else {
+                        throw new Error(`Error: Status ${response.status}`);
+                    }
+                }).then(data => {
+                    console.log(data);
+                }).catch(error => {
+                    console.error('There was a problem with your fetch operation:', error);
+                    // redirect to the login here
+                }); 
             }
             gamecounter += 1;
             scorePlayer1Goal = false;
@@ -227,6 +226,37 @@ let balls = [
 const eventx = document.addEventListener('keydown', (e) => {
     if (endtournement == false){
     if (e.key == 'Enter' && gameState != "play") {
+        if (scorePlayer1 == 0 && scorePlayer2 == 0 && gameState == "pause"){
+            const data = {
+                player1: players[0],
+                player2: players[1],
+                player3: players[2],
+                player4: players[3]
+              };
+    fetch('http://localhost:83/tournement/registre/', {
+        method: 'POST',
+        headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      }).then(response => {
+        if (response.status === 201) {
+          return response.json();
+        } else {
+          throw new Error(`Error: Status ${response.status}`);
+        }
+      }).then(data => {
+        if (data.succes){
+            Tournementid = data.Tournementid;
+            game1 = data.game1;
+            game2 = data.game2;
+        }
+    }).catch(error => {
+        console.error('There was a problem with your fetch operation:', error);
+        // redirect to the login here
+      });
+        }
         gameState = 'start';
         if (scorePlayer1 == gameendscore || scorePlayer2 == gameendscore){
             gameState = "play";
@@ -252,7 +282,7 @@ const eventx = document.addEventListener('keydown', (e) => {
             endtournement = true;
             player1name = winner;
             player2name = winner;
-            message.innerHTML = winner;
+            message.innerHTML = 'The Winner of the tournement :' + winner;
         }
         gameState = "pause";
     }

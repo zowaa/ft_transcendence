@@ -187,10 +187,10 @@ const eventx = document.addEventListener('keydown', (e) => {
           };
 fetch('http://localhost:83/game/registre/', {
     method: 'POST',
-    headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-    },
+    // headers: {
+    //     "Accept": "application/json",
+    //     "Content-Type": "application/json"
+    // },
     body: JSON.stringify(data)
   }).then(response => {
     if (response.status === 201) {

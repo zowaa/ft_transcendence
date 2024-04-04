@@ -1,4 +1,4 @@
-from .models import CustomUser
+from .models import CustomUser, Game, Tournement
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import generics
@@ -8,8 +8,6 @@ from rest_framework import exceptions
 from .jwt import token_generation, get_user_id
 from .decorators import token_required
 from django.utils.decorators import method_decorator
-
-from .models import Tournement
 from .serializers import RegisterTournementSerializer, FinishTournementSerializer, FinishGameSerializer, RegisterGameSerializer
 import random
 import uuid
@@ -24,7 +22,6 @@ class RegistreTournement(APIView):
                 tournement = serializer.save()
                 tournement.tournementid = uuid.uuid1()
                 tournement.save()
-                # get the tournement id and send it back
                 game2 = [0, 1, 2, 3]
                 game1 = random.sample(range(4), 2)
                 game2 = [x for x in game2 if x not in game1]
