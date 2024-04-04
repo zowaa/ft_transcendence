@@ -24,7 +24,7 @@ class RegistreTournement(APIView):
                 tournement = serializer.save()
                 tournement.tournementid = uuid.uuid1()
                 tournement.player1user = user
-                user.display_name = tournement.player1
+                # user.display_name = tournement.player1
                 user.save()
                 tournement.save()
                 game2 = [0, 1, 2, 3]
@@ -43,6 +43,7 @@ class RegistreTournement(APIView):
             return Response({"success": False,"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class FinishTournement(APIView):
+    @method_decorator(token_required)
     def post(self, request):
         try:
             user_id = request.user_payload['user']['id']

@@ -13,6 +13,7 @@ class CustomUser(AbstractBaseUser):
     email = None
     username = models.CharField(null=False, max_length=150, unique=True) #
     display_name = models.CharField(null=True, max_length=150, unique=True)
+    # nickname = models.CharField(null=True, max_length=150)
     date_joined = models.DateTimeField(auto_now=True)
     last_login = models.DateTimeField(auto_now=True)
     avatar = models.URLField(max_length=255, null=False, blank=False, default="Frontend/Assets/default.png")
