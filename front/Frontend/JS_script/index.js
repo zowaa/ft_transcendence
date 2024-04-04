@@ -37,7 +37,6 @@ function setStars() {
 
 
 function go_home() {
-	// window.location.href = "/";
 	window.history.pushState({}, "", "/");
 	urlLocationHandler();
 }

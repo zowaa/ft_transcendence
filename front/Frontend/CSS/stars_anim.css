@@ -14,7 +14,7 @@ body, html {
 }
 
 #stars-container {
-    position: fixed; /* Stays in the same place even if the page is scrolled */
+    position: fixed; 
     top: 0;
     left: 0;
     right: 0;

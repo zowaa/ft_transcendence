@@ -10,10 +10,10 @@
 
 @media (min-width: 1300px) {
     .navbar-logo img {
-        height: 5vw;
+        height: 4vw;
     }
     .btnn {
-        transform: scale(1.2);
+        transform: scale(1.4);
     }
    .navbar {
         padding: 0.5rem 1.5rem;
