@@ -54,8 +54,8 @@ let balls = [
 		leftPaddleY = canvas.height / 2 - paddleHeight / 2;
 		rightPaddleY = canvas.height / 2 - paddleHeight / 2;
         MaxPaddleY = canvas.height - paddleHeight ;
-        speedFactorX = canvas.width * 0.001;
-		speedFactorY = canvas.height * 0.001;
+        speedFactorX = canvas.width * 0.003;
+		speedFactorY = canvas.height * 0.003;
         randomdirectionball();
         
         draw(); // Redraw everything after resizing
@@ -139,12 +139,20 @@ let balls = [
                         'gameid': Gameid,
                         'winner': winner
                     };
+                    const jwtToken = localStorage.getItem('jwt');
+                    const jwtTokenCookie = getCookie('jwt');
+                    
+                    let headers = {
+                        'Content-Type': 'application/json', // Set Content-Type header to application/json
+                    };
+                    if (jwtToken) {
+                        headers['Authorization'] = `Bearer ${jwtToken}`;
+                    } else if (jwtTokenCookie) {
+                        headers['Authorization'] = `Bearer ${jwtTokenCookie}`;
+                    }
                     fetch('http://localhost:83/game/finish/', {
                     method: 'POST',
-                    headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/json"
-                    },
+                    headers: headers,
                     body: JSON.stringify(data)
                 }).then(response => {
                     if (response.status === 201) {
@@ -154,6 +162,7 @@ let balls = [
                         throw new Error(`Error: Status ${response.status}`);
                     }
                 }).then(data => {
+                    
                     console.log(data);
                 }).catch(error => {
                     console.error('There was a problem with your fetch operation:', error);
@@ -184,31 +193,40 @@ const eventx = document.addEventListener('keydown', (e) => {
     }else if (e.key == "Enter"){
         //   // Make a POST request
         const data = {
-            player1: game[0],
             player2: game[1],
           };
-fetch('http://localhost:83/game/register/', {
-    method: 'POST',
-    headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  }).then(response => {
-    if (response.status === 201) {
-      return response.json();
-    } else {
-      throw new Error(`Error: Status ${response.status}`);
+    const jwtToken = localStorage.getItem('jwt');
+    const jwtTokenCookie = getCookie('jwt');
+    
+    let headers = {
+        'Content-Type': 'application/json', // Set Content-Type header to application/json
+    };
+    if (jwtToken) {
+        headers['Authorization'] = `Bearer ${jwtToken}`;
+    } else if (jwtTokenCookie) {
+        headers['Authorization'] = `Bearer ${jwtTokenCookie}`;
     }
-  }).then(data => {
-    console.log(data);
-	Gameid = data.gameid;
-    console.log(Gameid);
-  }).catch(error => {
-    console.error('There was a problem with your fetch operation:', error);
-    // redirect to the login here
-  });
-        if (gamecounter == 0) {
+
+    fetch('http://localhost:83/game/register/', {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(data)
+    }).then(response => {
+        if (response.status === 201) {
+        return response.json();
+        } else {
+        throw new Error(`Error: Status ${response.status}`);
+        }
+    }).then(data => {
+        console.log(data);
+        Gameid = data.gameid;
+        game[0] = data.player1
+        console.log(Gameid);
+    }).catch(error => {
+        console.error('There was a problem with your fetch operation:', error);
+        // redirect to the login here
+    });
+            if (gamecounter == 0) {
             player1name = game[0];
             player2name = game[1];
             message.innerHTML = player1name + "  VS  " + player2name;

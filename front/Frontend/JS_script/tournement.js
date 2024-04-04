@@ -69,8 +69,8 @@ let balls = [
 		leftPaddleY = canvas.height / 2 - paddleHeight / 2;
 		rightPaddleY = canvas.height / 2 - paddleHeight / 2;
         MaxPaddleY = canvas.height - paddleHeight ;
-        speedFactorX = canvas.width * 0.001;
-		speedFactorY = canvas.height * 0.001;
+        speedFactorX = canvas.width * 0.003;
+		speedFactorY = canvas.height * 0.003;
         randomdirectionball();
         
         draw(); // Redraw everything after resizing
@@ -124,7 +124,6 @@ let balls = [
         if (gameState == 'start'){
 		// Move balls
 		balls.forEach((ball, index) => {
-            console.log(ball.x);
 			ball.x += ball.xSpeed * speedFactorX;
 			ball.y += ball.ySpeed * speedFactorY;
 			// Collision with top and bottom bounds
@@ -177,15 +176,23 @@ let balls = [
                     winner = player2name;
                 }
                 let data = {
-                    'Gameid': Gameid,
+                    'Tournementid': Tournementid,
                     'winner': winner
                 };
+                const jwtToken = localStorage.getItem('jwt');
+                const jwtTokenCookie = getCookie('jwt');
+                
+                let headers = {
+                    'Content-Type': 'application/json', // Set Content-Type header to application/json
+                };
+                if (jwtToken) {
+                    headers['Authorization'] = `Bearer ${jwtToken}`;
+                } else if (jwtTokenCookie) {
+                    headers['Authorization'] = `Bearer ${jwtTokenCookie}`;
+                }
                 fetch('http://localhost:83/tournement/finish/', {
                     method: 'POST',
-                    headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/json"
-                    },
+                    headers: headers,
                     body: JSON.stringify(data)
                 }).then(response => {
                     if (response.status === 201) {
@@ -233,12 +240,20 @@ const eventx = document.addEventListener('keydown', (e) => {
                 player3: players[2],
                 player4: players[3]
               };
+              const jwtToken = localStorage.getItem('jwt');
+              const jwtTokenCookie = getCookie('jwt');
+              
+              let headers = {
+                  'Content-Type': 'application/json', // Set Content-Type header to application/json
+              };
+              if (jwtToken) {
+                  headers['Authorization'] = `Bearer ${jwtToken}`;
+              } else if (jwtTokenCookie) {
+                  headers['Authorization'] = `Bearer ${jwtTokenCookie}`;
+              }
     fetch('http://localhost:83/tournement/register/', {
         method: 'POST',
-        headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json"
-        },
+        headers: headers,
         body: JSON.stringify(data)
       }).then(response => {
         if (response.status === 201) {
@@ -247,11 +262,9 @@ const eventx = document.addEventListener('keydown', (e) => {
           throw new Error(`Error: Status ${response.status}`);
         }
       }).then(data => {
-        if (data.succes){
             Tournementid = data.Tournementid;
             game1 = data.game1;
             game2 = data.game2;
-        }
     }).catch(error => {
         console.error('There was a problem with your fetch operation:', error);
         // redirect to the login here
