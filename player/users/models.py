@@ -24,7 +24,6 @@ class CustomUser(AbstractBaseUser):
     double_auth = models.BooleanField(default=False)
     totp_secret = models.CharField(max_length=100, null=True, blank=True)
 
-    # REQUIRED_FIELDS = ["username"]
     USERNAME_FIELD = 'username'
 
     def __str__(self):

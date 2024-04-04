@@ -19,7 +19,7 @@ from rest_framework.permissions import BasePermission
 import jwt
 from rest_framework import authentication
 from rest_framework import exceptions
-from .jwt import token_generation, get_user_id
+from .jwt import token_generation
 from .decorators import token_required
 from django.utils.decorators import method_decorator
 from django.db.models import Q
@@ -31,7 +31,6 @@ import os
 from django.http import HttpResponseRedirect
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-# from uploadcare import FileUpload, conf
 
 class RegisterUserView(APIView):
     def post(self, request):
@@ -67,8 +66,8 @@ class OAuth42RedirectView(APIView):
     def get(self, request, *args, **kwargs):
         authorization_url = 'https://api.intra.42.fr/oauth/authorize'
         client_id = settings.OAUTH42_CLIENT_ID
-        redirect_uri = settings.OAUTH42_REDIRECT_URI  # Ensure this is set in your settings
-        scope = 'public'  # Adjust scope as per your requirements
+        redirect_uri = settings.OAUTH42_REDIRECT_URI 
+        scope = 'public'  
         auth_url = f'{authorization_url}?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code&scope={scope}'
         return redirect(auth_url)
 
@@ -78,10 +77,8 @@ class OAuth42CallbackView(APIView):
         error = request.query_params.get('error')
         if error:
             return HttpResponseRedirect("https://localhost:443/sign_in")
-            # return Response({"success": False, "error": error}, status=status.HTTP_401_UNAUTHORIZED)
         if not code:
             return HttpResponseRedirect("https://localhost:443/sign_in")
-            # return Response({"success": False, "error": "Code parameter is required"}, status=status.HTTP_401_UNAUTHORIZED)
         
         token_url = 'https://api.intra.42.fr/oauth/token'
         payload = {
@@ -94,26 +91,19 @@ class OAuth42CallbackView(APIView):
 
         try:
             response = requests.post(token_url, data=payload)
-            response.raise_for_status()  # This will raise an exception for HTTP errors
+            response.raise_for_status()  
             access_token = response.json().get('access_token')
             if not access_token:
-                # Instead of raising ValueError, return an error response
-                # return Response({"success": False, "error": "Missing access token in response"}, status=status.HTTP_401_UNAUTHORIZED)
                 return HttpResponseRedirect("https://localhost:443/sign_in")
             
             user_data = self.fetch_42_user(access_token)
 
             if not user_data:
-                # Instead of raising ValueError, return an error response
-                # return Response({"success": False, "error": "Failed to fetch user data"}, status=status.HTTP_400_BAD_REQUEST)
                 return HttpResponseRedirect("https://localhost:443/sign_in")
 
             return self.process_user_data(user_data)
         except Exception as e:
-            # This catch block will handle exceptions and ensure a response is returned
             return Response({"success": False, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-        # return Response({"error": "Unexpected error occurred"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def fetch_42_user(self, access_token):
         user_url = 'https://api.intra.42.fr/v2/me'
@@ -132,11 +122,9 @@ class OAuth42CallbackView(APIView):
         if user:
             if (user.double_auth == True):
                 return HttpResponseRedirect("https://localhost:443/sign_in") # 2FA link
-                # return Response({"success": False, "message": "Double authentification required."}, status=status.HTTP_401_UNAUTHORIZED)
             else :
                 user.status = "online"
                 user.save()
-                # Generate JWT tokens for the user
                 access_token = token_generation(user)
                 response = HttpResponseRedirect("https://localhost:443/profile?success=true")
                 response.set_cookie("jwt", value=access_token)
@@ -144,17 +132,13 @@ class OAuth42CallbackView(APIView):
         else:
             serializer = UserSerializer(data={'username': username, 'display_name': display_name, 'is_42_user' : True, 'avatar' : avatar_url})
             if serializer.is_valid():
-                # If the data is valid, create the user
                 user = serializer.save()
                 user.status = "online"
                 user.save()
-                # Generate JWT tokens for the user
                 access_token = token_generation(user)
-                # response = Response({"success": True, "message": "User registered successfully"}, status=status.HTTP_201_CREATED)
                 response = HttpResponseRedirect("https://localhost:443/profile?success=true")
                 response.set_cookie("jwt", value=access_token)
                 return response
-            # return Response({"success": False, "error": serializer.errors}, status=status.HTTP_401_UNAUTHORIZED)
             return HttpResponseRedirect("https://localhost:443/sign_in")
 
 class UserLoginAPIView(APIView):
@@ -163,18 +147,15 @@ class UserLoginAPIView(APIView):
         if serializer.is_valid():
             user = serializer.validated_data
             access_token = token_generation(user)            
-            # Prepare the response data
             response_data = {
                 "success": True,
                 'message': 'Login successful.',
                 'access': access_token,
             }
             
-            # Create a Response object
             response = Response(response_data, status=status.HTTP_200_OK)
             return response
         
-        # If the serializer is not valid
         return Response({"success": False, "error": serializer.errors}, status=status.HTTP_401_UNAUTHORIZED)
 
 
@@ -210,7 +191,6 @@ class TwoFactorVerifyView(APIView):
     @method_decorator(token_required)
     def post(self, request, *args, **kwargs):
         code = request.data.get("code")
-        # jwt = request.jwt
 
         try:
             user_id = request.user_payload['user']['id']
@@ -222,17 +202,9 @@ class TwoFactorVerifyView(APIView):
                     user.save()
                     return Response({"statusCode": 200, "message": "2FA setup successfully."})
                 
-                # access_token = token_generation(user)
-                # user.status = "online"
-                # user.save()
                 response = Response({"statusCode": 200, "message": "2FA verified successfully."})
-                # response.set_cookie("jwt", value=access_token, httponly=True, secure=True)
                 return response
             else:
                 return Response({"statusCode": 401, "message": "Incorrect 2FA code."})
-        # except jwt.ExpiredSignatureError:
-        #     return Response({"statusCode": 401, "error": "Expired token"})
-        # except (jwt.InvalidTokenError, CustomUser.DoesNotExist):
-        #     return Response({"statusCode": 401, "error": "Invalid token or player not found"})
         except Exception as e:
             return Response({"statusCode": 500, "error": str(e)})

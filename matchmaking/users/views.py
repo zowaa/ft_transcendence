@@ -5,7 +5,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 import jwt
 from rest_framework import exceptions
-from .jwt import token_generation, get_user_id
+from .jwt import token_generation
 from .decorators import token_required
 from django.utils.decorators import method_decorator
 from .serializers import RegisterTournementSerializer, FinishTournementSerializer, FinishGameSerializer, RegisterGameSerializer
@@ -67,7 +67,6 @@ class FinishTournement(APIView):
                         "Tournementid": tournement.tournementid,
                     }
                     return Response(response_data, status=status.HTTP_201_CREATED)
-                # a specific response here in needed
             return Response({"success": False, "error": serializer.errors}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
             return Response({"success": False,"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -107,12 +106,10 @@ class FinishGame(APIView):
             user = CustomUser.objects.get(id=user_id)
             serializer = FinishGameSerializer(data=request.data)
             if serializer.is_valid():
-                # process the data here before saving
                 data = serializer.data
                 game = Game.objects.get(gameid=data['gameid'])
                 if game.winner == '' and data['winner'] in [game.player1, game.player2] and game.player1user.id == user.id:
                     game.finished_at = timezone.now()
-                    # the the winner == player1 then set is_player1 to True
                     if game.player1 == data['winner'] :
                         game.is_player1 = True
                         user.nb_wins = user.nb_wins + 1
@@ -127,7 +124,6 @@ class FinishGame(APIView):
                         "gameid": game.gameid,
                     }
                     return Response(response_data, status=status.HTTP_201_CREATED)
-                # a specific error response here !!
             return Response({"success": False, "error": serializer.errors}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
             return Response({"success": False,"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

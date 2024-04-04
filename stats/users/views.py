@@ -5,7 +5,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 import jwt
 from rest_framework import exceptions
-from .jwt import token_generation, get_user_id
+from .jwt import token_generation
 from .decorators import token_required
 from django.utils.decorators import method_decorator
 from .serializers import  GameStateSerializer , TournementStateSerializer

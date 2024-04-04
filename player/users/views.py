@@ -14,7 +14,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 import jwt
 from rest_framework import exceptions
-from .jwt import token_generation, get_user_id
+from .jwt import token_generation
 from .decorators import token_required
 from django.utils.decorators import method_decorator
 from django.db.models import Q
@@ -80,7 +80,7 @@ class Profile(APIView):
 #         avatar upload with CDN UploadCare         #
 #####################################################
 
-class PlayerAvatarUpload(APIView): # CDN UploadCare to be tested after installing the package (gotta check w/ yassine)
+class PlayerAvatarUpload(APIView):
     @method_decorator(token_required)
     def post(self, request):
         uploadcare = Uploadcare(public_key=settings.UPLOADCARE['pub_key'], secret_key=settings.UPLOADCARE['secret'])
