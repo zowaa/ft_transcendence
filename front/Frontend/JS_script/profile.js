@@ -299,9 +299,6 @@ async function populateFriendsList() {
 
 
 
-
-
-
 //add friend
 function addFriend() {
 	const addFriendForm = document.getElementById('add_friend');
@@ -438,4 +435,163 @@ async function changeav() {
         console.error('An error occurred:', error);
         alert('An error occurred');
     }
+}
+
+
+//fetch history object for tournament
+async function fetchHistory() {
+	const jwtToken = localStorage.getItem('jwt');
+	const jwtTokenCookie = getCookie('jwt');
+
+	let headers = {
+		'Accept': 'application/json',
+		'Content-Type': 'application/json',
+	};
+	if (jwtToken) {
+		headers['Authorization'] = `Bearer ${jwtToken}`;
+	} else if (jwtTokenCookie) {
+		headers['Authorization'] = `Bearer ${jwtTokenCookie}`;
+	}
+
+	try {
+		const response = await fetch('http://localhost:84/tournement/stats/', { 
+			method: 'GET',
+			headers: headers,
+		});
+
+		if (response.status === 201) {
+			// alert('ok');
+			const data = await response.json();
+			return data.gamesdata; 
+		} else {
+			console.error('Failed to fetch history', response.status);
+			return []; 
+		}
+	} catch (error) {
+		console.error('Error fetching history:', error);
+		return []; 
+	}
+}
+
+// populate history  tournament
+async function populateHistory() {
+	const ff = document.getElementById('ppp');
+	if (ff) {
+	
+		const history = await fetchHistory(); 
+		const historyTable = document.querySelector('.history-table tbody');
+		historyTable.innerHTML = '';
+
+		history.forEach(game => {
+			const tr = document.createElement('tr');
+
+			const td1 = document.createElement('td');
+            td1.textContent = new Date(game.finished_at).toLocaleDateString();
+            tr.appendChild(td1);
+
+			const wonTd = document.createElement('td');
+            // wonTd.textContent = game.is_player1 ? "Yes" : "No";
+            if (game.is_player1) {
+                wonTd.style.backgroundColor = 'green'; 
+            }
+			else {
+				wonTd.style.backgroundColor = 'white';
+			}
+            tr.appendChild(wonTd);
+
+
+			const lostTd = document.createElement('td');
+            // lostTd.textContent = game.is_player1 ? "No" : "Yes";
+            if (!game.is_player1) {
+                lostTd.style.backgroundColor = 'red'; 
+            }
+			else {
+				lostTd.style.backgroundColor = 'white';
+			}
+            tr.appendChild(lostTd);
+
+
+			historyTable.appendChild(tr);
+		});
+	}
+}
+
+
+//fetch history object for 1vs1
+
+async function fetchHistory1vs1() {
+	const jwtToken = localStorage.getItem('jwt');
+	const jwtTokenCookie = getCookie('jwt');
+
+	let headers = {
+		'Accept': 'application/json',
+		'Content-Type': 'application/json',
+	};
+	if (jwtToken) {
+		headers['Authorization'] = `Bearer ${jwtToken}`;
+	} else if (jwtTokenCookie) {
+		headers['Authorization'] = `Bearer ${jwtTokenCookie}`;
+	}
+
+	try {
+		const response = await fetch('http://localhost:84/game/stats/', { 
+			method: 'GET',
+			headers: headers,
+		});
+
+		if (response.status === 201) {
+			const data = await response.json();
+			return data.gamesdata; 
+			alert('okkkk');
+		} else {
+			console.error('Failed to fetch history', response.status);
+			return []; 
+		}
+	} catch (error) {
+		console.error('Error fetching history:', error);
+		return []; 
+	}
+}
+// populate history 1vs1
+async function populateHistory1vs1() {
+	const ff = document.getElementById('ccc');
+
+	if (ff) {
+	
+		const history = await fetchHistory1vs1(); 
+		const historyTable = document.querySelector('.history-tablevs tbody');
+		historyTable.innerHTML = '';
+
+		history.forEach(game => {
+			const tr = document.createElement('tr');
+
+			const td1 = document.createElement('td');
+			td1.textContent = new Date(game.finished_at).toLocaleDateString();
+			tr.appendChild(td1);
+
+			const wonTd = document.createElement('td');
+			// wonTd.textContent = game.is_player1 ? "Yes" : "No";
+			if (game.is_player1) {
+				wonTd.style.backgroundColor = 'green'; 
+			}
+			else
+			{
+				wonTd.style.backgroundColor = 'white';
+			}
+			tr.appendChild(wonTd);
+
+			const lostTd = document.createElement('td');
+			// lostTd.textContent = game.is_player1 ? "No" : "Yes";
+			if(!game.is_player1) {
+				lostTd.style.backgroundColor = 'red'; 
+			}
+			else
+			{
+				lostTd.style.backgroundColor = 'white';
+			}
+			tr.appendChild(lostTd);
+			historyTable.appendChild(tr);
+		}
+		);
+	}
 }
