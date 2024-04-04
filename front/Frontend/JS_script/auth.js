@@ -37,10 +37,8 @@ function attachSignupFormListener() {
 }
 
 function displayFormError_up(errors) {
-    // Reset previous errors
     resetErrorDisplay();
 
-    // Display new errors
     if (errors) {
         for (const [field, messages] of Object.entries(errors)) {
             const errorElement = document.getElementById(`${field}`);
@@ -57,7 +55,6 @@ function displayFormError_up(errors) {
 }
 
 function resetErrorDisplay() {
-    // Hide all error messages and reset input margins
     document.querySelectorAll('.text-danger').forEach(errorElement => {
         errorElement.style.display = 'none';
     });
@@ -71,6 +68,7 @@ function resetErrorDisplay() {
 
 
 
+// Sign-in
 function attachLoginFormListener() {
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
@@ -98,11 +96,10 @@ function attachLoginFormListener() {
                     window.history.pushState({}, "", '/profile'); 
                     urlLocationHandler();
                 } else {
-                    const errorResponse = await response.json(); // Parse the response to get the error object
+                    const errorResponse = await response.json(); 
 						displayFormError_in(errorResponse.error);
                 }
             } catch (error) {
-                // Handle network errors or other unexpected errors
                 console.error("Fetch error: ", error);
                 alert("An error occurred while trying to communicate with the server.");
             }
@@ -111,15 +108,12 @@ function attachLoginFormListener() {
 }
 
 function displayFormError_in(errors) {
-	// Reset previous errors
 	resetErrorDisplay();
 
-	// Display new errors
 	if (errors) {
 		for (const [field, messages] of Object.entries(errors)) {
 			const errorElement = document.getElementById(`${field}`);
 			if (errorElement) {
-				// errorElement.textContent = messages.join(", ");
 				errorElement.style.display = 'block';
 
 				const inputElement = document.querySelector(`input[name="${field}"]`);
@@ -135,14 +129,7 @@ function displayFormError_in(errors) {
 
 
 
-
-
-
-
-
-
-
-
+// OAuth
 function attachOAuthFormListener() {
     const signInButton = document.getElementById('btn2');
     if (signInButton) {
@@ -154,7 +141,10 @@ function attachOAuthFormListener() {
     }
 }
 
-function checkLoginStatus() { // set logged_in to yes if the user 42 is logged in 
+
+
+// check if user is logged in
+function checkLoginStatus() { 
     const oauthAttempt = sessionStorage.getItem('oauthAttempt');
     const urlParams = new URLSearchParams(window.location.search);
     const loginSuccess = urlParams.get('success');
@@ -167,6 +157,7 @@ function checkLoginStatus() { // set logged_in to yes if the user 42 is logged i
     }
 }
 
+//get cookie
 function getCookie(name) {
     let cookieArray = document.cookie.split(';');
     for(let i = 0; i < cookieArray.length; i++) {
@@ -178,10 +169,11 @@ function getCookie(name) {
     return null; 
 }
 
+
+// Fetch user profile data
 async function fetchUserProfile() {
     const profile = document.getElementById('kk');
     if (profile) {
-        // Retrieve the JWT token from localStorage
         const jwtToken = localStorage.getItem('jwt');
         const jwtTokenCookie = getCookie('jwt');
         
@@ -191,7 +183,6 @@ async function fetchUserProfile() {
             headers: headers,
         };
 
-        // If JWT token is available, use it in the Authorization header
         if (jwtToken) {
             headers['Authorization'] = `Bearer ${jwtToken}`;
         } else if (jwtTokenCookie) {
@@ -203,23 +194,17 @@ async function fetchUserProfile() {
 
             if (response.ok) {
                 const profileData = await response.json();
-                console.log(profileData);
 
-                // Update the page with the user's profile data
                 document.getElementById('username').textContent ='@'+ profileData.user.username || 'Unavailable';
-				// add '@' before the username
-
 				document.getElementById('disp-n').textContent =  profileData.user.display_name || 'Unavailable';
-                // document.getElementById('status').textContent = profileData.user.status || 'Unavailable';
-                
-                // // Corrected the handling of the avatar element to update its 'src' attribute
-                const avatarElement = document.getElementById('avata');
+                 const avatarElement = document.getElementById('avata');
                 if (avatarElement) {
-                    avatarElement.src = profileData.user.avatar; // Use a default image if avatar URL is unavailable
-                    avatarElement.alt = "User Avatar"; // Ensuring the alt attribute is set for accessibility
+                    avatarElement.src = profileData.user.avatar;
+                    avatarElement.alt = "User Avatar";
                 }
+                // document.getElementById('wins-value').textContent = profileData.user.wins || 'Unavailable';
+                // document.getElementById('losses-value').textContent = profileData.user.losses || 'Unavailable';
             } else {
-                // Handle non-OK responses, e.g., by displaying an error message
                 alert('Failed to load profile. Please log in b3da.');
             }
         } catch (error) {
