@@ -49,10 +49,12 @@ class Friends(models.Model):
 
     def __str__(self):
         return f"{self.sender.user.username} to {self.receiver.user.username} - {self.get_status_display()}"
+
 class Tournement(models.Model):
     id = models.AutoField(primary_key=True)
     tournementid = models.CharField(max_length=64)
-    # player1 = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='main_player')
+    is_player1 = models.BooleanField(default = False)
+    player1user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='main_player0', null=True, blank=True)
     player1 = models.CharField(max_length=150, default='')
     player2 = models.CharField(max_length=150, default='')
     player3 = models.CharField(max_length=150, default='')
@@ -65,13 +67,11 @@ class Tournement(models.Model):
     def __str__(self):
         return f"Tournement id : {self.tournementid}    , players : {self.player1} - {self.player2} - {self.player3} - {self.player4} , and the winner : {self.winner}"
 
-
-
 class Game(models.Model):
     id = models.AutoField(primary_key=True)
     gameid = models.CharField(max_length=64)
     is_player1 = models.BooleanField(default = False)
-    # player1user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='main_player')
+    player1user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='main_player1', null=True, blank=True)
     player1 = models.CharField(max_length=150, default='')
     player2 =  models.CharField(max_length=150, default='')
     winner = models.CharField(max_length=150, default='')
