@@ -263,21 +263,11 @@ function gamestart(){
 };
 
 function gameLaunch() {
-    const gameButton = document.getElementById('oneVsOne');
-    if (gameButton) {
-        gameButton.onclick = async (event) => {
-            event.preventDefault();
-            window.location.href = '/game';
-        };
-    }
+    window.history.pushState({}, "", "/game");
+    urlLocationHandler();
 }
 
 function tourLaunch() {
-    const tourButton = document.getElementById('tournament');
-    if (tourButton) {
-        tourButton.onclick = async (event) => {
-            event.preventDefault();
-            window.location.href = '/tournement';
-        };
-    }
+    window.history.pushState({}, "", "/tournement");
+    urlLocationHandler();
 }

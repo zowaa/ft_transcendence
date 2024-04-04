@@ -252,10 +252,6 @@
   
 
 
-
-
-
-
 /* game_b style */
 .game-section {
     font-family: 'Press Start 2P', cursive;
@@ -302,6 +298,48 @@
 		transform: translateX(-10px);
 	}
 }
+@media (min-width: 1500px) {
+    .game-section {
+        background-size: 800% 800%; 
+    }
+
+    .btn-game {
+        font-size: 1.2em; 
+        padding: 15px 30px; 
+        margin: 10px; 
+    }
+
+    #oneVsOne, #tournament {
+        animation-duration: 5s; 
+    }
+
+    .retro-gif {
+        max-width: 75%; 
+        margin: 40px auto; 
+    }
+
+    @keyframes float_btn1 {
+        0%, 100% {
+            transform: translateX(-30px); 
+        }
+        50% {
+            transform: translateX(30px);
+        }
+    }
+
+    @keyframes float_btn2 {
+        0%, 100% {
+            transform: translateX(20px);
+        }
+        50% {
+            transform: translateX(-20px);
+        }
+    }
+}
+
+
+
+
 
 
 /* Settings style */
