@@ -1,8 +1,11 @@
 
 let players = ["Player1","Player2","Player3","Player4"];
-let sendreq = false;
 let game1 = [0, 1];
 let game2 = [2, 3];
+let Tournementid;
+let endtournement = false;
+
+
 function runTournement(){
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -15,20 +18,15 @@ let scorePlayer2Goal = false;
 let scorePlayer1Goal = false;
 let gameState = 'play';
 let MaxPaddleY;
-let game1winner = '';
-let game2winner = '';
-let player1name = '';
-let player2name = '';
 let message = document.querySelector('.po');
+
 // let message2 = document.querySelector('.yx');
 let gameendscore = 3;
 
 let gamecounter = 0;
 let final = [];
-let Tournementid;
+
 let winner;
-let startgame = 0;
-let endtournement = false;
 const data = {
     player1: players[0],
     player2: players[1],
@@ -206,7 +204,7 @@ let balls = [
                     console.log(data);
                 }).catch(error => {
                     console.error('There was a problem with your fetch operation:', error);
-                    // redirect to the login here
+                    alert(error);
                 }); 
             }
             gamecounter += 1;
@@ -240,54 +238,14 @@ const eventx = document.addEventListener('keydown', (e) => {
             gameState = "play";
         }
     }else if (e.key == "Enter"){
-        if (sendreq == false){
-            const data = {
-                player1: players[0],
-                player2: players[1],
-                player3: players[2],
-                player4: players[3]
-              };
-              const jwtToken = localStorage.getItem('jwt');
-              const jwtTokenCookie = getCookie('jwt');
-              
-              let headers = {
-                  'Content-Type': 'application/json', // Set Content-Type header to application/json
-              };
-              if (jwtToken) {
-                  headers['Authorization'] = `Bearer ${jwtToken}`;
-              } else if (jwtTokenCookie) {
-                  headers['Authorization'] = `Bearer ${jwtTokenCookie}`;
-              }
-            fetch('http://localhost:83/tournement/register/', {
-                method: 'POST',
-                headers: headers,
-                body: JSON.stringify(data)
-            }).then(response => {
-                if (response.status === 201) {
-                return response.json();
-                } else {
-                throw new Error(`Error: Status ${response.status}`);
-                }
-            }).then(data => {
-                    console.log(data);
-                    Tournementid = data.Tournementid;
-                    game1 = data.game1;
-                    game2 = data.game2;
-                    player1name = players[game1[0]];
-                    player2name = players[game1[1]];
-                    message.innerHTML = player1name + "  VS  " + player2name;
-                    
-            }).catch(error => {
-                console.error('There was a problem with your fetch operation:', error);
-                // redirect to the login here
-            });
-            sendreq = true;
-        }else {
             if (scorePlayer1 == gameendscore || scorePlayer2 == gameendscore){
                 scorePlayer1 = 0;
                 scorePlayer2 = 0;
             }
-             if (gamecounter == 1) {
+            if (gamecounter == 0){
+                message.innerHTML = player1name + "  VS  " + player2name;
+            }
+            else if (gamecounter == 1) {
                 player1name = players[game2[0]];
                 player2name = players[game2[1]];
                 message.innerHTML = player1name + "  VS  " + player2name;
@@ -301,7 +259,6 @@ const eventx = document.addEventListener('keydown', (e) => {
                 player2name = winner;
                 message.innerHTML = 'The Winner of the tournement :' + winner;
             }
-        }
         gameState = "pause";
     }
     const normalizedPaddleSpeed = canvas.height * 0.01;
@@ -338,6 +295,7 @@ const eventx = document.addEventListener('keydown', (e) => {
 
 
 function tournementstart(){
+    endtournement = false;
     const form = document.getElementById('TournementForm');
     const formcontainer = document.getElementById("TournementContainer");
     players[0] = document.getElementById('player1').value;
@@ -345,6 +303,46 @@ function tournementstart(){
     players[2] = document.getElementById('player3').value;
     players[3] = document.getElementById('player4').value;
     console.log(players);
+    const data = {
+        player1: players[0],
+        player2: players[1],
+        player3: players[2],
+        player4: players[3]
+      };
+      const jwtToken = localStorage.getItem('jwt');
+      const jwtTokenCookie = getCookie('jwt');
+      
+      let headers = {
+          'Content-Type': 'application/json', // Set Content-Type header to application/json
+      };
+      if (jwtToken) {
+          headers['Authorization'] = `Bearer ${jwtToken}`;
+      } else if (jwtTokenCookie) {
+          headers['Authorization'] = `Bearer ${jwtTokenCookie}`;
+      }
+    fetch('http://localhost:83/tournement/register/', {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(data)
+    }).then(response => {
+        if (response.status === 201) {
+        return response.json();
+        } else {
+        throw new Error(`Error: Status ${response.status}`);
+        }
+    }).then(data => {
+            console.log(data);
+            Tournementid = data.Tournementid;
+            game1 = data.game1;
+            game2 = data.game2;
+            player1name = players[game1[0]];
+            player2name = players[game1[1]];
+            
+    }).catch(error => {
+        console.error('There was a problem with your fetch operation:', error);
+        alert(error);
+        endtournement = true;
+    });
     form.style.display = 'none';
     formcontainer.innerHTML = '<div id="game"><canvas id="gameCanvas"></canvas></div><div id="xx"><p class="po">Press Enter To Start</p></div>';
     runTournement();

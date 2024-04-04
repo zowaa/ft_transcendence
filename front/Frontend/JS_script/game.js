@@ -1,4 +1,9 @@
 let game=['MainUsername', 'player2'];
+let Gameid;
+let player1name = '';
+let player2name = '';
+let endgame = false;
+
 function runGame(){
     const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -9,12 +14,9 @@ let speedFactorX;
 let speedFactorY;
 let gameState = 'play';
 let MaxPaddleY;
-let player1name = '';
-let player2name = '';
 let gamecounter = 0;
 let message = document.querySelector('.po');
 let gameendscore = 3;
-let Gameid;
 let winner;
 
 let balls = [
@@ -35,7 +37,7 @@ let balls = [
         }else if (x % 4 == 1){
             balls = [
                 { x: canvas.width / 2, y: canvas.height / 2, xSpeed: -2, ySpeed: 2, size: ballSize }
-            ];
+            ];false
         }else{
             balls = [
                 { x: canvas.width / 2, y: canvas.height / 2, xSpeed: -2, ySpeed: -2, size: ballSize }
@@ -166,7 +168,7 @@ let balls = [
                     console.log(data);
                 }).catch(error => {
                     console.error('There was a problem with your fetch operation:', error);
-                    // redirect to the login here
+                    alert(error);
                 });
                 }
                 gameState = 'pause';
@@ -184,51 +186,14 @@ let balls = [
 		requestAnimationFrame(animate); // Next animation frame
 }
 const eventx = document.addEventListener('keydown', (e) => {
-    if (gamecounter == 0){
+    if (gamecounter == 0 && endgame == false){
     if (e.key == 'Enter' && gameState != "play") {
         gameState = 'start';
         if (scorePlayer1 == gameendscore || scorePlayer2 == gameendscore){
             gameState = "play";
         }
     }else if (e.key == "Enter"){
-        //   // Make a POST request
-        const data = {
-            player2: game[1],
-          };
-    const jwtToken = localStorage.getItem('jwt');
-    const jwtTokenCookie = getCookie('jwt');
-    
-    let headers = {
-        'Content-Type': 'application/json', // Set Content-Type header to application/json
-    };
-    if (jwtToken) {
-        headers['Authorization'] = `Bearer ${jwtToken}`;
-    } else if (jwtTokenCookie) {
-        headers['Authorization'] = `Bearer ${jwtTokenCookie}`;
-    }
-
-    fetch('http://localhost:83/game/register/', {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify(data)
-    }).then(response => {
-        if (response.status === 201) {
-        return response.json();
-        } else {
-        throw new Error(`Error: Status ${response.status}`);
-        }
-    }).then(data => {
-        console.log(data);
-        Gameid = data.gameid;
-        game[0] = data.player1;
-        player1name = game[0];
-        player2name = game[1];
         message.innerHTML = player1name + "  VS  " + player2name;
-        console.log(Gameid);
-    }).catch(error => {
-        console.error('There was a problem with your fetch operation:', error);
-        // redirect to the login here
-    });
         gameState = "pause";
     }
     const normalizedPaddleSpeed = canvas.height * 0.01;
@@ -265,10 +230,48 @@ const eventx = document.addEventListener('keydown', (e) => {
 
 
 function gamestart(){
+    endgame = false;
     const form = document.getElementById('TournementForm');
     const formcontainer = document.getElementById("TournementContainer");
     game[1] = document.getElementById('player2').value;
     console.log(game);
+    const data = {
+        player2: game[1],
+      };
+    const jwtToken = localStorage.getItem('jwt');
+    const jwtTokenCookie = getCookie('jwt');
+
+    let headers = {
+        'Content-Type': 'application/json', // Set Content-Type header to application/json
+    };
+    if (jwtToken) {
+        headers['Authorization'] = `Bearer ${jwtToken}`;
+    } else if (jwtTokenCookie) {
+        headers['Authorization'] = `Bearer ${jwtTokenCookie}`;
+    }
+
+    fetch('http://localhost:83/game/register/', {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(data)
+    }).then(response => {
+        if (response.status === 201) {
+        return response.json();
+        } else {
+        throw new Error(`Error: Status ${response.status}`);
+        }
+    }).then(data => {
+        console.log(data);
+        Gameid = data.gameid;
+        game[0] = data.player1;
+        player1name = game[0];
+        player2name = game[1];
+        console.log(Gameid);
+    }).catch(error => {
+        console.error('There was a problem with your fetch operation:', error);
+        alert(error);
+        endgame = true;
+    });
     form.style.display = 'none';
     formcontainer.innerHTML = '<div id="game"><canvas id="gameCanvas"></canvas></div><div id="xx"><p class="po" data-i18n="press">Press enter to start</p></div>';
     runGame();

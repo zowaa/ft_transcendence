@@ -18,7 +18,7 @@ class RegisterTournementSerializer(serializers.ModelSerializer):
 
         if player1 == '' or player2 == '' or player3 == '' or player4 == '':
             raise serializers.ValidationError("No name should be empty !")
-        if player1 != player2 != player3 != player4 :
+        if len({player1, player2, player3, player4}) == 4:
             return {"player1": player1,
                     "player2": player2,
                     "player3": player3,
@@ -36,6 +36,8 @@ class RegisterGameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Game
         fields = ['player2']
+
+
 class FinishGameSerializer(serializers.Serializer):
     winner = serializers.CharField(max_length=150)
     gameid = serializers.CharField(max_length=64)

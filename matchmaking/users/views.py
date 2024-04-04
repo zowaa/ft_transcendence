@@ -84,17 +84,21 @@ class RegistreGame(APIView):
             serializer = RegisterGameSerializer(data=request.data)
             if serializer.is_valid():
                 game = serializer.save()
-                game.gameid = uuid.uuid1()
-                game.player1user = user
-                game.player1 = user.username
-                game.save()
-                response_data = {
-                    "success": True,
-                    "message": "Game registered successfully",
-                    "gameid": game.gameid,
-                    "player1": game.player1
-                }
-                return Response(response_data, status=status.HTTP_201_CREATED)
+                if game.player2 == user.username:
+                    game.delete()
+                    return Response({"success": False,"error": "invalide input !"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                else:
+                    game.gameid = uuid.uuid1()
+                    game.player1user = user
+                    game.player1 = user.username
+                    game.save()
+                    response_data = {
+                        "success": True,
+                        "message": "Game registered successfully",
+                        "gameid": game.gameid,
+                        "player1": game.player1
+                    }
+                    return Response(response_data, status=status.HTTP_201_CREATED)
             return Response({"success": False, "error": serializer.errors}, status=status.HTTP_401_UNAUTHORIZED)
         except Exception as e:
             return Response({"success": False,"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
