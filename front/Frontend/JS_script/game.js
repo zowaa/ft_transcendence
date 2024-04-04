@@ -56,10 +56,9 @@ let balls = [
 		leftPaddleY = canvas.height / 2 - paddleHeight / 2;
 		rightPaddleY = canvas.height / 2 - paddleHeight / 2;
         MaxPaddleY = canvas.height - paddleHeight ;
-        speedFactorX = canvas.width * 0.003;
-		speedFactorY = canvas.height * 0.003;
+        speedFactorX = canvas.width * 0.0015;
+		speedFactorY = canvas.height * 0.0015;
         randomdirectionball();
-        
         draw(); // Redraw everything after resizing
     }
 
@@ -156,24 +155,20 @@ let balls = [
                     method: 'POST',
                     headers: headers,
                     body: JSON.stringify(data)
-                }).then(response => {
-                    if (response.status === 201) {
-                        message.innerHTML = 'The Winner of the game :' + winner;
-                        return response.json();
-                    } else {
-                        throw new Error(`Error: Status ${response.status}`);
-                    }
-                }).then(data => {
-                    
-                    console.log(data);
-                }).catch(error => {
-                    console.error('There was a problem with your fetch operation:', error);
-                    alert(error);
-                });
+                    }).then(response => {
+                        if (response.status === 201) {
+                            message.innerHTML = 'The Winner of the game :' + winner;
+                            setTimeout(() => {  window.history.pushState({}, "", "/game_b"); urlLocationHandler(); }, 5000);
+                        } else {
+                            throw new Error("Error: finishing the game");
+                        }
+                    }).catch(error => {
+                        alert(error);
+                        window.history.pushState({}, "", "/game_b");
+                        urlLocationHandler();
+                    });
                 }
                 gameState = 'pause';
-                
-                
         }
 		});
 		draw(); // Redraw everything
@@ -196,7 +191,7 @@ const eventx = document.addEventListener('keydown', (e) => {
         message.innerHTML = player1name + "  VS  " + player2name;
         gameState = "pause";
     }
-    const normalizedPaddleSpeed = canvas.height * 0.01;
+    const normalizedPaddleSpeed = canvas.height * 0.02;
     if (gameState == 'start') {
         if (e.key == 'w') {
             if ((leftPaddleY + leftPaddleDirection * normalizedPaddleSpeed) >= 0){
@@ -218,7 +213,7 @@ const eventx = document.addEventListener('keydown', (e) => {
                 rightPaddleY -= 2* (rightPaddleDirection * normalizedPaddleSpeed);
             }
         } 
-    } 
+        }
     }
 });
     window.addEventListener('resize', resizeCanvas);
@@ -234,7 +229,6 @@ function gamestart(){
     const form = document.getElementById('TournementForm');
     const formcontainer = document.getElementById("TournementContainer");
     game[1] = document.getElementById('player2').value;
-    console.log(game);
     const data = {
         player2: game[1],
       };
@@ -258,7 +252,7 @@ function gamestart(){
         if (response.status === 201) {
         return response.json();
         } else {
-        throw new Error(`Error: Status ${response.status}`);
+        throw new Error("Try to Entre unique name , different than the Mainplayer username !");
         }
     }).then(data => {
         console.log(data);
@@ -268,9 +262,10 @@ function gamestart(){
         player2name = game[1];
         console.log(Gameid);
     }).catch(error => {
-        console.error('There was a problem with your fetch operation:', error);
         alert(error);
         endgame = true;
+        window.history.pushState({}, "", "/game_b");
+        urlLocationHandler();
     });
     form.style.display = 'none';
     formcontainer.innerHTML = '<div id="game"><canvas id="gameCanvas"></canvas></div><div id="xx"><p class="po" data-i18n="press">Press enter to start</p></div>';

@@ -69,8 +69,8 @@ let balls = [
 		leftPaddleY = canvas.height / 2 - paddleHeight / 2;
 		rightPaddleY = canvas.height / 2 - paddleHeight / 2;
         MaxPaddleY = canvas.height - paddleHeight ;
-        speedFactorX = canvas.width * 0.003;
-		speedFactorY = canvas.height * 0.003;
+        speedFactorX = canvas.width * 0.002;
+		speedFactorY = canvas.height * 0.002;
         randomdirectionball();
         
         draw(); // Redraw everything after resizing
@@ -196,15 +196,17 @@ let balls = [
                     body: JSON.stringify(data)
                 }).then(response => {
                     if (response.status === 201) {
-                        return response.json();
+                        setTimeout(() => {  window.history.pushState({}, "", "/game_b"); urlLocationHandler(); }, 5000);
                     } else {
-                        throw new Error(`Error: Status ${response.status}`);
+                        throw new Error("Error: Tournement Finish Failed");
                     }
                 }).then(data => {
                     console.log(data);
                 }).catch(error => {
                     console.error('There was a problem with your fetch operation:', error);
                     alert(error);
+                    window.history.pushState({}, "", "/game_b");
+                    urlLocationHandler();
                 }); 
             }
             gamecounter += 1;
@@ -284,7 +286,7 @@ const eventx = document.addEventListener('keydown', (e) => {
             }
         } 
     } 
-}
+    }
 });
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
@@ -328,7 +330,7 @@ function tournementstart(){
         if (response.status === 201) {
         return response.json();
         } else {
-        throw new Error(`Error: Status ${response.status}`);
+        throw new Error("Try to Enter unique names for each player, and The Mainplayer name is the player1");
         }
     }).then(data => {
             console.log(data);
@@ -339,9 +341,10 @@ function tournementstart(){
             player2name = players[game1[1]];
             
     }).catch(error => {
-        console.error('There was a problem with your fetch operation:', error);
         alert(error);
         endtournement = true;
+        window.history.pushState({}, "", "/game_b");
+        urlLocationHandler();
     });
     form.style.display = 'none';
     formcontainer.innerHTML = '<div id="game"><canvas id="gameCanvas"></canvas></div><div id="xx"><p class="po">Press Enter To Start</p></div>';
