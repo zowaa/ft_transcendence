@@ -75,6 +75,8 @@ export default {
 	username: "Déjà utilisé",
 	avva: "Changer l'avatar",
 	change_a: "Changer",
+	on: "en ligne",
+	off: "hors ligne",
 
 
 };

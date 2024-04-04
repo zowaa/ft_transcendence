@@ -311,8 +311,6 @@ async function logout(){
     try {
         const response = await fetch('http://localhost/logout/', fetchOptions);
         if (response.ok) {
-			// localStorage.removeItem('jwt');
-			//remove from cookie or local storage
 			document.cookie = "jwt=; expires" + new Date(0).toUTCString();
 			localStorage.removeItem('jwt');
 

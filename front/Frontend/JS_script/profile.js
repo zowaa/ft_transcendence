@@ -248,52 +248,50 @@ async function fetchFriendships() {
     }
 }
 
-
 async function populateFriendsList() {
-    const friendships = await fetchFriendships(); 
-    const friendsListUl = document.querySelector('.friends-list ul');
 
-    
-    friendsListUl.innerHTML = '';
+		const friendships = await fetchFriendships(); 
+		const friendsListUl = document.querySelector('.friends-list ul');
 
-    friendships.forEach(friend => {
-       
-        const li = document.createElement('li');
-        li.className = 'friend';
+		
+		friendsListUl.innerHTML = '';
 
-        
-        const img = document.createElement('img');
-        img.src = friend.avatar;
-        img.className = 'avatarr';
+		friendships.forEach(friend => {
+		
+			const li = document.createElement('li');
+			li.className = 'friend';
 
-        
-        const div = document.createElement('div');
-        div.className = 'friend-info';
+			
+			const img = document.createElement('img');
+			img.src = friend.avatar;
+			img.className = 'avatarr';
 
-        
-        const h2 = document.createElement('h2');
-        h2.className = 'friend-name';
-        h2.textContent = friend.display_name;
+			
+			const div = document.createElement('div');
+			div.className = 'friend-info';
 
-        
-        const p = document.createElement('p');
-        p.className = 'friend-status';
-        p.textContent = friend.status;
-		// if (friend.status === "online")
-		// 	console.log("hnaaa");
-		// else
-		// 	console.log("lhiiih");
+			
+			const h2 = document.createElement('h2');
+			h2.className = 'friend-name';
+			h2.textContent = friend.display_name;
+			h2.style.color = 'black';
 
-        
-        div.appendChild(h2);
-        div.appendChild(p);
-        li.appendChild(img);
-        li.appendChild(div);
+			
+			const p = document.createElement('p');
+			p.className = 'friend-status';
+			p.textContent  = friend.status;
+				
+		
+			
+			div.appendChild(h2);
+			div.appendChild(p);
+			li.appendChild(img);
+			li.appendChild(div);
 
-       
-        friendsListUl.appendChild(li);
-    });
-}
+		
+			friendsListUl.appendChild(li);
+    	});
+	}
 
 
 
@@ -309,7 +307,7 @@ function addFriend() {
 	const addFriendForm = document.getElementById('add_friend');
 	
 	if (addFriendForm) {
-		populateFriendsList(); 
+		populateFriendsList();
 		addFriendForm.onsubmit = async function(e) {
 			e.preventDefault();
 			const jwtToken = localStorage.getItem('jwt');
@@ -335,7 +333,6 @@ function addFriend() {
 				});
 
 				if (response.status == 200) {
-					// document.getElementById('msg3').style.color = 'green';
 					document.getElementById('msg3').style.display = 'block';
 					
 					
@@ -346,7 +343,6 @@ function addFriend() {
 				}
 				else {
 					const result = await response.json();
-					// alert(result.message);
 					display_friend_error(result.message);
 				}
 			}
@@ -376,15 +372,9 @@ function display_friend_error(error) {
 }
 
 function resetErrorDisplay_friend() {
-    // Hide all error messages and reset input margins
     document.querySelectorAll('.text-danger').forEach(errorElement => {
         errorElement.style.display = 'none';
     });
-
-    // const xInput = document.querySelector('.x');
-    // const xxInput = document.querySelector('.xx');
-    // if (xInput) xInput.style.marginBottom = '20px';
-    // if (xxInput) xxInput.style.marginBottom = '40px';
 }
 
 // Update avatar
@@ -424,8 +414,6 @@ async function changeav() {
             // alert(result.message);
 
 			const span = document.getElementById("av_err");
-			// const span2 = document.getElementById("empty");
-			// span2.style.display = 'none';
 			span.style.display = 'none';
 			span.style.display = 'block';
         } 

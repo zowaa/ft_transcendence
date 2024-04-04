@@ -75,4 +75,7 @@ export default {
 	username: "Username must be unique",
 	avva: "Change Avatar",
 	change_a: "Change",
+	
+	on: "Online",
+	off: "Offline",
 };

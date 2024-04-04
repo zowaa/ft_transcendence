@@ -83,6 +83,7 @@ const urlLocationHandler = async () => {
 	}
 
 	checkLoginStatus();
+	
 	const status = localStorage.getItem('logged_in');
 	if (status === 'yes' && (locationn === '/sign_in' || locationn === '/sign_up')){
 		// alert("You are already logged in");
@@ -126,7 +127,6 @@ const urlLocationHandler = async () => {
 	updatePassword();
 	updateUsername();
 	addFriend();
-	// fetchAndPrefillUserInfo();	`
 
 	const init_lang = getSavedLanguagePreference();
 	const language = await import(`./Lang_files/lang.${init_lang}.js`);
